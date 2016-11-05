@@ -5,24 +5,23 @@ public class Client {
    public static void main (String [] args) {
    
       try {
-         XmlRpcClient server = new XmlRpcClient("http://localhost:8080/RPC2"); 
+         XmlRpcClient server = new XmlRpcClient("http://localhost:8082/RPC2"); 
          Vector params = new Vector();
          
-         params.addElement(new Integer(5));
-         params.addElement(new Integer(7));
+         params.addElement(new String("ae"));
+         params.addElement(new String("HW1"));
+         params.addElement(new String("373"));
+         params.addElement(new Integer(0101));
+         params.addElement(new String("here"));
 
          Vector returnValue = (Vector)server.execute("sample.add", params);
 
 	 int size = ((Vector)returnValue).size();
-	 Integer intValue = (Integer)returnValue.get(0); 
-	 Double  doubleValue = (Double)returnValue.get(1);
-	 String  stringValue = (String)returnValue.get(2);
-	 System.out.println("The first array value is " + intValue + " the second array value is " + doubleValue + " and the third array value is " + stringValue);
-        
-        returnValue = (Vector)sever.execute("test.addAssign",params);
-        intValue = (Integer)returnValue.get(0);
-        System.out.println("x+7=" + intValue);
-        
+	 //Integer intValue = (Integer)returnValue.get(0); 
+	 //Double  doubleValue = (Double)returnValue.get(1);
+	 //String  stringValue = (String)returnValue.get(2);
+	 //System.out.println("The first array value is " + intValue);
+
       } catch (Exception exception) {
          System.err.println("Client: " + exception);
       }
