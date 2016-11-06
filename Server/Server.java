@@ -8,6 +8,7 @@ public class Server {
     int elCounter = 0;
 
    public Vector add(String identifier, String nameA, String nameC, int date, int comp, int pri){  //Assignment
+      System.out.println("calling add Assignment");
       if(identifier.equals("aa")){
           addAssignment(nameA, nameC, date, comp, pri);
       }
@@ -17,11 +18,11 @@ public class Server {
       //returnValue.addElement(new String(name));
       //returnValue.addElement(new Double(y));
       //returnValue.addElement(new String("hello world"));
-      System.out.println("calling add Assignment");
       return returnValue;
    }
    
    public Vector add(String identifier, String nameE, String days, int time, String location){  //event
+       System.out.println("Calling add Event");
        if(identifier.equals("ae")){
            addEvent(nameE, days, time, location);
        } 
@@ -31,17 +32,17 @@ public class Server {
    
    public void addAssignment(String nameA, String nameC, int date, int comp, int pri){
        Assignment a = new Assignment(nameA, nameC, date, comp, pri);
-       System.out.println(a.getAssignName());
+       System.out.println("Assignment name is: " + a.getAssignName());
        //send this to the database
        
        //add to list in server(volatile data)
        assignmentList.add(a);
        alCounter++;
-       System.out.println(alCounter + "Contents of assignment list are: " + assignmentList);
+       System.out.println(alCounter + " Assignments\n" + "Contents of assignment list are now: " + assignmentList);
        for(Assignment element : assignmentList){
            System.out.println(element.toString());
        }
-       System.out.println("\n");
+       System.out.println();
    }
    
    public void addEvent(String name, String days, int time, String loc){
@@ -52,11 +53,11 @@ public class Server {
        //add to list in sever(volatile data)
        eventList.add(e);
        elCounter++;
-       System.out.println(elCounter + "Contents of event list are: ");
+       System.out.println(elCounter + " Events\n" + "Contents of event list are now: " + eventList);
        for(Event element : eventList){
            System.out.println(element.toString());
        }
-       System.out.println("\n");
+       System.out.println();
    }
 
    public static void main (String [] args){

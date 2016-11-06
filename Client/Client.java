@@ -1,34 +1,30 @@
 import java.util.*;
 import org.apache.xmlrpc.*;
-import java.util.Scanner;
-import java.util.Vector;
-import java.util.Iterator;
 
 public class Client {
     
+    public Client(){
+        ;
+    }
+    
     public void addEvent(String name, String day, String starttime, String endtime, String location){
         try {
-            XmlRpcClient server = new XmlRpcClient("http://localhost:8080/RPC2"); 
+            XmlRpcClient server = new XmlRpcClient("http://localhost:8095/RPC2"); 
             Vector params = new Vector();
             params.addElement(name);          
             params.addElement(day);         
             params.addElement(starttime);            
             params.addElement(endtime);            
             params.addElement(location);         
-            params.addElement(new Character('~'));
 
-    /*      Vector returnValue = (Vector)server.execute("sample.add", params);
-    	    int size = ((Vector)returnValue).size();
-    	    Integer intValue = (Integer)returnValue.get(0); 
-    	    Double  doubleValue = (Double)returnValue.get(1);
-            String  stringValue = (String)returnValue.get(2);
-    */
+            Vector returnValue = (Vector)server.execute("sample.add", params);
           } 
           catch (Exception exception) {
              System.err.println("Client: " + exception);
       }  
 
     }
+    
     
     public void addAssignment(String name, String classname, String daysleft, String priority, String hours){
         try {
@@ -39,29 +35,26 @@ public class Client {
             params.addElement(daysleft);
             params.addElement(priority);
             params.addElement(hours);
-            params.addElement(new Character('~'));    
-    /*      Vector returnValue = (Vector)server.execute("sample.add", params);
-    	    int size = ((Vector)returnValue).size();
-    	    Integer intValue = (Integer)returnValue.get(0); 
-    	    Double  doubleValue = (Double)returnValue.get(1);
-            String  stringValue = (String)returnValue.get(2);
-    */
+  
+            Vector returnValue = (Vector)server.execute("sample.add", params);
           } 
           catch (Exception exception) {
              System.err.println("Client: " + exception);
           }        
     }
-    public void editEvent(String name){
+    
+    
+    /*public void editEvent(String name){
         try {
             XmlRpcClient server = new XmlRpcClient("http://localhost:8080/RPC2"); 
             Vector params = new Vector();;
             params.addElement(eventname[i]);
-        /*      Vector returnValue = (Vector)server.execute("sample.add", params);
+             Vector returnValue = (Vector)server.execute("sample.add", params);
         	    int size = ((Vector)returnValue).size();
         	    Integer intValue = (Integer)returnValue.get(0); 
         	    Double  doubleValue = (Double)returnValue.get(1);
                 String  stringValue = (String)returnValue.get(2);
-        */
+        
               } 
               catch (Exception exception) {
                   System.err.println("Client: " + exception);
@@ -89,12 +82,12 @@ public class Client {
                      params.addElement(eventname[i]);
                  }
         
-        /*      Vector returnValue = (Vector)server.execute("sample.add", params);
+              Vector returnValue = (Vector)server.execute("sample.add", params);
         	    int size = ((Vector)returnValue).size();
         	    Integer intValue = (Integer)returnValue.get(0); 
         	    Double  doubleValue = (Double)returnValue.get(1);
                 String  stringValue = (String)returnValue.get(2);
-        */
+        
               } catch (Exception exception) {
                  System.err.println("Client: " + exception);
               }
@@ -110,62 +103,40 @@ public class Client {
                 //SEND TO THE USER
               
         
-    }
+    }*/
+
     
-    //public void createProfile(){}
-    //public void login(){}
-    //public void editProfile(){}
-    //delete...()
-    
-    public void getSchedule(){
-     try {
-                 XmlRpcClient server = new XmlRpcClient("http://localhost:8080/RPC2"); 
-                 Vector params = new Vector();
-                 char[] eventname = name.toCharArray();
-                 for(int i = 0; i<eventname.length; i++){
-                     params.addElement(eventname[i]);
-                 }
+    /*public void getSchedule(){
+        try {
+            XmlRpcClient server = new XmlRpcClient("http://localhost:8080/RPC2"); 
+            Vector params = new Vector();
+            char[] eventname = name.toCharArray();
+            for(int i = 0; i<eventname.length; i++)
+                params.addElement(eventname[i]);
         
-        /*      Vector returnValue = (Vector)server.execute("sample.add", params);
-        	    int size = ((Vector)returnValue).size();
-        	    Integer intValue = (Integer)returnValue.get(0); 
-        	    Double  doubleValue = (Double)returnValue.get(1);
-                String  stringValue = (String)returnValue.get(2);
-        */
-              } catch (Exception exception) {
-                 System.err.println("Client: " + exception);
-              }
-               
-              Vector assignmentinfo = (Vector)server.execute("//servername.function", params);
+            Vector returnValue = (Vector)server.execute("sample.add", params);
+        	int size = ((Vector)returnValue).size();
+        	Integer intValue = (Integer)returnValue.get(0); 
+        	Double  doubleValue = (Double)returnValue.get(1);
+            String  stringValue = (String)returnValue.get(2);
+                
+            } catch (Exception exception) {
+                System.err.println("Client: " + exception);
+            }
               
-              Integer size = (Integer)returnValue.get(0);
-              CalenderObject calObject = new CalenderObject();
-              CalenderObject[] calArray = new calArray[size];
+            Integer size = (Integer)returnValue.get(0);
+            Calender calObject = new CalenderObject();
+            CalenderObject[] calArray = new calArray[size];
               
               //calObject((String)returnValue.get(0),(String)returnValue.get(1),(String)returnValue.get(2));
               
-             /* String name = (String)returnValue.get(0);
+             String name = (String)returnValue.get(0);
               String time = (String)returnValue.get(1);
               String location = (String)returnValue.get(2);
                        
               String[] object = new String[]; 
     
               
-                //SEND TO THE USER */
-    }
-    
- public class CalenderObject{
-     
-     public String name;
-     public Sting time;
-     public String location;
-    
-    public calenderObject(String name, String time, String location){}
-        this.name = name;
-        this.time = time;
-        this.location = location; 
-    }
-        
-    
-  //public void reCalibrate()
+                //SEND TO THE USER 
+    }*/
 }
