@@ -5,7 +5,7 @@ public class Server {
 
 Assingment a;
 Event e;
-
+int h;
    public Vector add(String identifier, String nameA, String nameC, int date, int comp, int pri){  //Assignment
       if(identifier.equals("aa")){
           addAssignment(nameA, nameC, date, comp, pri);
