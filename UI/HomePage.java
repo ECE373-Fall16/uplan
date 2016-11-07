@@ -3,8 +3,10 @@ import java.util.*;
 public class HomePage {
 	
 	Scanner scan = new Scanner(System.in);
+	Client user;
 	
-	public HomePage(){	
+	public HomePage(){
+	    user = new Client();
 	}
 	
 	public void displayHomePage(){
@@ -19,7 +21,11 @@ public class HomePage {
 	}
 	
 	public void displaySchedule(){
-		
+	   Calendar[] ca = user.displaySchedule();
+	   int length = ca.length();
+	   for(int i = 0; i < length; i++){
+	       System.out.println("Name: " + ca[i].getName() + " Time: " + ca[i].getTime() + " Location: " + ca[i].getLocation());
+	   }
 	}
 	
 	public void addAssignment(){
@@ -34,6 +40,7 @@ public class HomePage {
 		System.out.println("Priority of Assignment (1-3):");
 		int priority = scan.nextInt();
 		
+		user.addAssignment(nameAssign, nameClass, dueDate, completionTime, priority);
 		//create assignment object using values
 		
 	}
@@ -57,6 +64,7 @@ public class HomePage {
 		System.out.println("Location:");
 		String location = scan.nextLine();
 		
+		user.addEvent(nameEvent, days, time, location);
 		//create event object using values
 	}
 	
@@ -75,6 +83,20 @@ public class HomePage {
 	
 	public void refreshSchedule(){
 		displaySchedule();
+	}
+	
+	public void createAccount(){
+	    System.out.println("Name: ");
+	    String name = scan.nextLine();
+	    System.out.println("Username: ");
+	    String user = scan.nextLine();
+	    System.out.println("Email: ");
+	    String email = scan.nextLine();
+	    System.out.println("Password: ");
+	    String password = scan.nextLine();
+	    System.out.println("Approximate Bedtime: ");
+	    String bedtime = scan.nextLine();
+	    user.createAccount(name, user, email, password, bedtime);
 	}
 	
 }

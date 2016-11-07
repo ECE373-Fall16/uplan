@@ -4,8 +4,14 @@ public class UIDriver {
 
 	public static void main(String[] args){
 		
+		HomePage h = new HomePage();
 		Scanner scan = new Scanner(System.in);
-		System.out.println("UserName:");
+		System.out.println("Create an Account (0) or Login (1)");
+		boolean login = scan.nextInt();
+		if(!login){
+		    h.createAccount();
+	    }
+		System.out.println("What are your credentials?\nUserName:");
 		String userName = scan.nextLine();
 		System.out.println("Password:");
 		String password = scan.nextLine();
