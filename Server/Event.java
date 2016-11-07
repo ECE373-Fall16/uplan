@@ -14,6 +14,10 @@ public class Event{
         location = loc;
     }
     
+    public String toString(){
+        return eventName + " " + days + " " + dayTime + " " + location;
+    }
+    
     public String getEventName(){
         return eventName;
     }

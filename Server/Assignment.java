@@ -2,11 +2,11 @@ import java.util.*;
 
 public class Assignment{
     
-    String assignment;
-    String nameClass;
-    int dueDate;
-    int completion;
-    int priority;
+    private String assignment;
+    private String nameClass;
+    private int dueDate;
+    private int completion;
+    private int priority;
     
     public Assignment(String nameAssign, String nClass, int days, int compTime, int pri){
         assignment = nameAssign;
@@ -14,6 +14,10 @@ public class Assignment{
         dueDate = days;
         completion = compTime;
         priority = pri;
+    }
+    
+    public String toString(){
+        return assignment + " " + nameClass + " " + dueDate + " " + completion + " " + priority;
     }
     
     public String getAssignName(){
