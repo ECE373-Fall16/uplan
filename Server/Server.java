@@ -37,6 +37,8 @@ int h;
        System.out.println(e.getEventName());
        //send to database
    }
+   
+   
 
    public static void main (String [] args){
    

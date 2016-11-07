@@ -49,7 +49,8 @@ public class HomePage {
 	
 	public void addEvent(){
 		System.out.println("Name of Event:");
-		String nameEvent = scan.nextLine();
+		String
+		nameEvent = scan.nextLine();
 		System.out.println("Enter Days of the Week(SuMoTuWeThFiSa):");
 		String days = scan.nextLine();
 		System.out.println("Estimates Time of Day:");
