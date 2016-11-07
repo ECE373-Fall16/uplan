@@ -3,17 +3,22 @@ import org.apache.xmlrpc.*;
 
 public class Client {
     
-    public void addEvent(String name, String day, int time, String location){
+    public Client(){
+        
+    }
+    
+    public void addEvent(String name, String day, int startTime, int endTime, String location){
         try {
-            XmlRpcClient server = new XmlRpcClient("http://localhost:8080/RPC2"); 
+            XmlRpcClient server = new XmlRpcClient("http://localhost:8082/RPC2"); 
             Vector params = new Vector();
-            params.addElement("ae");
+            //params.addElement("ae");
             params.addElement(name);          
             params.addElement(day);         
-            params.addElement(time);                      
+            params.addElement(startTime); 
+            params.addElement(endTime);
             params.addElement(location);         
 
-            Vector returnValue = (Vector)server.execute("sample.add", params);
+            Vector returnValue = (Vector)server.execute("sample.addEvent", params);
           } 
           catch (Exception exception) {
              System.err.println("Client: " + exception);
@@ -24,21 +29,22 @@ public class Client {
     
     public void addAssignment(String name, String classname, int daysleft, int priority, int hours){
         try {
-            XmlRpcClient server = new XmlRpcClient("http://localhost:8080/RPC2"); 
+            XmlRpcClient server = new XmlRpcClient("http://localhost:8082/RPC2"); 
             Vector params = new Vector();
-            params.addElement("aa");
+            //params.addElement("aa");
             params.addElement(name);
             params.addElement(classname);
             params.addElement(daysleft);
             params.addElement(priority);
             params.addElement(hours);
   
-            Vector returnValue = (Vector)server.execute("sample.add", params);
+            Vector returnValue = (Vector)server.execute("sample.addAssignment", params);
           } 
           catch (Exception exception) {
              System.err.println("Client: " + exception);
           }        
     }
+
     
     
     /*public void editEvent(String name){
@@ -136,4 +142,21 @@ public class Client {
               
                 //SEND TO THE USER 
     }*/
+   
+   public void createAccount(String name, String username, String email, String password, int bedtime){
+       try {
+            XmlRpcClient server = new XmlRpcClient("http://localhost:8082/RPC2"); 
+            Vector params = new Vector();
+            params.addElement(name);
+            params.addElement(username);
+            params.addElement(email);
+            params.addElement(password);
+            params.addElement(bedtime);
+  
+            Vector returnValue = (Vector)server.execute("sample.createAccount", params);
+          } 
+          catch (Exception exception) {
+             System.err.println("Client: " + exception);
+          }        
+   }
 }

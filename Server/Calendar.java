@@ -11,5 +11,17 @@ public class Calendar{
         time = time1;
         location = loc;
     }
+    
+    public String getName(){
+        return name;
+    }
+    
+    public String getTime(){
+        return time;
+    }
+    
+    public String getLocation(){
+        return location;
+    }
 
 }

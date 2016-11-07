@@ -7,6 +7,7 @@ public class Server {
     int alCounter = 0;
     int elCounter = 0;
 
+/*
    public Vector add(String identifier, String nameA, String nameC, int date, int comp, int pri){  //Assignment
       System.out.println("calling add Assignment");
       if(identifier.equals("aa")){
@@ -29,8 +30,9 @@ public class Server {
        Vector returnValue = new Vector();
        return returnValue;
    }
+*/
    
-   public void addAssignment(String nameA, String nameC, int date, int comp, int pri){
+   public Vector addAssignment(String nameA, String nameC, int date, int comp, int pri){
        Assignment a = new Assignment(nameA, nameC, date, comp, pri);
        System.out.println("Assignment name is: " + a.getAssignName());
        //send this to the database
@@ -43,10 +45,19 @@ public class Server {
            System.out.println(element.toString());
        }
        System.out.println();
+       
+       //return as vector
+       Vector returnValue = new Vector();
+       returnValue.add(nameA);
+       returnValue.add(nameC);
+       returnValue.add(date);
+       returnValue.add(comp);
+       returnValue.add(pri);
+       return returnValue;
    }
    
-   public void addEvent(String name, String days, int time, String loc){
-       Event e = new Event(name, days, time, loc);
+   public Vector addEvent(String name, String days, int startTime, int endTime, String loc){
+       Event e = new Event(name, days, startTime, endTime, loc);
        System.out.println(e.getEventName());
        //send to database
        
@@ -58,12 +69,28 @@ public class Server {
            System.out.println(element.toString());
        }
        System.out.println();
+       
+       //return vector
+       Vector returnValue = new Vector();
+       returnValue.add(name);
+       returnValue.add(days);
+       returnValue.add(startTime);
+       returnValue.add(endTime);
+       returnValue.add(loc);
+       return returnValue;
    }
+   
+   public Vector createAccount(String name, String username, String email, String password, int bedtime){
+       return new Vector();
+   }
+
+   
+    
 
    public static void main (String [] args){
    
       try {
-         WebServer server = new WebServer(8080);
+         WebServer server = new WebServer(8082);
          server.addHandler("sample", new Server());
          server.start();
       } catch (Exception exception){
