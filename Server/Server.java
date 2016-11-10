@@ -6,6 +6,8 @@ public class Server {
     LinkedList<Event> eventList = new LinkedList<Event>();
     int alCounter = 0;
     int elCounter = 0;
+    DataBase data = new DataBase();
+    
 
 /*
    public Vector add(String identifier, String nameA, String nameC, int date, int comp, int pri){  //Assignment
@@ -81,6 +83,8 @@ public class Server {
    }
    
    public Vector createAccount(String name, String username, String email, String password, int bedtime){
+       data.connect();
+       data.createUser("David");
        return new Vector();
    }
 
@@ -90,7 +94,7 @@ public class Server {
    public static void main (String [] args){
    
       try {
-         WebServer server = new WebServer(8082);
+         WebServer server = new WebServer(8085);
          server.addHandler("sample", new Server());
          server.start();
       } catch (Exception exception){

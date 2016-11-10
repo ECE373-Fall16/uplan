@@ -9,7 +9,7 @@ public class Client {
     
     public void addEvent(String name, String day, int startTime, int endTime, String location){
         try {
-            XmlRpcClient server = new XmlRpcClient("http://localhost:8082/RPC2"); 
+            XmlRpcClient server = new XmlRpcClient("http://localhost:8085/RPC2"); 
             Vector params = new Vector();
             //params.addElement("ae");
             params.addElement(name);          
@@ -29,7 +29,7 @@ public class Client {
     
     public void addAssignment(String name, String classname, int daysleft, int priority, int hours){
         try {
-            XmlRpcClient server = new XmlRpcClient("http://localhost:8082/RPC2"); 
+            XmlRpcClient server = new XmlRpcClient("http://localhost:8085/RPC2"); 
             Vector params = new Vector();
             //params.addElement("aa");
             params.addElement(name);
@@ -145,7 +145,7 @@ public class Client {
    
    public void createAccount(String name, String username, String email, String password, int bedtime){
        try {
-            XmlRpcClient server = new XmlRpcClient("http://localhost:8082/RPC2"); 
+            XmlRpcClient server = new XmlRpcClient("http://localhost:8085/RPC2"); 
             Vector params = new Vector();
             params.addElement(name);
             params.addElement(username);

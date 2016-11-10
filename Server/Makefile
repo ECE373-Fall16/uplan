@@ -1,6 +1,6 @@
-CLASSPATH=./lib/commons-codec-1.3.jar:./lib/xmlrpc-2.0.1.jar:.
+CLASSPATH=./lib/commons-codec-1.3.jar:./lib/xmlrpc-2.0.1.jar:./lib/sqlite-jdbc-3.14.2.1.jar:.
 
-all: Server.class Client.class Driver.class Calendar.class
+all: Server.class Client.class Driver.class Calendar.class DataBase.class
 
 server:
 	@java -classpath $(CLASSPATH) Server
@@ -22,6 +22,9 @@ Driver.class: Driver.java
 
 Calendar.class: Calendar.java
 	javac -classpath $(CLASSPATH) Calendar.java
+
+DataBase.class: DataBase.java
+	javac -classpath $(CLASSPATH) DataBase.java
 
 clean:
 	rm *.class
