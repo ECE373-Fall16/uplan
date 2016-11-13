@@ -1,12 +1,9 @@
 CLASSPATH=./lib/commons-codec-1.3.jar:./lib/xmlrpc-2.0.1.jar:./lib/sqlite-jdbc-3.14.2.1.jar:.
 
-all: Server.class Client.class Driver.class Calendar.class DataBase.class
+all: Server.class Driver.class
 
 server:
 	@java -classpath $(CLASSPATH) Server
-
-client:
-	@java -classpath $(CLASSPATH) Client
 
 driver:
 	@java -classpath $(CLASSPATH) Driver

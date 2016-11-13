@@ -3,8 +3,10 @@ import org.apache.xmlrpc.*;
 
 public class Client {
     
+    private String username;
+    
     public Client(){
-        
+        username = "David";
     }
     
     public void addEvent(String name, String day, int startTime, int endTime, String location){
@@ -12,7 +14,8 @@ public class Client {
             XmlRpcClient server = new XmlRpcClient("http://localhost:8085/RPC2"); 
             Vector params = new Vector();
             //params.addElement("ae");
-            params.addElement(name);          
+            params.addElement(name); 
+            params.addElement(username);
             params.addElement(day);         
             params.addElement(startTime); 
             params.addElement(endTime);
@@ -27,14 +30,15 @@ public class Client {
     }
     
     
-    public void addAssignment(String name, String classname, int daysleft, int priority, int hours){
+    public void addAssignment(String name, String classname, String dueDate, int priority, int hours){
         try {
             XmlRpcClient server = new XmlRpcClient("http://localhost:8085/RPC2"); 
             Vector params = new Vector();
             //params.addElement("aa");
             params.addElement(name);
+            params.addElement(username);
             params.addElement(classname);
-            params.addElement(daysleft);
+            params.addElement(dueDate);
             params.addElement(priority);
             params.addElement(hours);
   

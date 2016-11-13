@@ -34,15 +34,16 @@ public class Server {
    }
 */
    
-   public Vector addAssignment(String nameA, String nameC, int date, int comp, int pri){
-       Assignment a = new Assignment(nameA, nameC, date, comp, pri);
-       System.out.println("Assignment name is: " + a.getAssignName());
+   public Vector addAssignment(String name, String username, String className, String date, int comp, int pri){
+       //Assignment a = new Assignment(name, className, date, comp, pri);
+       //System.out.println("Assignment name is: " + a.getAssignName());
        //send this to the database
        
        //add to list in server(volatile data)
-       assignmentList.add(a);
-       alCounter++;
-       System.out.println(alCounter + " Assignments\n" + "Contents of assignment list are now: " + assignmentList);
+       //assignmentList.add(a);
+       //data.createAssignment(name, username, className, date, comp, pri);
+       //alCounter++;
+       //System.out.println(alCounter + " Assignments\n" + "Contents of assignment list are now: " + assignmentList);
        for(Assignment element : assignmentList){
            System.out.println(element.toString());
        }
@@ -50,21 +51,22 @@ public class Server {
        
        //return as vector
        Vector returnValue = new Vector();
-       returnValue.add(nameA);
-       returnValue.add(nameC);
+       returnValue.add(name);
+       returnValue.add(className);
        returnValue.add(date);
        returnValue.add(comp);
        returnValue.add(pri);
        return returnValue;
    }
    
-   public Vector addEvent(String name, String days, int startTime, int endTime, String loc){
+   public Vector addEvent(String name, String username, String days, int startTime, int endTime, String loc){
        Event e = new Event(name, days, startTime, endTime, loc);
        System.out.println(e.getEventName());
        //send to database
        
        //add to list in sever(volatile data)
        eventList.add(e);
+       //data.createEvent(name, username, className, date, comp, pri);
        elCounter++;
        System.out.println(elCounter + " Events\n" + "Contents of event list are now: " + eventList);
        for(Event element : eventList){
@@ -83,8 +85,11 @@ public class Server {
    }
    
    public Vector createAccount(String name, String username, String email, String password, int bedtime){
-       data.connect();
-       data.createUser("David");
+       try{
+            data.createUser("David");
+       } catch (Exception e){
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+        }
        return new Vector();
    }
 

@@ -1,173 +1,99 @@
 import java.sql.*;
-//import java.util.Vector;
-//import java.util.Iterator;
-import java.util.*;
-import java.io.*;
 
-public class DataBase {
-    private Connection c;
-    private Statement stmt;
-    private String sql;
-
+public class DataBase{
+    
+    private Statement stmt = null;
+    private String sql = null;
+    
     public DataBase(){
+        //c = DriverManager.getConnection("jdbc:sqlite:inventory.db");
+        //connect();
         ;
     }
-    /*
-      public static void main( String args[] )
-      {
-        Statement stmt = null;
-        Connection c = null;
-        String sql = null;
-        try {
-          Class.forName("org.sqlite.JDBC");
-          c = DriverManager.getConnection("jdbc:sqlite:inventory.db");
-        } catch ( Exception e ) {
-          System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-          System.exit(0);
-        }
-        System.out.println("Opened database successfully");
-    }
-        */
-       public void connect(){
-           c = null;
-           try {
-               Class.forName("org.sqlite.JDBC");
-               c = DriverManager.getConnection("jdbc:sqlite:inventory.db");
-           } catch (Exception e){
-               System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-               System.exit(0);
-           }
-           System.out.println("Opened database successfully");
-           //c.close();
-       }
-       /*
-        public void connect(){
-        Statement stmt = null;
-            Connection c = null;
-            String sql = null;
-            try {
-                Class.forName("org.sqlite.JDBC");
-                c = DriverManager.getConnection("jdbc:sqlite:inventory.db");
-            } catch ( Exception e ) {
-            //System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-            System.exit(0);
-            }
-            System.out.println("Opened database successfully");
-    }
     
-        
-    /*/
-    public void createUser(String username){
+    public void createUser(String username) throws SQLException {
         try {
-            //createTable(username,"ASSIGNMENT");
-            //createTable(username,"EVENT");
-            System.out.println(username);
+            Connection c = connect();
+            stmt = c.createStatement();
+            
+            createTable(username,"ASSIGNMENT");
+            createTable(username,"EVENT");
+            createTable(username,"PROFILE");
+            //System.out.println(username);
+            stmt.close();
         } catch (Exception e){
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
         }
+        
 
     }
-/*
-    public void createTable(String username, String type){
+    
+    public void createTable(String username, String type) throws SQLException {
         try{
+            //c = DriverManager.getConnection("jdbc:sqlite:inventory.db");
+            Connection c = connect();
             stmt = c.createStatement();
-            if(type.equals("ASSIGNMENT")){
-                sql = "CREATE TABLE " + username + " " + type + "(NAME STRING PRIMARY KEY NOT NULL" + "CLASSNAME STRING NOT NULL," + "START_TIME STRING NOT NULL," + "END_TIME STRING NOT NULL," + "LOCATION STRING NOT NULL);";
-            }
             if(type.equals("EVENT")){
-                sql = "CREATE TABLE " + username + " " + type + "(NAME STRING PRIMARY KEY NOT NULL" + "DAY STRING NOT NULL," + "DAYS_LEFT STRING NOT NULL," + "PRIORITY STRING NOT NULL," + "HOURS STRING NOT NULL);";
+                sql = "CREATE TABLE " + username + type + "(" + 
+                "CLASSNAME TEXT PRIMARY KEY NOT NULL," +
+                "DAYS TEXT NOT NULL," +
+                "START_TIME TEXT NOT NULL," + 
+                "END_TIME TEXT NOT NULL," + 
+                "LOCATION TEXT NOT NULL);";
             }
-            stmt.excecuteUpdate(sql);
+            if(type.equals("ASSIGNMENT")){
+                sql = "CREATE TABLE " + username + type + "(" +
+                "NAME TEXT PRIMARY KEY NOT NULL," +
+                "CLASSNAME TEXT NOT NULL," + 
+                "DUE TEXT NOT NULL," +
+                "HOURSTOCOMPLETION TEXT NOT NULL," +
+                "PRIORITY TEXT NOT NULL);";
+            }
+            if(type.equals("PROFILE")){
+                sql = "CREATE TABLE " + username + type + "(" +
+                "NAME TEXT PRIMARY KEY NOT NULL," +
+                "USERNAME TEXT NOT NULL," + 
+                "EMAIL TEXT NOT NULL," +
+                "PASSWORD TEXT NOT NULL," +
+                "BEDTIME TEXT NOT NULL);";
+            }
+            stmt.executeUpdate(sql);
+            stmt.close();
+        } catch ( Exception e ) {
+            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            
+        }
+        System.out.println(type + " Tables Created Successfully");
+    }
+    
+    public void createAssignment(String name, String user, String className, String dueDate, int toCompletion, int priority) throws SQLException {
+        try{
+            Connection c = connect();
+            stmt = c.createStatement();
+            sql = "INSERT INTO DavidASSIGNMENT (NAME, CLASSNAME, DUE, HOURSTOCOMPLETION, PRIORITY)" + 
+                "VALUES (" + name + ", " + className + ", " + dueDate + ", " + 
+                Integer.toString(toCompletion) + ", " + Integer.toString(priority) + ");";
+            stmt.executeUpdate(sql);
             stmt.close();
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
         }
-        //System.out.println("User Tables Created Successfully");
     }
-
-            
-    public void addAssignment(Vector assignment){
-        Vector assignmentinfo = (Vector)server.execute("//servername.function", params);
-        String username = (String)returnValue.get(0)
-        String name = (String)returnValue.get(1);
-        String classname = (String)returnValue.get(2);
-        String days = (String)returnValue.get(3);
-        String duration = (String)returnValue.get(4);
-        String priority = (String)returnValue.get(5);   
-        try{
-            stmt = c.createStatement();
-            sql = "INSERT INTO " + username + " " + "ASSIGNMENT VALUES (" + name + ", " + classname + ", " + days + ", " + duration + ", " + priority + ");";
-            stmt.excecuteUpdate(sql);
-            stmt.close();
-            //System.out.println("Added Assignment Successfully");
-        }
-        catch ( Exception e ) {
-        //      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-        }
+    
+    
+    private Connection connect(){
+        Connection c = null;
+        try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:inventory.db");
+            return c;
+        } catch (Exception e){
+            System.err.println(e.getClass() + ": " + e.getMessage());
+            System.exit(0);
+        }
+        System.out.println("Opened database successfully");
+        return c;
     }
-    public void addEvent(Vector event){
-        Vector eventinfo = (Vector)server.execute("//servername.function", params);
-        String username = (String)returnValue.get(0)
-        String name = (String)returnValue.get(1);
-        String day = (String)returnValue.get(2);
-        String start = (String)returnValue.get(3);
-        String end = (String)returnValue.get(4);
-        String location = (String)returnValue.get(5);   
-        try{
-            stmt = c.createStatement();
-            sql = "INSERT INTO " + username + " " + "EVENT VALUES (" + name + ", " + day + ", " + start + ", " + end + ", " + location + ");";
-            stmt.excecuteUpdate(sql);
-            stmt.close();
-            //System.out.println("Added Assignment Successfully");
-        }
-        catch ( Exception e ) {
-        //      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-        }
-    }  
-
-    public void Edit(String username, String type, String name){
-        try {
-          stmt = c.createStatement();
-          ResultSet rs = stmt.executeQuery("SELECT * from " + username + " " + type + " WHERE TOPIC= " + name);
-             if(type.equals("ASSIGNMENT")){
-                 while ( rs.next() ) {
-                     String name = rs.getString(name);
-                     String classname = rs.getString(classname);
-                     String days  = rs.getString(days);
-                     String priority = rs.getString(priority
-                     String duration = rs.getString(duration);
-                     Vector params = new Vector();
-                    params.addElement(name);          
-                    params.addElement(classname);         
-                    params.addElement(days);            
-                    params.addElement(priority);            
-                    params.addElement(duration);         
-                    params.addElement(new Character('~'));
-                  }
-            }
-             if(type.equals("EVENT")){
-                 while ( rs.next() ) {
-                     String name = rs.getString(name);
-                     String day = rs.getString(day);
-                     String start  = rs.getString(start);
-                     String end = rs.getString(end);
-                     String location = rs.getString(location);
-                     Vector params = new Vector();
-                    params.addElement(name);          
-                    params.addElement(day);         
-                    params.addElement(start);            
-                    params.addElement(end);            
-                    params.addElement(location);         
-                    params.addElement(new Character('~'));
-                  }
-            }
-
-          rs.close();
-          stmt.close();
-          c.close();
-        } catch ( Exception e ) {
-          System.err.println( e.getClass().getName() + ": " + e.getMessage() );
-          System.exit(0);
-        }
-      }*/
 }
+
+
