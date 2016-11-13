@@ -6,7 +6,7 @@ public class Client {
     private String username;
     
     public Client(){
-        username = "David";
+        ;
     }
     
     public void addEvent(String name, String day, int startTime, int endTime, String location){
@@ -47,6 +47,49 @@ public class Client {
           catch (Exception exception) {
              System.err.println("Client: " + exception);
           }        
+    }
+    
+    public void deleteEvent(String name){
+        try {
+            XmlRpcClient server = new XmlRpcClient("http://localhost:8085/RPC2"); 
+            Vector params = new Vector();
+            //params.addElement("aa");
+            params.addElement(name);
+            params.addElement(username);
+  
+            Vector returnValue = (Vector)server.execute("sample.deleteEvent", params);
+          } 
+          catch (Exception exception) {
+             System.err.println("Client: " + exception);
+          } 
+    }
+    
+    public void deleteAssignment(String name){
+        try {
+            XmlRpcClient server = new XmlRpcClient("http://localhost:8085/RPC2"); 
+            Vector params = new Vector();
+            //params.addElement("aa");
+            params.addElement(name);
+            params.addElement(username);
+  
+            Vector returnValue = (Vector)server.execute("sample.deleteAssignment", params);
+          } 
+          catch (Exception exception) {
+             System.err.println("Client: " + exception);
+          } 
+    }
+    
+    public void deleteAccount(String username){
+        try {
+            XmlRpcClient server = new XmlRpcClient("http://localhost:8085/RPC2"); 
+            Vector params = new Vector();
+            params.addElement(username);
+  
+            Vector returnValue = (Vector)server.execute("sample.deleteAccount", params);
+          } 
+          catch (Exception exception) {
+             System.err.println("Client: " + exception);
+          } 
     }
 
     
@@ -147,12 +190,13 @@ public class Client {
                 //SEND TO THE USER 
     }*/
    
-   public void createAccount(String name, String username, String email, String password, int bedtime){
+   public void createAccount(String user, String name, String email, String password, int bedtime){
+       username = user;
        try {
             XmlRpcClient server = new XmlRpcClient("http://localhost:8085/RPC2"); 
             Vector params = new Vector();
+            params.addElement(user);
             params.addElement(name);
-            params.addElement(username);
             params.addElement(email);
             params.addElement(password);
             params.addElement(bedtime);

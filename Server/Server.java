@@ -1,5 +1,6 @@
 import org.apache.xmlrpc.*;
 import java.util.*;
+import java.sql.*;
 
 public class Server {
     LinkedList<Assignment> assignmentList = new LinkedList<Assignment>();
@@ -41,13 +42,19 @@ public class Server {
        
        //add to list in server(volatile data)
        //assignmentList.add(a);
-       //data.createAssignment(name, username, className, date, comp, pri);
+       try{
+       data.createAssignment(name, username, className, date, comp, pri);
+   }catch( Exception e ){
+       System.err.println( "ServerAddAssign:" + e.getClass().getName() + ": " + e.getMessage() );
+   }
+
+
        //alCounter++;
        //System.out.println(alCounter + " Assignments\n" + "Contents of assignment list are now: " + assignmentList);
-       for(Assignment element : assignmentList){
+       /*for(Assignment element : assignmentList){
            System.out.println(element.toString());
        }
-       System.out.println();
+       System.out.println();*/
        
        //return as vector
        Vector returnValue = new Vector();
@@ -60,15 +67,22 @@ public class Server {
    }
    
    public Vector addEvent(String name, String username, String days, int startTime, int endTime, String loc){
-       Event e = new Event(name, days, startTime, endTime, loc);
-       System.out.println(e.getEventName());
+       //Event e = new Event(name, days, startTime, endTime, loc);
+       //System.out.println(e.getEventName());
        //send to database
+       try{
+            data.createEvent(name,username,days,startTime,endTime,loc);
+       }catch( Exception e ){
+            System.err.println( "ServerAddEvent:" + e.getClass().getName() + ": " + e.getMessage() );
+        }
        
        //add to list in sever(volatile data)
-       eventList.add(e);
+       //eventList.add(e);
        //data.createEvent(name, username, className, date, comp, pri);
-       elCounter++;
-       System.out.println(elCounter + " Events\n" + "Contents of event list are now: " + eventList);
+       //elCounter++;
+       //System.out.println(elCounter + " Events\n" + "Contents of event list are now: " + eventList);
+       
+       
        for(Event element : eventList){
            System.out.println(element.toString());
        }
@@ -84,15 +98,41 @@ public class Server {
        return returnValue;
    }
    
-   public Vector createAccount(String name, String username, String email, String password, int bedtime){
+   public Vector createAccount(String username, String name, String email, String password, int bedtime){
        try{
-            data.createUser("David");
+            data.createUser(username, name, email, password, bedtime);
        } catch (Exception e){
-            System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+            System.err.println( "ServerCreateAccount:" + e.getClass().getName() + ": " + e.getMessage() );
         }
        return new Vector();
    }
 
+    public Vector deleteEvent(String name, String username){
+        try{
+            data.removeEvent(name, username);
+        } catch (Exception e){
+            System.err.println( "DeleteEvent:" + e.getClass().getName() + ": " + e.getMessage() );
+        }
+        return new Vector();
+    }
+    
+    public Vector deleteAssignment(String name, String username){
+        try{
+            data.removeAssignment(name, username);
+        } catch (Exception e){
+            System.err.println( "DeleteEvent:" + e.getClass().getName() + ": " + e.getMessage() );
+        }
+        return new Vector();
+    }
+    
+    public Vector deleteAccount(String username){
+        try{
+            data.removeProfile(username);
+        } catch (Exception e){
+            System.err.println( "DeleteEvent:" + e.getClass().getName() + ": " + e.getMessage() );
+        }
+        return new Vector();
+    }
    
     
 

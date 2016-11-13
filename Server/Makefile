@@ -2,11 +2,16 @@ CLASSPATH=./lib/commons-codec-1.3.jar:./lib/xmlrpc-2.0.1.jar:./lib/sqlite-jdbc-3
 
 all: Server.class Driver.class
 
+idb: InitializeDB.class
+
 server:
 	@java -classpath $(CLASSPATH) Server
 
 driver:
 	@java -classpath $(CLASSPATH) Driver
+
+db:
+	@java -classpath $(CLASSPATH) InitializeDB
 
 Server.class: Server.java
 	javac -classpath $(CLASSPATH) Server.java
@@ -22,6 +27,9 @@ Calendar.class: Calendar.java
 
 DataBase.class: DataBase.java
 	javac -classpath $(CLASSPATH) DataBase.java
+
+InitializeDB.class: InitializeDB.java
+	javac -classpath $(CLASSPATH) InitializeDB.java
 
 clean:
 	rm *.class
