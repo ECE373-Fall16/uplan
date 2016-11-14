@@ -4,11 +4,11 @@ public class Event{
     
     private String eventName;
     private String days;
-    private int startTime;
-    private int endTime;
+    private String startTime;
+    private String endTime;
     private String location;
     
-    public Event(String name, String d, int start, int end, String loc){
+    public Event(String name, String d, String start, String end, String loc){
         eventName = name;
         days = d;
         startTime = start;
@@ -36,19 +36,19 @@ public class Event{
         days = d;
     }
     
-    public int getStart(){
+    public String getStart(){
         return startTime;
     }
     
-    public int getEnd(){
+    public String getEnd(){
         return endTime;
     }
     
-    public void setStart(int time){
+    public void setStart(String time){
         startTime = time;
     }
     
-    public void setEnd(int time){
+    public void setEnd(String time){
         endTime = time;
     }
     

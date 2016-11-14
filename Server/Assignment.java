@@ -5,10 +5,10 @@ public class Assignment{
     private String assignment;
     private String nameClass;
     private String dueDate;
-    private int completion;
-    private int priority;
+    private String completion;
+    private String priority;
     
-    public Assignment(String nameAssign, String nClass, String days, int compTime, int pri){
+    public Assignment(String nameAssign, String nClass, String days, String compTime, String pri){
         assignment = nameAssign;
         nameClass = nClass;
         dueDate = days;
@@ -44,19 +44,19 @@ public class Assignment{
         dueDate = date;
     }
     
-    public int getCompletionTime(){
+    public String getCompletionTime(){
         return completion;
     }
     
-    public void set(int time){
+    public void set(String time){
         completion = time;
     }
     
-    public int getPriority(){
+    public String getPriority(){
         return priority;
     }
     
-    public void setPriority(int pri){
+    public void setPriority(String pri){
         priority = pri;
     }
 }

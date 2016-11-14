@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.*;
 
 public class DataBase{
     
@@ -6,23 +7,19 @@ public class DataBase{
     private PreparedStatement pstmt = null;
     private String sql = null;
     private ResultSet rs = null;
+    private Connection c = null;
     
     public DataBase(){
-        //c = DriverManager.getConnection("jdbc:sqlite:inventory.db");
-        //connect();
-        ;
+        
     }
     
     
     public void createUser(String username, String name, String email, String password, int bedTime) throws SQLException {
-        Connection c = null;
         
         try {
             
             createTable(username,"ASSIGNMENT");
-            createTable(username,"EVENT");
-            
-            
+            createTable(username,"EVENT"); 
             
         } catch (Exception e){
             System.err.println( "CreateUser:" + e.getClass().getName() + ": " + e.getMessage() );
@@ -49,7 +46,6 @@ public class DataBase{
     }
     
     public void createTable(String username, String type) throws SQLException {
-        Connection c = null;
         try{
             c = connect();
             stmt = c.createStatement();
@@ -81,7 +77,6 @@ public class DataBase{
     }
     
     public void createAssignment(String name, String user, String className, String dueDate, int toCompletion, int priority) throws SQLException {
-        Connection c = null;
         try{
             c = connect();
             //stmt = c.createStatement();
@@ -109,7 +104,6 @@ public class DataBase{
     }
     
     public void createEvent(String name, String username, String days, int startTime, int endTime, String loc) throws SQLException {
-        Connection c = null;
         try{
             c = connect();
 
@@ -135,23 +129,10 @@ public class DataBase{
     
    
     
-    private Connection connect(){
-        Connection c = null;
-        try {
-            Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:inventory.db");
-            return c;
-        } catch (Exception e){
-            System.err.println("Connection:" + e.getClass() + ": " + e.getMessage());
-            System.exit(0);
-        }
-        System.out.println("Opened database successfully");
-        return c;
-    }
+    
     
      public void removeProfile(String username) throws SQLException{
-        Connection c = null;
-        System.out.println("Deleting AssignmentTable...");
+        System.out.println("Deleting " + username + "'s AssignmentTable...");
         sql = "DROP TABLE " + username + "ASSIGNMENT";
         try{
             c = connect();
@@ -162,7 +143,7 @@ public class DataBase{
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        System.out.println("Deleting EventTable...");
+        System.out.println("Deleting " + username + "'s EventTable...");
         sql = "DROP TABLE " + username + "EVENT";
         try{
             if(c == null)
@@ -174,7 +155,7 @@ public class DataBase{
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        
+        System.out.println("Deleting Profile " + username + "...");
         sql = "DELETE FROM PROFILE WHERE USERNAME = ?";
         try{
             if(c == null)
@@ -193,11 +174,9 @@ public class DataBase{
     }
     
     public void removeEvent(String name1, String username) throws SQLException{
-        display(username);
-        sql = "DELETE FROM " + username + "EVENT WHERE EVENTNAME = ?";
-        Connection c = null;
         try{
             c = connect();
+            sql = "DELETE FROM " + username + "EVENT WHERE EVENTNAME = ?";
             pstmt = c.prepareStatement(sql); 
             // set the corresponding param
             pstmt.setString(1, name1);
@@ -213,24 +192,46 @@ public class DataBase{
     }
     
     public void removeAssignment(String name1, String username) throws SQLException{
-        sql = "DELETE FROM " + username + "ASSIGNMENT WHERE ASSIGNMENTNAME = ?";
-        Connection c = null;
         try{
             c = connect();
+            sql = "DELETE FROM " + username + "ASSIGNMENT WHERE ASSIGNMENTNAME = ?";
             pstmt = c.prepareStatement(sql); 
             // set the corresponding param
             pstmt.setString(1, name1);
             // execute the delete statement
             pstmt.executeUpdate();
-//            System.out.println("hey");
             pstmt.close();
  
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
         c.close();
-        display(username);
     }
+    
+    //updates
+    
+    public void updateAssignment(String assignmentName, String newData, String user) throws SQLException{
+        try{
+            System.out.println("Updating " + assignmentName + " assignment to " + newData + " for " + user);
+            c = connect();
+            sql = "UPDATE " + user + "ASSIGNMENT " +
+                    "SET assignmentname = ? WHERE assignmentname IN (?);";
+            pstmt = c.prepareStatement(sql); 
+            // set the corresponding param
+            //pstmt.setString(1, user);
+            //pstmt.setString(2, "assignmentname");
+            pstmt.setString(1, newData);
+            pstmt.setString(2, assignmentName);
+            pstmt.executeUpdate();
+            pstmt.close();
+            
+        } catch (SQLException e) {
+            System.out.println("UdpateAssignment:" + e.getMessage());
+        }
+        c.close();
+    }
+    
+    //displays
     
     public void display(String user) throws SQLException{
         Connection c = null;
@@ -239,6 +240,9 @@ public class DataBase{
             stmt = c.createStatement();
             
             rs = stmt.executeQuery( "SELECT * FROM PROFILE;" );
+            
+            System.out.println("\nPrinting DataBase...\n");
+            System.out.println("Profile List:\n------------------------");
             while(rs.next()){
                 String username = rs.getString("username");
                 String name = rs.getString("profilename");
@@ -254,7 +258,7 @@ public class DataBase{
             }
             rs.close();
             
-            System.out.println("------------------------");
+            System.out.println("Event List:\n------------------------");
             
             rs = stmt.executeQuery( "SELECT * FROM " + user + "EVENT;" );
             while(rs.next()){
@@ -272,7 +276,7 @@ public class DataBase{
             }
             rs.close();
             
-            System.out.println("------------------------");
+            System.out.println("Assignment List:\n------------------------");
             
             rs = stmt.executeQuery( "SELECT * FROM " + user + "ASSIGNMENT;" );
             while(rs.next()){
@@ -296,6 +300,78 @@ public class DataBase{
             System.err.println( "Display:" + e.getClass().getName() + ": " + e.getMessage() );
         }
         c.close();
+    }
+    
+    public LinkedList<Assignment> getAssignmentList(String user) throws SQLException{
+        LinkedList<Assignment> assignList= new LinkedList<Assignment>();
+        try{
+            c = connect();
+            stmt = c.createStatement();
+            
+            rs = stmt.executeQuery( "SELECT * FROM " + user + "ASSIGNMENT;" );
+            
+            while(rs.next()){
+                String assignName = rs.getString("ASSIGNMENTNAME");
+                String className = rs.getString("CLASSNAME");
+                String dueDate = rs.getString("DUE");
+                String hoursLeft = rs.getString("HOURSTOCOMPLETION");
+                String pri = rs.getString("PRIORITY");
+                Assignment assign = new Assignment(assignName, className, dueDate, hoursLeft, pri);
+                assignList.addLast(assign);
+            }
+            rs.close();
+            stmt.close();
+        } catch (Exception e){
+            System.err.println( "getAssignmentList:" + e.getClass().getName() + ": " + e.getMessage() );
+        }
+        
+        c.close();
+        return assignList;
+    }
+
+    
+    public LinkedList<Event> getEventList(String user) throws SQLException{
+        LinkedList<Event> eventList= new LinkedList<Event>();
+        try{
+            c = connect();
+            stmt = c.createStatement();
+            
+            rs = stmt.executeQuery( "SELECT * FROM " + user + "EVENT;" );
+            
+            while(rs.next()){
+                String eventName = rs.getString("EVENTNAME");
+                String days = rs.getString("DAYS");
+                String start = rs.getString("START_TIME");
+                String end = rs.getString("END_TIME");
+                String loc = rs.getString("LOCATION");
+                Event eve = new Event(eventName, days, start, end, loc);
+                eventList.addLast(eve);              
+            }
+            
+            rs.close();
+            stmt.close();
+        } catch (Exception e){
+            System.err.println( "getAssignmentList:" + e.getClass().getName() + ": " + e.getMessage() );
+        }
+        
+        c.close();
+        return eventList;
+    }
+    
+    
+    
+    private Connection connect() throws SQLException{
+        Connection c = null;
+        try {
+            Class.forName("org.sqlite.JDBC");
+            c = DriverManager.getConnection("jdbc:sqlite:inventory.db");
+            return c;
+        } catch (Exception e){
+            System.err.println("Connection:" + e.getClass() + ": " + e.getMessage());
+            System.exit(0);
+        }
+        System.out.println("Opened database successfully");
+        return c;
     }
 }
 
