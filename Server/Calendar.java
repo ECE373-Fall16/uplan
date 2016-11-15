@@ -17,7 +17,7 @@ public class Calendar{
     }
     
     public String toString(){
-        return name + " " + starttime + " " + endtime + " " + location + " " + day;
+        return "Calendar: " + name + " " + starttime + " " + endtime + " " + location + " " + day;
     }
     
     public String getDay(){

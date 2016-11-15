@@ -81,8 +81,10 @@ public class HomePage {
 		System.out.println("Start time:");
 		int start = scan.nextInt();
 		System.out.println("End time:");
+		scan.nextLine();
 		int end = scan.nextInt();
 		System.out.println("Location:");
+		scan.nextLine();
 		String location = scan.nextLine();
 		
 		user.addEvent(nameEvent, days, start, end, location);

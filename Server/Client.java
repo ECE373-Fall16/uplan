@@ -4,7 +4,7 @@ import org.apache.xmlrpc.*;
 public class Client {
     
     private String username;
-    private static String SERVER_ADDR = "http://localhost:8085/RPC2";
+    private static String SERVER_ADDR = "http://localhost:8082/RPC2";
     
     public Client(){
         ;

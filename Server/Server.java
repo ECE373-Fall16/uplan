@@ -9,7 +9,7 @@ public class Server {
     private int elCounter = 0;
     private DataBase data = new DataBase();
     private LinkedList<Calendar> calendarList;
-    private static int PORT = 8085;
+    private static int PORT = 8082;
 
 
    public Vector display(String user){
@@ -17,8 +17,9 @@ public class Server {
            //data.display(user);
            System.out.println("\nPrinting list...");
            for(int k = 0; k < calendarList.size(); k++){
-               System.out.println(calendarList.get(k).toString());
+               System.out.println("[" + k + "]" + calendarList.get(k).toString());
            }
+           System.out.println();
            return new Vector();
        } catch (Exception e){
            System.err.println( "ServerDisplay: " + e.getClass().getName() + ": " + e.getMessage() );
@@ -161,59 +162,85 @@ public class Server {
             int calIndex;
             while(eventIndex < eventListSize){              //runs through eventList  
                 tempEvent = eventList.get(eventIndex);
-                tempCal = eventToCal(tempEvent);
                 
-                //for sorting compare
-                String eventDays = tempEvent.getDays();
-                String eventStart = tempEvent.getStart();
                 
-                calIndex = 0;
-                addedEvent = false;
-                if(calList.size() == 0 && eventList.size() != 0){       //first cal object
-                    System.out.println("Initial add: " + tempCal.getName());
-                    calList.add(tempCal);
-                    addedEvent = true;
-                }
-                
-                while(calIndex < eventList.size() && !addedEvent){             //runs through calList for each event in eventList until event added
+                char[] listOfDays = tempEvent.getDays().toCharArray();
+                int dayRepeats = listOfDays.length/2;             //number of times event is repeated
+                System.out.println("number of days: " + dayRepeats);
+                for(int i = 0; i < dayRepeats; i++){                    //used to make multiple objects for repeat events
+                    String thisDay = "" + listOfDays[2*i] + listOfDays[2*i+1];
+                    tempCal = eventToCal(tempEvent);
+                    tempCal.setDay(thisDay);
                     
-                    iterCal = calList.get(calIndex);        //used to get values of each calendar object
                     
-                    String calDays = iterCal.getDay();
-                    String calStart = iterCal.getStartTime();
                     
-                    int eventTime = sortInt(eventDays,eventStart);
-                    int calTime = sortInt(calDays,calStart);
-                    if(calTime >= eventTime && !addedEvent){              //add calendar event just before calTime passes eventTime
+                    System.out.println(tempCal.toString());
+                    
+                    calIndex = 0;
+                    addedEvent = false;
+                    if(calList.size() == 0 && eventList.size() != 0){       //first cal object
+                        System.out.println("Initial add: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
+                        calList.add(tempCal);
+                        addedEvent = true;
+                    }
+                    
+                    while(calIndex < calList.size() && !addedEvent){             //runs through calList for each event in eventList until event added
+                        
+                        iterCal = calList.get(calIndex);        //runs through existing calendar objects in list
+                        String calIterDays = iterCal.getDay();
+                        String calIterStart = iterCal.getStartTime();
+                        String calDays = tempCal.getDay();
+                        String calStart = tempCal.getStartTime();
+
+                        
+                        int calTime = sortInt(calDays,calStart);
+                        int calIterTime = sortInt(calIterDays,calIterStart);
+                        System.out.println("Index: " + calIndex + " calTime: " + calTime + " calIterTime " + calIterTime);
                         if(calIndex == 0){
-                            System.out.println("Adding to front: " + tempCal.getName());
-                          calList.addFirst(tempCal);
+                            if(calTime < calIterTime){
+                                System.out.println("Adding to front: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
+                                calList.addFirst(tempCal);
+                                addedEvent = true;
+                            }
+                            
                         }
-                        else{
-                            System.out.println("Adding to index before " + calIndex + ": " + tempCal.getName());
-                            calList.add(calIndex-1, tempCal);
+                        else if(calTime < calIterTime && !addedEvent){              //add calendar event just before calIter passes tempCal
+                            System.out.println("Adding before " + iterCal.getName() + ": " + tempCal.getName() + tempCal.getDay() + tempCal.getStartTime());
+                            calList.add(calIndex, tempCal);
+                            addedEvent = true;
+                        }
+                        if(calList.get(calIndex) == calList.getLast()){         //end of calList, add object at end of list
+                            System.out.println("Adding to end: " + tempCal.getName() + tempCal.getDay() + tempCal.getStartTime());
+                            calList.addLast(tempCal);
+                            addedEvent = true;
                         }
 
-                        addedEvent = true;
+                        calIndex++;
                     }
-                    if(calList.get(calIndex) == calList.getLast()){         //end of calList, add object at end of list
-                        calList.addLast(tempCal);
-                        addedEvent = true;
+                    if(addedEvent){
+                        calendarList = calList;
+                        System.out.println("added");
+                        display(user);
                     }
-                    
-                    calIndex++;
+                    System.out.println();       //line between debug prints for adding events to calendarlist
                 }
+
                 eventIndex++; 
             }
+            //displays just events in calendar list
+            //calendarList = calList;
+            //display(user);
+            
             
             //Add the assignments here//
+            //true Scheduling Algorithm Starts Here//
             int dayCnt = 0;
             int timeCnt = 1600;
             int index;
             boolean fullSchedule = false;
             while(assignmentIndex < assignmentListSize && !fullSchedule){                                              //runs through assignmentList  
                 tempAssignment = assignmentList.get(assignmentIndex);
-                //tempCal = assignmentToCal(tempAssignment);
+                
                 
                 if((assignmentIndex+1)%3 == 0){                   //3 assignments per day
                     dayCnt++;
@@ -222,22 +249,27 @@ public class Server {
                 switch (dayCnt){
                     case 0: tempCal = assignmentToCal(tempAssignment,timeCnt,"Mo");
                         index = findEndOfDay(calList, "Mo");
+                        System.out.println("Adding Assignment to Monday: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
                         calList.add(index,tempCal);
                         break;
                     case 1: tempCal = assignmentToCal(tempAssignment,timeCnt,"Tu");
                         index = findEndOfDay(calList, "Tu");
+                        System.out.println("Adding Assignment to Tuesday: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
                         calList.add(index,tempCal);
                         break;
                     case 2: tempCal = assignmentToCal(tempAssignment,timeCnt,"We");
                         index = findEndOfDay(calList, "We");
+                        System.out.println("Adding Assignment to Wednesday: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
                         calList.add(index,tempCal);
                         break;
                     case 3: tempCal = assignmentToCal(tempAssignment,timeCnt,"Th");
                         index = findEndOfDay(calList, "Th");
+                        System.out.println("Adding Assignment to Thursday: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
                         calList.add(index,tempCal);
                         break;
                     case 4: tempCal = assignmentToCal(tempAssignment,timeCnt,"Fr");
                         index = findEndOfDay(calList, "Fr");
+                        System.out.println("Adding Assignment to Friday: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
                         calList.add(index,tempCal);
                         break;
                     default: fullSchedule = true;
@@ -248,7 +280,10 @@ public class Server {
                 assignmentIndex++;
             }
             
+            //True Scheduling Algorithm Stops Here//
+            
             calendarList = calList;
+            display(user);
 
             
         } catch (Exception e){
@@ -325,6 +360,7 @@ public class Server {
             }
             if(onDay && !(cal.getDay().equals(day))){
                 returnInt = calIndex;
+                found = true;
             }
             
             calIndex++;

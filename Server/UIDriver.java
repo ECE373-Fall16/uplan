@@ -24,6 +24,7 @@ public class UIDriver {
 		while(!logout){
 			home.displayHomePage();
 			int action = scan.nextInt();
+			scan.nextLine();
 			
 			switch (action) {
 			    case 1: home.displaySchedule();
