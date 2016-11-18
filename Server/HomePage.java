@@ -14,6 +14,7 @@ public class HomePage {
 	    user = new Client(userName);
 	    user.login(userName);
 	    user.display();
+	    scan.nextLine();
 	}
 	
 	public void logout(){
@@ -32,6 +33,7 @@ public class HomePage {
 		System.out.println("6) Delete Profile");
 		System.out.println("7) Refresh Schedule");
 		System.out.println("8) Logout");
+		System.out.println("9) Exit Program");
 	}
 	/*
 	public void displaySchedule(){
@@ -44,6 +46,7 @@ public class HomePage {
 	
 	public void displaySchedule(){
 	    user.display();
+	    scan.nextLine();
 	}
 	
 	public void addAssignment(){
@@ -51,12 +54,14 @@ public class HomePage {
 		String nameAssign = scan.nextLine();
 		System.out.println("Name of Class:");
 		String nameClass = scan.nextLine();
-		System.out.println("Days to Complete Assignment:");
+		System.out.println("DueDate:");
 		String dueDate = scan.nextLine();
-		System.out.println("Estimates Time of Completion (Hours):");
+		System.out.println("Estimates Time needed for Completion (Hours):");
 		int completionTime = scan.nextInt();
+		scan.nextLine();
 		System.out.println("Priority of Assignment (1-3):");
 		int priority = scan.nextInt();
+		scan.nextLine();
 		
 		user.addAssignment(nameAssign, nameClass, dueDate, completionTime, priority);
 		//create assignment object using values
@@ -124,6 +129,25 @@ public class HomePage {
 	    System.out.println("Approximate Bedtime: ");
 	    int bedtime = scan.nextInt();
 	    client.createAccount(username, name, email, password, bedtime);
+	}
+	
+	
+	
+	//Opening Screen
+	public void openingScreen(){
+	    System.out.println("Create an Account (0) or Login (1)");
+		int login = scan.nextInt();
+		scan.nextLine();
+		if(login!=1){
+		    createProfile();
+	    }
+		System.out.println("What are your credentials?\nUserName:");
+		String userName = scan.nextLine();
+		login(userName);
+		//System.out.println("Password:");
+		//String password = scan.nextLine();
+		
+		//check to see if they are valid
 	}
 	
 }

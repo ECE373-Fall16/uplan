@@ -15,12 +15,18 @@ public class Server {
    public Vector display(String user){
        try{
            //data.display(user);
+           Vector values = new Vector();
            System.out.println("\nPrinting list...");
            for(int k = 0; k < calendarList.size(); k++){
                System.out.println("[" + k + "]" + calendarList.get(k).toString());
+               values.add(calendarList.get(k).getName());
+               values.add(calendarList.get(k).getDay());
+               values.add(calendarList.get(k).getStartTime());
+               values.add(calendarList.get(k).getEndTime());
+               values.add(calendarList.get(k).getLocation());
            }
            System.out.println();
-           return new Vector();
+           return values;
        } catch (Exception e){
            System.err.println( "ServerDisplay: " + e.getClass().getName() + ": " + e.getMessage() );
        }
@@ -137,8 +143,8 @@ public class Server {
             int assignmentListSize = assignmentList.size();
             int calendarListSize = 0;
             
-            System.out.println("eventList has " + eventList.size() + " events");
-            System.out.println("assignmentList has " + assignmentList.size() + " assignments");
+            //System.out.println("eventList has " + eventList.size() + " events");
+            //System.out.println("assignmentList has " + assignmentList.size() + " assignments");
             
             //put eventlist into calendar list sorted
             
@@ -166,7 +172,7 @@ public class Server {
                 
                 char[] listOfDays = tempEvent.getDays().toCharArray();
                 int dayRepeats = listOfDays.length/2;             //number of times event is repeated
-                System.out.println("number of days: " + dayRepeats);
+                //System.out.println("number of days: " + dayRepeats);
                 for(int i = 0; i < dayRepeats; i++){                    //used to make multiple objects for repeat events
                     String thisDay = "" + listOfDays[2*i] + listOfDays[2*i+1];
                     tempCal = eventToCal(tempEvent);
@@ -179,7 +185,7 @@ public class Server {
                     calIndex = 0;
                     addedEvent = false;
                     if(calList.size() == 0 && eventList.size() != 0){       //first cal object
-                        System.out.println("Initial add: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
+                        //System.out.println("Initial add: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
                         calList.add(tempCal);
                         addedEvent = true;
                     }
@@ -195,22 +201,22 @@ public class Server {
                         
                         int calTime = sortInt(calDays,calStart);
                         int calIterTime = sortInt(calIterDays,calIterStart);
-                        System.out.println("Index: " + calIndex + " calTime: " + calTime + " calIterTime " + calIterTime);
+                        //System.out.println("Index: " + calIndex + " calTime: " + calTime + " calIterTime " + calIterTime);
                         if(calIndex == 0){
                             if(calTime < calIterTime){
-                                System.out.println("Adding to front: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
+                                //System.out.println("Adding to front: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
                                 calList.addFirst(tempCal);
                                 addedEvent = true;
                             }
                             
                         }
                         else if(calTime < calIterTime && !addedEvent){              //add calendar event just before calIter passes tempCal
-                            System.out.println("Adding before " + iterCal.getName() + ": " + tempCal.getName() + tempCal.getDay() + tempCal.getStartTime());
+                            //System.out.println("Adding before " + iterCal.getName() + ": " + tempCal.getName() + tempCal.getDay() + tempCal.getStartTime());
                             calList.add(calIndex, tempCal);
                             addedEvent = true;
                         }
                         if(calList.get(calIndex) == calList.getLast()){         //end of calList, add object at end of list
-                            System.out.println("Adding to end: " + tempCal.getName() + tempCal.getDay() + tempCal.getStartTime());
+                            //System.out.println("Adding to end: " + tempCal.getName() + tempCal.getDay() + tempCal.getStartTime());
                             calList.addLast(tempCal);
                             addedEvent = true;
                         }
@@ -219,7 +225,7 @@ public class Server {
                     }
                     if(addedEvent){
                         calendarList = calList;
-                        System.out.println("added");
+                        //System.out.println("added");
                         display(user);
                     }
                     System.out.println();       //line between debug prints for adding events to calendarlist
@@ -249,27 +255,27 @@ public class Server {
                 switch (dayCnt){
                     case 0: tempCal = assignmentToCal(tempAssignment,timeCnt,"Mo");
                         index = findEndOfDay(calList, "Mo");
-                        System.out.println("Adding Assignment to Monday: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
+                        //System.out.println("Adding Assignment to Monday: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
                         calList.add(index,tempCal);
                         break;
                     case 1: tempCal = assignmentToCal(tempAssignment,timeCnt,"Tu");
                         index = findEndOfDay(calList, "Tu");
-                        System.out.println("Adding Assignment to Tuesday: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
+                        //System.out.println("Adding Assignment to Tuesday: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
                         calList.add(index,tempCal);
                         break;
                     case 2: tempCal = assignmentToCal(tempAssignment,timeCnt,"We");
                         index = findEndOfDay(calList, "We");
-                        System.out.println("Adding Assignment to Wednesday: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
+                        //System.out.println("Adding Assignment to Wednesday: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
                         calList.add(index,tempCal);
                         break;
                     case 3: tempCal = assignmentToCal(tempAssignment,timeCnt,"Th");
                         index = findEndOfDay(calList, "Th");
-                        System.out.println("Adding Assignment to Thursday: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
+                        //System.out.println("Adding Assignment to Thursday: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
                         calList.add(index,tempCal);
                         break;
                     case 4: tempCal = assignmentToCal(tempAssignment,timeCnt,"Fr");
                         index = findEndOfDay(calList, "Fr");
-                        System.out.println("Adding Assignment to Friday: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
+                        //System.out.println("Adding Assignment to Friday: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
                         calList.add(index,tempCal);
                         break;
                     default: fullSchedule = true;

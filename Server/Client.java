@@ -33,6 +33,23 @@ public class Client {
             params.addElement(username);
 
             Vector returnValue = (Vector)server.execute("sample.display", params);
+            Iterator iter = returnValue.iterator();
+            int calCount = 1;       //number of calendar objects
+            int paramCount = 1;         //new line after 5 parameters
+            System.out.println("Calendar Events:");
+            while(iter.hasNext()){
+                if(paramCount == 1){
+                    System.out.print("[" + calCount + "]");
+                }
+                System.out.print(iter.next() + " ");
+                if(paramCount >= 5){
+                    System.out.println();
+                    calCount++;
+                    paramCount = 0;
+                }
+                paramCount++;
+            }
+            System.out.println("--Hit 'Enter' to return to the home screen--");
           } 
           catch (Exception exception) {
              System.err.println("Client: " + exception);
