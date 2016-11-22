@@ -45,6 +45,7 @@ public class DataBase{
         c.close();
     }
     
+    
     public void createTable(String username, String type) throws SQLException {
         try{
             c = connect();
@@ -76,6 +77,7 @@ public class DataBase{
         c.close();
     }
     
+    
     public void createAssignment(String name, String user, String className, String dueDate, int toCompletion, int priority) throws SQLException {
         try{
             c = connect();
@@ -103,6 +105,7 @@ public class DataBase{
         c.close();
     }
     
+    
     public void createEvent(String name, String username, String days, int startTime, int endTime, String loc) throws SQLException {
         try{
             c = connect();
@@ -127,11 +130,8 @@ public class DataBase{
         c.close();
     }
     
-   
     
-    
-    
-     public void removeProfile(String username) throws SQLException{
+    public void removeProfile(String username) throws SQLException{
         System.out.println("Deleting " + username + "'s AssignmentTable...");
         sql = "DROP TABLE " + username + "ASSIGNMENT";
         try{
@@ -143,8 +143,10 @@ public class DataBase{
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+        
         System.out.println("Deleting " + username + "'s EventTable...");
         sql = "DROP TABLE " + username + "EVENT";
+        
         try{
             if(c == null)
                 c = connect();
@@ -155,8 +157,10 @@ public class DataBase{
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+        
         System.out.println("Deleting Profile " + username + "...");
         sql = "DELETE FROM PROFILE WHERE USERNAME = ?";
+        
         try{
             if(c == null)
                 c = connect();
@@ -172,6 +176,7 @@ public class DataBase{
         }
         c.close();
     }
+    
     
     public void removeEvent(String name1, String username) throws SQLException{
         try{
@@ -191,6 +196,7 @@ public class DataBase{
         c.close();
     }
     
+    
     public void removeAssignment(String name1, String username) throws SQLException{
         try{
             c = connect();
@@ -209,13 +215,11 @@ public class DataBase{
     }
     
     //updates
-    
     public void updateAssignment(String assignmentName, String newData, String user) throws SQLException{
         try{
             System.out.println("Updating " + assignmentName + " assignment to " + newData + " for " + user);
             c = connect();
-            sql = "UPDATE " + user + "ASSIGNMENT " +
-                    "SET assignmentname = ? WHERE assignmentname IN (?);";
+            sql = "UPDATE " + user + "ASSIGNMENT " +"SET assignmentname = ? WHERE assignmentname IN (?);";
             pstmt = c.prepareStatement(sql); 
             // set the corresponding param
             //pstmt.setString(1, user);
@@ -232,7 +236,6 @@ public class DataBase{
     }
     
     //displays
-    
     public void display(String user) throws SQLException{
         Connection c = null;
         try{
@@ -302,6 +305,7 @@ public class DataBase{
         c.close();
     }
     
+    
     public LinkedList<Assignment> getAssignmentList(String user) throws SQLException{
         LinkedList<Assignment> assignList= new LinkedList<Assignment>();
         try{
@@ -357,7 +361,6 @@ public class DataBase{
         c.close();
         return eventList;
     }
-    
     
     
     private Connection connect() throws SQLException{

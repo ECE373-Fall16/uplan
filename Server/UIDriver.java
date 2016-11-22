@@ -6,9 +6,9 @@ public class UIDriver {
 	    HomePage home = new HomePage();
         Scanner scan = new Scanner(System.in);
         
-        home.openingScreen();
+        boolean finish = home.openingScreen();
+        home.displaySchedule();
 		//HomePage home = new HomePage();
-		boolean finish = false;
 		while(!finish){
 			home.displayHomePage();
 			int action = scan.nextInt();
@@ -30,7 +30,7 @@ public class UIDriver {
 			    case 7: home.refreshSchedule();
 				    break;
 			    case 8: home.logout();
-			        home.openingScreen();
+			        finish = home.openingScreen();
 			        break;
 			    case 9: finish = true;
 			        break;

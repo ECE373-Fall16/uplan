@@ -33,27 +33,14 @@ public class Server {
         return new Vector();
    }
    
+   
    public Vector addAssignment(String name, String username, String className, String date, int comp, int pri){
-       //Assignment a = new Assignment(name, className, date, comp, pri);
-       //System.out.println("Assignment name is: " + a.getAssignName());
-       //send this to the database
-       
-       //add to list in server(volatile data)
-       //assignmentList.add(a);
        try{
-       data.createAssignment(name, username, className, date, comp, pri);
-   }catch( Exception e ){
-       System.err.println( "ServerAddAssign: " + e.getClass().getName() + ": " + e.getMessage() );
-   }
-
-
-       //alCounter++;
-       //System.out.println(alCounter + " Assignments\n" + "Contents of assignment list are now: " + assignmentList);
-       /*for(Assignment element : assignmentList){
-           System.out.println(element.toString());
+           data.createAssignment(name, username, className, date, comp, pri);
+       }catch( Exception e ){
+           System.err.println( "ServerAddAssign: " + e.getClass().getName() + ": " + e.getMessage() );
        }
-       System.out.println();*/
-       
+      
        //return as vector
        Vector returnValue = new Vector();
        returnValue.add(name);
@@ -64,34 +51,35 @@ public class Server {
        return returnValue;
    }
    
+   
    public Vector addEvent(String name, String username, String days, int startTime, int endTime, String loc){
-       //Event e = new Event(name, days, startTime, endTime, loc);
-       //System.out.println(e.getEventName());
        //send to database
-       try{
+        try{
             data.createEvent(name,username,days,startTime,endTime,loc);
-       }catch( Exception e ){
+        }catch( Exception e ){
             System.err.println( "ServerAddEvent:" + e.getClass().getName() + ": " + e.getMessage() );
         }
  
         //return vector
-       Vector returnValue = new Vector();
-       returnValue.add(name);
-       returnValue.add(days);
-       returnValue.add(startTime);
-       returnValue.add(endTime);
-       returnValue.add(loc);
-       return returnValue;
+        Vector returnValue = new Vector();
+        returnValue.add(name);
+        returnValue.add(days);
+        returnValue.add(startTime);
+        returnValue.add(endTime);
+        returnValue.add(loc);
+        return returnValue;
    }
    
-   public Vector createAccount(String username, String name, String email, String password, int bedtime){
-       try{
+   
+    public Vector createAccount(String username, String name, String email, String password, int bedtime){
+        try{
             data.createUser(username, name, email, password, bedtime);
-       } catch (Exception e){
+        } catch (Exception e){
             System.err.println( "ServerCreateAccount:" + e.getClass().getName() + ": " + e.getMessage() );
         }
-       return new Vector();
-   }
+        return new Vector();
+    }
+
 
     public Vector deleteEvent(String name, String username){
         try{
@@ -102,6 +90,7 @@ public class Server {
         return new Vector();
     }
     
+    
     public Vector deleteAssignment(String name, String username){
         try{
             data.removeAssignment(name, username);
@@ -110,6 +99,7 @@ public class Server {
         }
         return new Vector();
     }
+    
     
     public Vector deleteAccount(String username){
         try{
@@ -143,9 +133,6 @@ public class Server {
             int assignmentListSize = assignmentList.size();
             int calendarListSize = 0;
             
-            //System.out.println("eventList has " + eventList.size() + " events");
-            //System.out.println("assignmentList has " + assignmentList.size() + " assignments");
-            
             //put eventlist into calendar list sorted
             
             //for assignment sort end of classes for day
@@ -169,7 +156,6 @@ public class Server {
             while(eventIndex < eventListSize){              //runs through eventList  
                 tempEvent = eventList.get(eventIndex);
                 
-                
                 char[] listOfDays = tempEvent.getDays().toCharArray();
                 int dayRepeats = listOfDays.length/2;             //number of times event is repeated
                 //System.out.println("number of days: " + dayRepeats);
@@ -177,9 +163,7 @@ public class Server {
                     String thisDay = "" + listOfDays[2*i] + listOfDays[2*i+1];
                     tempCal = eventToCal(tempEvent);
                     tempCal.setDay(thisDay);
-                    
-                    
-                    
+                
                     System.out.println(tempCal.toString());
                     
                     calIndex = 0;
@@ -198,7 +182,6 @@ public class Server {
                         String calDays = tempCal.getDay();
                         String calStart = tempCal.getStartTime();
 
-                        
                         int calTime = sortInt(calDays,calStart);
                         int calIterTime = sortInt(calIterDays,calIterStart);
                         //System.out.println("Index: " + calIndex + " calTime: " + calTime + " calIterTime " + calIterTime);
@@ -236,7 +219,6 @@ public class Server {
             //displays just events in calendar list
             //calendarList = calList;
             //display(user);
-            
             
             //Add the assignments here//
             //true Scheduling Algorithm Starts Here//
@@ -300,6 +282,7 @@ public class Server {
         
     }
     
+    
     private int sortInt(String day, String start){
         int dayVal;
         if(day.equals("Su")){
@@ -330,6 +313,7 @@ public class Server {
         return startVal+dayVal;
     }
     
+    
     public Calendar eventToCal(Event eve){
         String name = eve.getEventName();
         String start = eve.getStart();
@@ -338,9 +322,9 @@ public class Server {
         String loc = eve.getLocation();
         Calendar c = new Calendar(name, start, end, day, loc);
         
-        return c;
-        
+        return c; 
     }
+    
     
     public Calendar assignmentToCal(Assignment ass, int startTime, String dayOW){
         String name = ass.getAssignName();
@@ -352,6 +336,7 @@ public class Server {
         
         return c;
     }
+    
     
     public int findEndOfDay(LinkedList<Calendar> calList, String day){
         int calIndex = 0;
@@ -373,17 +358,16 @@ public class Server {
         }
         return returnInt;
     }
-   
     
 
-   public static void main (String [] args){
-   
-      try {
-         WebServer server = new WebServer(PORT);
-         server.addHandler("sample", new Server());
-         server.start();
-      } catch (Exception exception){
-         System.err.println("JavaServer: " + exception);
-      }
-   }
+    public static void main (String [] args){
+        try {
+            WebServer server = new WebServer(PORT);
+            server.addHandler("sample", new Server());
+            server.start();
+        } catch (Exception exception){
+            System.err.println("JavaServer: " + exception);
+        }
+    }
+
 }

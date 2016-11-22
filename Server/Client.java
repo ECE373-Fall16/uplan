@@ -9,22 +9,28 @@ public class Client {
     public Client(){
         ;
     }
+    
+    
     public Client(String user){
         username = user;
     }
     
+    
     public String getUserName(){
         return username;
     }
+    
     
     public void login(String user){
         username = user;
         System.out.println("You are logged in as: " + username);
     }
     
+    
     public void logout(){
         username = null;
     }
+    
     
     public void display(){
         try {
@@ -55,6 +61,7 @@ public class Client {
              System.err.println("Client: " + exception);
       } 
     }
+    
     
     public void addEvent(String name, String day, int startTime, int endTime, String location){
         try {
@@ -95,6 +102,7 @@ public class Client {
           }        
     }
     
+    
     public void deleteEvent(String name){
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
@@ -109,6 +117,7 @@ public class Client {
           } 
     }
     
+    
     public void deleteAssignment(String name){
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
@@ -122,6 +131,7 @@ public class Client {
              System.err.println("Client: " + exception);
           } 
     }
+    
     
     public void deleteAccount(String user){
         try {
@@ -138,6 +148,7 @@ public class Client {
               username = null;
           }
     }
+    
     
     public void updateAssignment(String name, String newName){
         try {
@@ -231,48 +242,12 @@ public class Client {
                 //SEND TO THE USER
               
         
-    }
-
-    
-    /*public void getSchedule(){
-        try {
-            XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
-            Vector params = new Vector();
-            char[] eventname = name.toCharArray();
-            for(int i = 0; i<eventname.length; i++)
-                params.addElement(eventname[i]);
-        
-            Vector returnValue = (Vector)server.execute("sample.add", params);
-        	int size = ((Vector)returnValue).size();
-        	Integer intValue = (Integer)returnValue.get(0); 
-        	Double  doubleValue = (Double)returnValue.get(1);
-            String  stringValue = (String)returnValue.get(2);
-                
-            } catch (Exception exception) {
-                System.err.println("Client: " + exception);
-            }
-              
-            Integer size = (Integer)returnValue.get(0);
-            Calender calObject = new CalenderObject();
-            CalenderObject[] calArray = new calArray[size];
-              
-              //calObject((String)returnValue.get(0),(String)returnValue.get(1),(String)returnValue.get(2));
-              
-             String name = (String)returnValue.get(0);
-              String time = (String)returnValue.get(1);
-              String location = (String)returnValue.get(2);
-                       
-              String[] object = new String[]; 
-    
-              
-                //SEND TO THE USER 
     }*/
    
    
-   
-   public void createAccount(String user, String name, String email, String password, int bedtime){
+    public void createAccount(String user, String name, String email, String password, int bedtime){
        //username = user;
-       try {
+        try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
             params.addElement(user);
@@ -286,5 +261,5 @@ public class Client {
           catch (Exception exception) {
              System.err.println("Client: " + exception);
           }        
-   }
+    }
 }

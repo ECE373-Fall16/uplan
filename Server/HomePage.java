@@ -13,8 +13,6 @@ public class HomePage {
 	public void login(String userName){
 	    user = new Client(userName);
 	    user.login(userName);
-	    user.display();
-	    scan.nextLine();
 	}
 	
 	public void logout(){
@@ -134,12 +132,15 @@ public class HomePage {
 	
 	
 	//Opening Screen
-	public void openingScreen(){
-	    System.out.println("Create an Account (0) or Login (1)");
+	public boolean openingScreen(){
+	    System.out.println("Create an Account (0), Login (1) or Exit Program(2)");
 		int login = scan.nextInt();
 		scan.nextLine();
-		if(login!=1){
+		if(login==0){
 		    createProfile();
+	    }
+	    if(login==2){
+	        return(true);          //exit program
 	    }
 		System.out.println("What are your credentials?\nUserName:");
 		String userName = scan.nextLine();
@@ -148,6 +149,8 @@ public class HomePage {
 		//String password = scan.nextLine();
 		
 		//check to see if they are valid
+		
+		return false;         //dont exit program
 	}
 	
 }
