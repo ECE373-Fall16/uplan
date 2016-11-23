@@ -20,7 +20,7 @@ public class HomePage {
 	}
 	
 	public void displayHomePage(){
-	    user.display();
+	    //user.display();
 	    System.out.println("\nUser: " + user.getUserName());
 		System.out.println("Select one option from below:");
 		System.out.println("1) Display Schedule");
@@ -44,7 +44,6 @@ public class HomePage {
 	
 	public void displaySchedule(){
 	    user.display();
-	    scan.nextLine();
 	}
 	
 	public void addAssignment(){
@@ -112,7 +111,7 @@ public class HomePage {
 	
 	public void refreshSchedule(){
 		//displaySchedule();
-		user.printLists();
+		user.schedule();
 	}
 	
 	public void createProfile(){

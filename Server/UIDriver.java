@@ -6,10 +6,10 @@ public class UIDriver {
 	    HomePage home = new HomePage();
         Scanner scan = new Scanner(System.in);
         
-        boolean finish = home.openingScreen();
+        boolean exiting = home.openingScreen();
         home.displaySchedule();
 		//HomePage home = new HomePage();
-		while(!finish){
+		while(!exiting){
 			home.displayHomePage();
 			int action = scan.nextInt();
 			scan.nextLine();
@@ -30,9 +30,9 @@ public class UIDriver {
 			    case 7: home.refreshSchedule();
 				    break;
 			    case 8: home.logout();
-			        finish = home.openingScreen();
+			        exiting = home.openingScreen();
 			        break;
-			    case 9: finish = true;
+			    case 9: exiting = true;
 			        break;
 			    default: System.out.println("Invalid input, please select one of the listed options.");
 				    break;

@@ -19,7 +19,7 @@ public class Driver{
         r.addEvent("Circuits","MoWeFr",1330,1430,"location");
         r.addEvent("EnginWrit","TuTh",1330,1430,"location");
         r.addEvent("ECE3732","TuTh",930,1130,"location");
-        r.printLists();
+        r.schedule();
         System.out.println("Account \"steve\" made and initiated");
         //r.deleteEvent("second");
         //r.deleteAssignment("secondAssign");//*/
