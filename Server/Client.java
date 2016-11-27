@@ -47,7 +47,7 @@ public class Client {
     }
     
     
-    public void addEvent(String name, String day, int startTime, int endTime, String location){
+    public void addEvent(String name, String day, String startTime, String endTime, String location){
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
@@ -67,7 +67,7 @@ public class Client {
     }
     
     
-    public void addAssignment(String name, String classname, String dueDate, int priority, int hours){
+    public void addAssignment(String name, String classname, String dueDate, String priority, String hours){
         try {
             
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
@@ -134,27 +134,52 @@ public class Client {
     }
     
     
-    public void updateAssignment(String name, String newName){
+    public void updateAssignment(String assignmentName, String type, String newName){
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
-            params.addElement(name);
+            params.addElement(assignmentName);
+            params.addElement(type);
             params.addElement(newName);
             params.addElement(username);
-            /*
-            params.addElement(className);
-            params.addElement(dueDate);
-            String comp = Integer.toString(toCompletion);
-            params.addElement(comp);
-            String pri = Integer.toString(priority);
-            params.addElement(pri);
-            //*/
             Vector returnValue = (Vector)server.execute("sample.updateAssignment", params);
           } 
           catch (Exception exception) {
              System.err.println("Client: " + exception);
           }
     }
+    
+    
+    public void updateEvent(String eventName, String type, String newName){
+        try {
+            XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
+            Vector params = new Vector();
+            params.addElement(eventName);
+            params.addElement(type);
+            params.addElement(newName);
+            params.addElement(username);
+            Vector returnValue = (Vector)server.execute("sample.updateEvent", params);
+          } 
+          catch (Exception exception) {
+             System.err.println("Client: " + exception);
+          }
+    }
+    
+    
+    public void updateProfile(String type, String newName){
+        try {
+            XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
+            Vector params = new Vector();
+            params.addElement(type);
+            params.addElement(newName);
+            params.addElement(username);
+            Vector returnValue = (Vector)server.execute("sample.updateProfile", params);
+          } 
+          catch (Exception exception) {
+             System.err.println("Client: " + exception);
+          }
+    }
+    
     
     public void schedule(){         //Creates schedule and returns list
         try{
@@ -166,6 +191,7 @@ public class Client {
             System.err.println("Client: " + e);
         }
     }
+    
     
     private void vectorToCalList(Vector calList){       //going to be used to parse vector lists into Calendar object list or 2d array
         Iterator iter = calList.iterator();
@@ -186,70 +212,8 @@ public class Client {
         }
     }
     
-    /*public void editEvent(String name){
-        try {
-            XmlRpcClient server = new XmlRpcClient("http://localhost:8080/RPC2"); 
-            Vector params = new Vector();;
-            params.addElement(eventname[i]);
-             Vector returnValue = (Vector)server.execute("sample.add", params);
-        	    int size = ((Vector)returnValue).size();
-        	    Integer intValue = (Integer)returnValue.get(0); 
-        	    Double  doubleValue = (Double)returnValue.get(1);
-                String  stringValue = (String)returnValue.get(2);
-        
-              } 
-              catch (Exception exception) {
-                  System.err.println("Client: " + exception);
-              }
-              Vector eventinfo = (Vector)server.execute("//servername.function", params);
-              Iterator itr = v.iterator();
-              String name = (String)returnValue.get(0);
-              String day = (String)returnValue.get(1);
-              String start = (String)returnValue.get(2);
-              String end = (String)returnValue.get(3);
-              String location = (String)returnValue.get(4);
-             
-                //SEND TO THE USER
-              
-            
-        
-    }
-     
-    public void editAssignment(String name){
-        try {
-                 XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
-                 Vector params = new Vector();
-                 char[] eventname = name.toCharArray();
-                 for(int i = 0; i<eventname.length; i++){
-                     params.addElement(eventname[i]);
-                 }
-        
-                Vector returnValue = (Vector)server.execute("sample.add", params);
-        	    int size = ((Vector)returnValue).size();
-        	    Integer intValue = (Integer)returnValue.get(0); 
-        	    Double  doubleValue = (Double)returnValue.get(1);
-                String  stringValue = (String)returnValue.get(2);
-        
-              } catch (Exception exception) {
-                 System.err.println("Client: " + exception);
-              }
-               
-              Vector assignmentinfo = (Vector)server.execute("//servername.function", params);
-              Iterator itr = v.iterator();
-              String name = (String)returnValue.get(0);
-              String classname = (String)returnValue.get(1);
-              String days = (String)returnValue.get(2);
-              String duration = (String)returnValue.get(3);
-              String priority = (String)returnValue.get(4);
-             
-                //SEND TO THE USER
-              
-        
-    }*/
-   
    
     public void createAccount(String user, String name, String email, String password, int bedtime){
-       //username = user;
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();

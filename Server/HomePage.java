@@ -60,7 +60,7 @@ public class HomePage {
 		int priority = scan.nextInt();
 		scan.nextLine();
 		
-		user.addAssignment(nameAssign, nameClass, dueDate, completionTime, priority);
+		//user.addAssignment(nameAssign, nameClass, dueDate, completionTime, priority);
 		//create assignment object using values
 		
 	}
@@ -72,7 +72,7 @@ public class HomePage {
 		//find assignment
 		
 		String nameAssign = "newDueDate";
-		user.updateAssignment(assignmentName,nameAssign);
+		//user.updateAssignment(assignmentName,nameAssign);
 	}
 	
 	public void addEvent(){
@@ -89,7 +89,7 @@ public class HomePage {
 		scan.nextLine();
 		String location = scan.nextLine();
 		
-		user.addEvent(nameEvent, days, start, end, location);
+		//user.addEvent(nameEvent, days, start, end, location);
 		//create event object using values
 	}
 	

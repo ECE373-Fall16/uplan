@@ -1,6 +1,8 @@
 CLASSPATH=./lib/commons-codec-1.3.jar:./lib/xmlrpc-2.0.1.jar:./lib/sqlite-jdbc-3.14.2.1.jar:.
 
-all: Server.class UIDriver.class Driver.class 
+all: Server.class UIDriver.class Driver.class
+
+start: update installJDK installJRE
 
 driver: cleandriver Driver.class rundriver
 
@@ -62,4 +64,13 @@ cleandriver:
 
 clean:
 	rm *.class
+
+update:
+	sudo apt-get update
+
+installJRE:
+	sudo apt-get install default-jdk
+
+installJDK:
+	sudo apt-get install default-jre
 

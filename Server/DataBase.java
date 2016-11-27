@@ -78,20 +78,20 @@ public class DataBase{
     }
     
     
-    public void createAssignment(String name, String user, String className, String dueDate, int toCompletion, int priority) throws SQLException {
+    public void createAssignment(String name, String user, String className, String dueDate, String toCompletion, String priority) throws SQLException {
         try{
             c = connect();
             //stmt = c.createStatement();
             sql = "INSERT INTO " + user + "ASSIGNMENT VALUES(?,?,?,?,?)";
             pstmt = c.prepareStatement(sql);
             
-            String comp = Integer.toString(toCompletion);
-            String pri = Integer.toString(priority);
+            //String comp = Integer.toString(toCompletion);
+            //String pri = Integer.toString(priority);
             pstmt.setString(1,name);
             pstmt.setString(2,className);
             pstmt.setString(3,dueDate);
-            pstmt.setString(4,comp);
-            pstmt.setString(5,pri);
+            pstmt.setString(4,toCompletion);
+            pstmt.setString(5,priority);
             pstmt.executeUpdate();
             pstmt.close();
             
@@ -106,19 +106,19 @@ public class DataBase{
     }
     
     
-    public void createEvent(String name, String username, String days, int startTime, int endTime, String loc) throws SQLException {
+    public void createEvent(String name, String username, String days, String startTime, String endTime, String loc) throws SQLException {
         try{
             c = connect();
 
-            String start = Integer.toString(startTime);
-            String end = Integer.toString(endTime);
+            //String start = Integer.toString(startTime);
+            //String end = Integer.toString(endTime);
             sql = "INSERT INTO " + username + "EVENT VALUES(?,?,?,?,?)";
             pstmt = c.prepareStatement(sql);
             
             pstmt.setString(1,name);
             pstmt.setString(2,days);
-            pstmt.setString(3,start);
-            pstmt.setString(4,end);
+            pstmt.setString(3,startTime);
+            pstmt.setString(4,endTime);
             pstmt.setString(5,loc);
             pstmt.executeUpdate();
             pstmt.close();
@@ -215,25 +215,60 @@ public class DataBase{
     }
     
     //updates
-    public void updateAssignment(String assignmentName, String newData, String user) throws SQLException{
+    public void updateAssignment(String assignmentName, String type, String newData, String user) throws SQLException{
         try{
             System.out.println("Updating " + assignmentName + " assignment to " + newData + " for " + user);
             c = connect();
-            sql = "UPDATE " + user + "ASSIGNMENT " +"SET assignmentname = ? WHERE assignmentname IN (?);";
+            sql = "UPDATE " + user + "ASSIGNMENT " + "SET " + type+ " = ? where ASSIGNMENTNAME=?;";
             pstmt = c.prepareStatement(sql); 
-            // set the corresponding param
-            //pstmt.setString(1, user);
-            //pstmt.setString(2, "assignmentname");
+            //pstmt.setString(1, type);
             pstmt.setString(1, newData);
             pstmt.setString(2, assignmentName);
             pstmt.executeUpdate();
             pstmt.close();
             
         } catch (SQLException e) {
-            System.out.println("UdpateAssignment:" + e.getMessage());
+            System.out.println("UpdateAssignment:" + e.getMessage());
         }
         c.close();
     }
+    
+    
+    public void updateEvent(String eventName, String type, String newData, String user) throws SQLException{
+        try{
+            System.out.println("Updating " + eventName + " event to " + newData + " for " + user);
+            c = connect();
+            sql = "UPDATE " + user + "EVENT " + "SET " + type + " = ? where EVENTNAME=?;";
+            pstmt = c.prepareStatement(sql); 
+            pstmt.setString(1, newData);
+            pstmt.setString(2, eventName);
+            pstmt.executeUpdate();
+            pstmt.close();
+            
+        } catch (SQLException e) {
+            System.out.println("UpdateAssignment:" + e.getMessage());
+        }
+        c.close();
+    }
+    
+    
+    public void updateProfile(String type, String newData, String user) throws SQLException{
+        try{
+            System.out.println("Updating " + user + " profile to " + newData + " for " + user);
+            c = connect();
+            sql = "UPDATE PROFILE " + "SET " + type + " = ? where USERNAME=?;";
+            pstmt = c.prepareStatement(sql); 
+            pstmt.setString(1, newData);
+            pstmt.setString(2, user);
+            pstmt.executeUpdate();
+            pstmt.close();
+            
+        } catch (SQLException e) {
+            System.out.println("UpdateAssignment:" + e.getMessage());
+        }
+        c.close();
+    }
+    
     
     //displays
     public void display(String user) throws SQLException{

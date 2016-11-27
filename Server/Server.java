@@ -34,7 +34,7 @@ public class Server {
    }
    
    
-   public Vector addAssignment(String name, String username, String className, String date, int comp, int pri){
+   public Vector addAssignment(String name, String username, String className, String date, String comp, String pri){
        try{
            data.createAssignment(name, username, className, date, comp, pri);
        }catch( Exception e ){
@@ -52,7 +52,7 @@ public class Server {
    }
    
    
-   public Vector addEvent(String name, String username, String days, int startTime, int endTime, String loc){
+   public Vector addEvent(String name, String username, String days, String startTime, String endTime, String loc){
        //send to database
         try{
             data.createEvent(name,username,days,startTime,endTime,loc);
@@ -111,14 +111,35 @@ public class Server {
     }
     
     
-    public Vector updateAssignment(String name, String newName, String user){
+    public Vector updateAssignment(String assignmentName, String type, String newName, String user){
         try{
-            data.updateAssignment(name,newName,user);
+            data.updateAssignment(assignmentName, type, newName, user);
         } catch (Exception e){
             System.err.println( "UpdateAssignment:" + e.getClass().getName() + ": " + e.getMessage() );
         }
         return new Vector();
     }
+    
+    
+    public Vector updateEvent(String eventName, String type, String newName, String user){
+        try{
+            data.updateEvent(eventName, type, newName, user);
+        } catch (Exception e){
+            System.err.println( "UpdateEvent:" + e.getClass().getName() + ": " + e.getMessage() );
+        }
+        return new Vector();
+    }
+    
+    
+    public Vector updateProfile(String type, String newName, String user){
+        try{
+            data.updateProfile(type, newName, user);
+        } catch (Exception e){
+            System.err.println( "UpdateProfile:" + e.getClass().getName() + ": " + e.getMessage() );
+        }
+        return new Vector();
+    }
+    
     
     
     public Vector scheduleAlgo(String user) throws SQLException{
