@@ -11,7 +11,6 @@ public class Server {
     private LinkedList<Calendar> calendarList;
     private static int PORT = 8082;
 
-<<<<<<< HEAD
 
    public Vector display(String user){
        try{
@@ -32,23 +31,6 @@ public class Server {
            System.err.println( "ServerDisplay: " + e.getClass().getName() + ": " + e.getMessage() );
        }
         return new Vector();
-=======
-Assingment a;
-Event e;
-int h;
-   public Vector add(String identifier, String nameA, String nameC, int date, int comp, int pri){  //Assignment
-      System.out.println("calling add Assignment");
-      if(identifier.equals("aa")){
-          addAssignment(nameA, nameC, date, comp, pri);
-      }
-      Vector returnValue = new Vector();
-      
-      
-      //returnValue.addElement(new String(name));
-      //returnValue.addElement(new Double(y));
-      //returnValue.addElement(new String("hello world"));
-      return returnValue;
->>>>>>> master
    }
    
    
@@ -87,13 +69,6 @@ int h;
         returnValue.add(loc);
         return returnValue;
    }
-<<<<<<< HEAD
-=======
-   
-   
-
-   public static void main (String [] args){
->>>>>>> master
    
    
     public Vector createAccount(String username, String name, String email, String password, int bedtime){
