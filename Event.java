@@ -2,16 +2,22 @@ import java.util.*;
 
 public class Event{
     
-    String eventName;
-    String days;
-    int dayTime;
-    String location;
+    private String eventName;
+    private String days;
+    private String startTime;
+    private String endTime;
+    private String location;
     
-    public Event(String name, String d, int time, String loc){
+    public Event(String name, String d, String start, String end, String loc){
         eventName = name;
         days = d;
-        dayTime = time;
+        startTime = start;
+        endTime = end;
         location = loc;
+    }
+    
+    public String toString(){
+        return eventName + " " + days + " " + startTime + " " + endTime + " " + location;
     }
     
     public String getEventName(){
@@ -30,12 +36,20 @@ public class Event{
         days = d;
     }
     
-    public int getTime(){
-        return dayTime;
+    public String getStart(){
+        return startTime;
     }
     
-    public void setTime(int time){
-        dayTime = time;
+    public String getEnd(){
+        return endTime;
+    }
+    
+    public void setStart(String time){
+        startTime = time;
+    }
+    
+    public void setEnd(String time){
+        endTime = time;
     }
     
     public String getLocation(){

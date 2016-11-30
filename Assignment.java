@@ -2,18 +2,22 @@ import java.util.*;
 
 public class Assignment{
     
-    String assignment;
-    String nameClass;
-    int dueDate;
-    int completion;
-    int priority;
+    private String assignment;
+    private String nameClass;
+    private String dueDate;
+    private String completion;
+    private String priority;
     
-    public Assignment(String nameAssign, String nClass, int days, int compTime, int pri){
+    public Assignment(String nameAssign, String nClass, String days, String compTime, String pri){
         assignment = nameAssign;
         nameClass = nClass;
         dueDate = days;
         completion = compTime;
         priority = pri;
+    }
+    
+    public String toString(){
+        return assignment + " " + nameClass + " " + dueDate + " " + completion + " " + priority;
     }
     
     public String getAssignName(){
@@ -32,27 +36,27 @@ public class Assignment{
         nameClass = name;
     }
     
-    public int getDueDate(){
+    public String getDueDate(){
         return dueDate;
     }
     
-    public void setDueDate(int date){
+    public void setDueDate(String date){
         dueDate = date;
     }
     
-    public int getCompletionTime(){
+    public String getCompletionTime(){
         return completion;
     }
     
-    public void set(int time){
+    public void set(String time){
         completion = time;
     }
     
-    public int getPriority(){
+    public String getPriority(){
         return priority;
     }
     
-    public void setPriority(int pri){
+    public void setPriority(String pri){
         priority = pri;
     }
 }
