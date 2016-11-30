@@ -6,6 +6,7 @@ public class Client {
     private String username;
     private static String SERVER_ADDR = "http://localhost:8082/RPC2";
     
+    
     public Client(){
         ;
     }
