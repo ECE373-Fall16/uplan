@@ -7,6 +7,9 @@ public class Server {
     int alCounter = 0;
     int elCounter = 0;
 
+Assingment a;
+Event e;
+int h;
    public Vector add(String identifier, String nameA, String nameC, int date, int comp, int pri){  //Assignment
       System.out.println("calling add Assignment");
       if(identifier.equals("aa")){
@@ -59,6 +62,8 @@ public class Server {
        }
        System.out.println();
    }
+   
+   
 
    public static void main (String [] args){
    
