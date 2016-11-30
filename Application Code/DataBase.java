@@ -20,6 +20,7 @@ public class DataBase{
             
             createTable(username,"ASSIGNMENT");
             createTable(username,"EVENT"); 
+            createTable(username,"SCHEDULE");
             
         } catch (Exception e){
             System.err.println( "CreateUser:" + e.getClass().getName() + ": " + e.getMessage() );
@@ -66,6 +67,14 @@ public class DataBase{
                 "HOURSTOCOMPLETION TEXT NOT NULL," +
                 "PRIORITY TEXT NOT NULL);";
             }
+            if(type.equals("SCHEDULE")){
+                sql = "CREATE TABLE " + username + "SCHEDULE(" +
+                "NAME TEXT PRIMARY KEY NOT NULL," +
+                "DAY TEXT NOT NULL," + 
+                "START_TIME TEXT NOT NULL," +
+                "END_TIME TEXT NOT NULL," +
+                "LOCATION TEXT NOT NULL);";
+            }
             stmt.executeUpdate(sql);
             stmt.close();
             
@@ -106,7 +115,7 @@ public class DataBase{
     }
     
     
-    public void createEvent(String name, String username, String days, String startTime, String endTime, String loc) throws SQLException {
+    public void createEvent(String name, String username, String repeatDays, String startTime, String endTime, String loc) throws SQLException {
         try{
             c = connect();
 
@@ -116,7 +125,7 @@ public class DataBase{
             pstmt = c.prepareStatement(sql);
             
             pstmt.setString(1,name);
-            pstmt.setString(2,days);
+            pstmt.setString(2,repeatDays);
             pstmt.setString(3,startTime);
             pstmt.setString(4,endTime);
             pstmt.setString(5,loc);
@@ -268,6 +277,29 @@ public class DataBase{
         }
         c.close();
     }
+    
+    
+    public void clearSchedule(String user) throws SQLException{
+        try{
+            System.out.println("Clearing " + user + " schedule");
+            c.connect();
+            sql = "DELETE FROM " + user + "SCHEDULE;";
+            stmt = c.createStatement();
+            stmt.executeUpdate(sql);
+            stmt.close();
+        } catch (SQLException e) {
+            System.out.println("Clear schedule:" + e.getMessage());
+        }
+    }
+    
+    
+    /*public void saveSchedule(String user) throws SQLException{
+        try{
+            c.connect();
+            clearSchedule(user);
+            System.out.println("Saving schedule");
+        }
+    }*/
     
     
     //displays
