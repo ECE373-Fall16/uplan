@@ -11,5 +11,9 @@ public class Calendar{
         time = time1;
         location = loc;
     }
+    
+    public String getName(){
+        return name;
+    }
 
 }
