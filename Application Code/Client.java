@@ -51,18 +51,19 @@ public class Client {
     }
     
     
-    public void display(){
+    public LinkedList<CalendarEvent> display(){
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR);
             Vector params = new Vector();
             params.addElement(username);
 
             Vector returnValue = (Vector)server.execute("sample.display", params);
-            vectorToCalList(returnValue);
+            LinkedList<CalendarEvent> calList = vectorToCalList(returnValue);
           } 
           catch (Exception exception) {
              System.err.println("Client: " + exception);
       } 
+      return calList;
     }
     
     
@@ -200,35 +201,40 @@ public class Client {
     }
     
     
-    public void schedule(){         //Creates schedule and returns list
+    public LinkedList<CalendarEvent> schedule(){         //Creates schedule and returns list
         try{
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
             params.addElement(username);
             Vector returnValue = (Vector)server.execute("sample.scheduleAlgo", params);
+            LinkedList<CalendarEvent> calList = vectorToCalList(returnValue);
         } catch (Exception e){
             System.err.println("Client: " + e);
         }
     }
     
     
-    private void vectorToCalList(Vector calList){       //going to be used to parse vector lists into Calendar object list or 2d array
-        Iterator iter = calList.iterator();
+    private LinkedList<CalendarEvent> vectorToCalList(Vector vectorList){       //going to be used to parse vector lists into Calendar object list or 2d array
+        Iterator iter = vectorList.iterator();
         int calCount = 1;       //number of calendar objects
-        int paramCount = 1;         //new line after 5 parameters
-        System.out.println("CalendarList:");
+        CalendarEvent temp;
+        LinkedList<CalendarEvent> calList = new LinkedList<CalendarEvent>;
+        String name;
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL,DateFormat.FULL);
+        df.setTimeZone(TimeZone.getTimeZone("EST"));
+        Date start;
+        Date end;
+        String loc;
         while(iter.hasNext()){
-            if(paramCount == 1){
-                System.out.print("[" + calCount + "]");
-            }
-            System.out.print(iter.next() + " ");
-            if(paramCount >= 5){
-                System.out.println();
-                calCount++;
-                paramCount = 0;
-            }
-            paramCount++;
+            name = iter.next();
+            start = df.parse(iter.next());
+            end = df.parse(iter.next());
+            loc = iter.next();
+            temp = new CalendarEvent(name, start, end, loc);
+            calList.add(temp);
+            calCount++;
         }
+        return calList;
     }
     
    

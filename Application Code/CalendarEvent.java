@@ -1,31 +1,22 @@
 import java.util.*;
 
-public class Calendar{
+public class CalendarEvent{
     
     private String name;
-    private String starttime;
-    private String endtime;
+    private Date starttime;
+    private Date endtime;
     private String location;
     private String day;
     
-    public Calendar(String name1, String start, String end, String day1, String loc){
+    public CalendarEvent(String name1, Date start, Date end, String loc){
         name = name1;
         starttime = start;
         endtime = end;
         location = loc;
-        day = day1;
     }
     
     public String toString(){
         return "Calendar: " + name + " " + starttime + " " + endtime + " " + location + " " + day;
-    }
-    
-    public String getDay(){
-        return day;
-    }
-    
-    public void setDay(String day1){
-        day = day1;
     }
     
     public String getName(){
@@ -36,19 +27,19 @@ public class Calendar{
         name = name1;
     }
     
-    public String getStartTime(){
+    public Date getStartTime(){
         return starttime;
     }
     
-    public void setStartTime(String time){
+    public void setStartTime(Date time){
         starttime = time;
     }
     
-    public String getEndTime(){
+    public Date getEndTime(){
         return endtime;
     }
     
-    public void setEndTime(String time){
+    public void setEndTime(Date time){
         endtime = time;
     }
     
