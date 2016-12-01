@@ -303,7 +303,7 @@ public class DataBase{
     public void clearSchedule(String user) throws SQLException{
         try{
             System.out.println("Clearing " + user + " schedule");
-            c.connect();
+            c = connect();
             sql = "DELETE FROM " + user + "SCHEDULE;";
             stmt = c.createStatement();
             stmt.executeUpdate(sql);
