@@ -87,6 +87,27 @@ public class DataBase{
     }
     
     
+    public int valUser(String username, String password) throws SQLException{
+        try{
+            c = connect();
+            stmt = c.createStatement();
+            rs = stmt.executeQuery( "SELECT * FROM PROFILE;" );
+            while (rs.next()){
+                String curUser = rs.getString("USERNAME");
+                String curPass = rs.getString("PASSWORD");
+                if(curUser.equals(username) && curPass.equals(password)){
+                    return 1;
+                }
+            }
+            return 0;
+            
+        } catch(Exception e){
+            System.err.println( "ValidateUser:" + e.getClass().getName() + ": " + e.getMessage() );
+            return 0;
+        }
+        return 0;
+    }
+    
     public void createAssignment(String name, String user, String className, String dueDate, String toCompletion, String priority) throws SQLException {
         try{
             c = connect();

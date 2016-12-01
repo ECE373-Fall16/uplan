@@ -24,12 +24,29 @@ public class Client {
     }
     
     
-    public void login(String user){
-        username = user;
-        System.out.println("You are logged in as: " + username);
+    public int login(String user, String pass){
+        try{
+            XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
+            Vector params = new Vector();
+            params.addElement(user);
+            params.addElement(password);
+            Vector returnValue = (Vector)server.execute("sample.validateUser", params);
+            if(returnValue.get(0) == 1){
+                username = user;
+                System.out.println("You are logged in as: " + username);
+                return 1;
+            }
+            else{
+                System.out.println("Invalid Username or Password");
+                return 0;
+            }
+        } catch (Exception e){
+            System.err.println("Login: " + exception);
+        }
+        return 0;
     }
     
-    
+    //https://github.com/ECE373-Fall16/uplan.git
     public void logout(){
         username = null;
     }
