@@ -46,7 +46,6 @@ public class Client {
         return 0;
     }
     
-    //https://github.com/ECE373-Fall16/uplan.git
     public void logout(){
         username = null;
     }
