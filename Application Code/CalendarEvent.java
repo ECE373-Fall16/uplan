@@ -6,7 +6,6 @@ public class CalendarEvent{
     private Date starttime;
     private Date endtime;
     private String location;
-    private String day;
     
     public CalendarEvent(String name1, Date start, Date end, String loc){
         name = name1;
@@ -16,7 +15,7 @@ public class CalendarEvent{
     }
     
     public String toString(){
-        return "Calendar: " + name + " " + starttime + " " + endtime + " " + location + " " + day;
+        return "Calendar: " + name + " " + starttime + " " + endtime + " " + location;
     }
     
     public String getName(){

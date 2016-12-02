@@ -1,6 +1,7 @@
 import org.apache.xmlrpc.*;
 import java.util.*;
 import java.sql.*;
+import java.text.*;
 
 public class Server {
     //private LinkedList<Assignment> assignmentList = new LinkedList<Assignment>();
@@ -8,8 +9,9 @@ public class Server {
     private int alCounter = 0;
     private int elCounter = 0;
     private DataBase data = new DataBase();
-    private LinkedList<Calendar> calendarList;
+    private LinkedList<CalendarEvent> calendarList;
     private static int PORT = 8082;
+    private DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
 
 
    public Vector display(String user){
@@ -20,9 +22,8 @@ public class Server {
            for(int k = 0; k < calendarList.size(); k++){
                System.out.println("[" + k + "]" + calendarList.get(k).toString());
                values.add(calendarList.get(k).getName());
-               values.add(calendarList.get(k).getDay());
-               values.add(calendarList.get(k).getStartTime());
-               values.add(calendarList.get(k).getEndTime());
+               values.add(df.format(calendarList.get(k).getStartTime()));
+               values.add(df.format(calendarList.get(k).getEndTime()));
                values.add(calendarList.get(k).getLocation());
            }
            System.out.println();
@@ -34,13 +35,13 @@ public class Server {
    }
    
    public Vector validateUser(String username, String password){
+       Vector returnValue = new Vector();
        try{
            int validation = data.valUser(username, password);
+           returnValue.add(validation);
        } catch (Exception e){
            System.err.println( "Validate: " + e.getClass().getName() + ": " + e.getMessage() );
        }
-       Vector returnValue = new Vector();
-       returnValue.add(validation);
        return returnValue;
    }
    
@@ -152,7 +153,7 @@ public class Server {
     }
     
     
-    
+    /*
     public Vector scheduleAlgo(String user) throws SQLException{
         try{
             LinkedList<Event> eventList = new LinkedList<Event>();
@@ -313,30 +314,30 @@ public class Server {
         return new Vector();
         
     }
-    
-    
+    */
+    /*
     private int sortInt(String day, String start){
         int dayVal;
         if(day.equals("Su")){
             dayVal = 0;
         }
         else if(day.equals("Mo")){
-            dayVal = 10000;
+            dayVal = 1;
         }
         else if(day.equals("Tu")){
-            dayVal = 20000;
+            dayVal = 2;
         }
         else if(day.equals("We")){
-            dayVal = 30000;
+            dayVal = 3;
         }
         else if(day.equals("Th")){
-            dayVal = 40000;
+            dayVal = 4;
         }
         else if(day.equals("Fr")){
-            dayVal = 50000;
+            dayVal = 5;
         }
         else if(day.equals("Sa")){
-            dayVal = 60000;
+            dayVal = 6;
         }
         else{
             dayVal = 0;//default Sunday
@@ -344,32 +345,79 @@ public class Server {
         int startVal = Integer.parseInt(start);
         return startVal+dayVal;
     }
+    */
+   
+   public void scheduleAlgo(String username) throws SQLException{
+        try{
+            LinkedList<Event> tempEventList = new LinkedList<Event>();
+            tempEventList = data.getEventList(username);
+            LinkedList<Event> eventList = new LinkedList<Event>();
+            ListIterator iter1 = tempEventList.listIterator();
+            int index1;
+            Event temp;
+            while(iter1.hasNext()){
+                index1 = iter1.nextIndex();
+                temp = tempEventList.get(index1);
+                if(!temp.getDays().equals("")){
+                    LinkedList<Event> splitEvents = splitEvent(temp);
+                    ListIterator splitIter = splitEvents.listIterator();
+                    int index2;
+                    while(splitIter.hasNext()){
+                        index2 = splitIter.nextIndex();
+                        eventList.addLast(tempEventList.get(index2));
+                    }
+
+                }
+                else
+                    eventList.add(temp);
+                iter1.next();
+            }
+            
+            ListIterator iter2 = eventList.listIterator();
+            int index3;
+            while(iter2.hasNext()){
+                index3 = iter2.nextIndex();
+                CalendarEvent calTemp = eventToCal(tempEventList.get(index3));
+                calendarList.add(calTemp);
+            }
+        
+        } catch (Exception e){
+            System.err.println( "schedule algo:" + e.getClass().getName() + ": " + e.getMessage() );
+        }    
+    }
+    
+    public LinkedList<Event> splitEvent(Event eve){
+        LinkedList<Event> sepEvents = new LinkedList<Event>(); 
+        return sepEvents;
+    }
     
     
-    public Calendar eventToCal(Event eve){
+    public CalendarEvent eventToCal(Event eve){
         String name = eve.getEventName();
-        String start = eve.getStart();
-        String end = eve.getEnd();
-        String day = eve.getDays();
+        java.util.Date start = eve.getStart();
+        java.util.Date end = eve.getEnd();
         String loc = eve.getLocation();
-        Calendar c = new Calendar(name, start, end, day, loc);
+        CalendarEvent c = new CalendarEvent(name, start, end, loc);
         
         return c; 
     }
     
     
-    public Calendar assignmentToCal(Assignment ass, int startTime, String dayOW){
-        String name = ass.getAssignName();
-        String start = Integer.toString(startTime);
-        String end = Integer.toString(startTime+100);
-        String day = dayOW;
-        String loc = "ASSIGNMENT";
-        Calendar c = new Calendar(name,start,end,day,loc);
-        
+    public CalendarEvent assignmentToCal(Assignment ass, String startTime, String endTime) throws ParseException{
+        CalendarEvent c = null;
+        try{
+            String name = ass.getAssignName();
+            java.util.Date start = df.parse(startTime);
+            java.util.Date end = df.parse(endTime);
+            String loc = "ASSIGNMENT";
+            c = new CalendarEvent(name,start,end,loc);
+        } catch (Exception e){
+            System.err.println( "assigntocal:" + e.getClass().getName() + ": " + e.getMessage() );
+        }
         return c;
     }
     
-    
+    /*
     public int findEndOfDay(LinkedList<Calendar> calList, String day){
         int calIndex = 0;
         int returnInt = 0;
@@ -390,6 +438,7 @@ public class Server {
         }
         return returnInt;
     }
+    */
     
 
     public static void main (String [] args){
