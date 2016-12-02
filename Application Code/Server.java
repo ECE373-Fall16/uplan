@@ -152,202 +152,8 @@ public class Server {
         return new Vector();
     }
     
-    
-    /*
-    public Vector scheduleAlgo(String user) throws SQLException{
-        try{
-            LinkedList<Event> eventList = new LinkedList<Event>();
-            LinkedList<Assignment> assignmentList = new LinkedList<Assignment>();
-            LinkedList<Calendar> calList = new LinkedList<Calendar>();
-            eventList = data.getEventList(user);
-            assignmentList = data.getAssignmentList(user);
-            
-            int eventListSize = eventList.size();
-            int assignmentListSize = assignmentList.size();
-            int calendarListSize = 0;
-            
-            //put eventlist into calendar list sorted
-            
-            //for assignment sort end of classes for day
-            int suEnd = 1600;
-            int moEnd = 1600;
-            int tuEnd = 1600;
-            int weEnd = 1600;
-            int thEnd = 1600;
-            int frEnd = 1600;
-            int saEnd = 1600;
-            
-            int eventIndex=0;
-            int assignmentIndex=0;
-            Event tempEvent;
-            Assignment tempAssignment;
-            Calendar iterCal;
-            Calendar tempCal;
-            boolean addedEvent;
-            boolean addedAssignment;
-            int calIndex;
-            while(eventIndex < eventListSize){              //runs through eventList  
-                tempEvent = eventList.get(eventIndex);
-                
-                char[] listOfDays = tempEvent.getDays().toCharArray();
-                int dayRepeats = listOfDays.length/2;             //number of times event is repeated
-                //System.out.println("number of days: " + dayRepeats);
-                for(int i = 0; i < dayRepeats; i++){                    //used to make multiple objects for repeat events
-                    String thisDay = "" + listOfDays[2*i] + listOfDays[2*i+1];
-                    tempCal = eventToCal(tempEvent);
-                    tempCal.setDay(thisDay);
-                
-                    System.out.println(tempCal.toString());
-                    
-                    calIndex = 0;
-                    addedEvent = false;
-                    if(calList.size() == 0 && eventList.size() != 0){       //first cal object
-                        //System.out.println("Initial add: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
-                        calList.add(tempCal);
-                        addedEvent = true;
-                    }
-                    
-                    while(calIndex < calList.size() && !addedEvent){             //runs through calList for each event in eventList until event added
-                        
-                        iterCal = calList.get(calIndex);        //runs through existing calendar objects in list
-                        String calIterDays = iterCal.getDay();
-                        String calIterStart = iterCal.getStartTime();
-                        String calDays = tempCal.getDay();
-                        String calStart = tempCal.getStartTime();
-
-                        int calTime = sortInt(calDays,calStart);
-                        int calIterTime = sortInt(calIterDays,calIterStart);
-                        //System.out.println("Index: " + calIndex + " calTime: " + calTime + " calIterTime " + calIterTime);
-                        if(calIndex == 0){
-                            if(calTime < calIterTime){
-                                //System.out.println("Adding to front: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
-                                calList.addFirst(tempCal);
-                                addedEvent = true;
-                            }
-                            
-                        }
-                        else if(calTime < calIterTime && !addedEvent){              //add calendar event just before calIter passes tempCal
-                            //System.out.println("Adding before " + iterCal.getName() + ": " + tempCal.getName() + tempCal.getDay() + tempCal.getStartTime());
-                            calList.add(calIndex, tempCal);
-                            addedEvent = true;
-                        }
-                        if(calList.get(calIndex) == calList.getLast()){         //end of calList, add object at end of list
-                            //System.out.println("Adding to end: " + tempCal.getName() + tempCal.getDay() + tempCal.getStartTime());
-                            calList.addLast(tempCal);
-                            addedEvent = true;
-                        }
-
-                        calIndex++;
-                    }
-                    if(addedEvent){
-                        calendarList = calList;
-                        //System.out.println("added");
-                        display(user);
-                    }
-                    System.out.println();       //line between debug prints for adding events to calendarlist
-                }
-
-                eventIndex++; 
-            }
-            //displays just events in calendar list
-            //calendarList = calList;
-            //display(user);
-            
-            //Add the assignments here//
-            //true Scheduling Algorithm Starts Here//
-            int dayCnt = 0;
-            int timeCnt = 1600;
-            int index;
-            boolean fullSchedule = false;
-            while(assignmentIndex < assignmentListSize && !fullSchedule){                                              //runs through assignmentList  
-                tempAssignment = assignmentList.get(assignmentIndex);
-                
-                
-                if((assignmentIndex+1)%3 == 0){                   //3 assignments per day
-                    dayCnt++;
-                    timeCnt = 1600;
-                }
-                switch (dayCnt){
-                    case 0: tempCal = assignmentToCal(tempAssignment,timeCnt,"Mo");
-                        index = findEndOfDay(calList, "Mo");
-                        //System.out.println("Adding Assignment to Monday: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
-                        calList.add(index,tempCal);
-                        break;
-                    case 1: tempCal = assignmentToCal(tempAssignment,timeCnt,"Tu");
-                        index = findEndOfDay(calList, "Tu");
-                        //System.out.println("Adding Assignment to Tuesday: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
-                        calList.add(index,tempCal);
-                        break;
-                    case 2: tempCal = assignmentToCal(tempAssignment,timeCnt,"We");
-                        index = findEndOfDay(calList, "We");
-                        //System.out.println("Adding Assignment to Wednesday: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
-                        calList.add(index,tempCal);
-                        break;
-                    case 3: tempCal = assignmentToCal(tempAssignment,timeCnt,"Th");
-                        index = findEndOfDay(calList, "Th");
-                        //System.out.println("Adding Assignment to Thursday: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
-                        calList.add(index,tempCal);
-                        break;
-                    case 4: tempCal = assignmentToCal(tempAssignment,timeCnt,"Fr");
-                        index = findEndOfDay(calList, "Fr");
-                        //System.out.println("Adding Assignment to Friday: " + tempCal.getName() + " " + tempCal.getDay() + " " + tempCal.getStartTime());
-                        calList.add(index,tempCal);
-                        break;
-                    default: fullSchedule = true;
-                        break;
-                }
-                
-                timeCnt = timeCnt + 200;
-                assignmentIndex++;
-            }
-            
-            //True Scheduling Algorithm Stops Here//
-            
-            calendarList = calList;
-            display(user);
-
-            
-        } catch (Exception e){
-            System.err.println( "schedule algo:" + e.getClass().getName() + ": " + e.getMessage() );
-        }
- 
-        return new Vector();
-        
-    }
-    */
-    /*
-    private int sortInt(String day, String start){
-        int dayVal;
-        if(day.equals("Su")){
-            dayVal = 0;
-        }
-        else if(day.equals("Mo")){
-            dayVal = 1;
-        }
-        else if(day.equals("Tu")){
-            dayVal = 2;
-        }
-        else if(day.equals("We")){
-            dayVal = 3;
-        }
-        else if(day.equals("Th")){
-            dayVal = 4;
-        }
-        else if(day.equals("Fr")){
-            dayVal = 5;
-        }
-        else if(day.equals("Sa")){
-            dayVal = 6;
-        }
-        else{
-            dayVal = 0;//default Sunday
-        }
-        int startVal = Integer.parseInt(start);
-        return startVal+dayVal;
-    }
-    */
    
-   public void scheduleAlgo(String username) throws SQLException{
+    public void scheduleAlgo(String username) throws SQLException{
         try{
             LinkedList<Event> tempEventList = new LinkedList<Event>();
             tempEventList = data.getEventList(username);
@@ -386,6 +192,7 @@ public class Server {
         }    
     }
     
+    
     public LinkedList<Event> splitEvent(Event eve){
         LinkedList<Event> sepEvents = new LinkedList<Event>();
         String repeatDays = eve.getDays();
@@ -400,22 +207,181 @@ public class Server {
             tempDays[1] = days[counter++];
              
             String dayOfWeek = new String(tempDays);
-            if(dayOfWeek.equals("Su"))
-                dayOfWeek = "Sunday";
-            else if(dayOfWeek.equals("Mo"))
-                dayOfWeek = "Monday";
-            else if(dayOfWeek.equals("Tu"))
-                dayOfWeek = "Tuesday";
-            else if(dayOfWeek.equals("We"))
-                dayOfWeek = "Wednesday";
-            else if(dayOfWeek.equals("Th"))
-                dayOfWeek = "Thursday";
-            else if(dayOfWeek.equals("Fr"))
-                dayOfWeek = "Friday";
-            else if(dayOfWeek.equals("Sa"))
-                dayOfWeek = "Saturday";
+            int dayNum;
+            int weekOfYear;
+            int eventStartTimeHour;
+            int eventStartTimeMin;
+            int eventEndTimeHour;
+            int eventEndTimeMin;
+            Date startTime;
+            Date endTime;
             
-            //Event splitEvent = new Event(eve.getName(), "", )
+            //create calendar objects based on current date, start date, end date
+            Date currentDate = c.getTime();
+            Calendar currentCal = Calendar.getInstance();
+            Calendar startCal = Calendar.getInstance();
+            Calendar endCal = Calendar.getInstance();
+            currentCal.setTime(currentDate);
+            startCal.setTime(eve.getStart());
+            endCal.setTime(eve.getEnd());
+            
+            weekOfYear = startCal.get(Calendar.WEEK_OF_YEAR);
+            eventStartTimeHour = startCal.get(Calendar.HOUR_OF_DAY);
+            eventStartTimeMin = startCal.get(Calendar.MINUTE);
+            eventEndTimeHour = endCal.get(Calendar.HOUR_OF_DAY);
+            eventEndTimeMin = endCal.get(Calendar.MINUTE);
+            
+            Calendar tempStart = currentCal;
+            Calendar tempEnd = currentCal;
+            
+            if(dayOfWeek.equals("Su")){
+                
+                tempStart.set(Calendar.DAY_OF_WEEK, 1);
+                tempEnd.set(Calendar.DAY_OF_WEEK, 1);
+                tempStart.set(Calendar.HOUR_OF_DAY, eventStartTimeHour);
+                tempStart.set(Calendar.MINUTE, eventStartTimeMin);                
+                tempEnd.set(Calendar.HOUR_OF_DAY, eventEndTimeHour);
+                tempEnd.set(Calendar.MINUTE, eventEndTimeMin);
+                
+                startTime = tempStart.getTime();
+                endTime = tempEnd.getTime();
+                
+                Event week1 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
+                sepEvent.add(week1);
+                
+                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                
+                Event week2 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
+                sepEvent.add(week1);
+                
+            }
+            
+            else if(dayOfWeek.equals("Mo")){
+                tempStart.set(Calendar.DAY_OF_WEEK, 2);
+                tempEnd.set(Calendar.DAY_OF_WEEK, 2);
+                tempStart.set(Calendar.HOUR_OF_DAY, eventStartTimeHour);
+                tempStart.set(Calendar.MINUTE, eventStartTimeMin);                
+                tempEnd.set(Calendar.HOUR_OF_DAY, eventEndTimeHour);
+                tempEnd.set(Calendar.MINUTE, eventEndTimeMin);
+                
+                startTime = tempStart.getTime();
+                endTime = tempEnd.getTime();
+                
+                Event week1 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
+                sepEvent.add(week1);
+                
+                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                
+                Event week2 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
+                sepEvent.add(week1);
+            }
+            
+            else if(dayOfWeek.equals("Tu")){
+                tempStart.set(Calendar.DAY_OF_WEEK, 3);
+                tempEnd.set(Calendar.DAY_OF_WEEK, 3);
+                tempStart.set(Calendar.HOUR_OF_DAY, eventStartTimeHour);
+                tempStart.set(Calendar.MINUTE, eventStartTimeMin);                
+                tempEnd.set(Calendar.HOUR_OF_DAY, eventEndTimeHour);
+                tempEnd.set(Calendar.MINUTE, eventEndTimeMin);
+                
+                startTime = tempStart.getTime();
+                endTime = tempEnd.getTime();
+                
+                Event week1 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
+                sepEvent.add(week1);
+                
+                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                
+                Event week2 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
+                sepEvent.add(week1);
+            }
+            
+            else if(dayOfWeek.equals("We")){
+                tempStart.set(Calendar.DAY_OF_WEEK, 4);
+                tempEnd.set(Calendar.DAY_OF_WEEK, 4);
+                tempStart.set(Calendar.HOUR_OF_DAY, eventStartTimeHour);
+                tempStart.set(Calendar.MINUTE, eventStartTimeMin);                
+                tempEnd.set(Calendar.HOUR_OF_DAY, eventEndTimeHour);
+                tempEnd.set(Calendar.MINUTE, eventEndTimeMin);
+                
+                startTime = tempStart.getTime();
+                endTime = tempEnd.getTime();
+                
+                Event week1 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
+                sepEvent.add(week1);
+                
+                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                
+                Event week2 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
+                sepEvent.add(week1);                
+            }
+            
+            else if(dayOfWeek.equals("Th")){
+                tempStart.set(Calendar.DAY_OF_WEEK, 5);
+                tempEnd.set(Calendar.DAY_OF_WEEK, 5);
+                tempStart.set(Calendar.HOUR_OF_DAY, eventStartTimeHour);
+                tempStart.set(Calendar.MINUTE, eventStartTimeMin);                
+                tempEnd.set(Calendar.HOUR_OF_DAY, eventEndTimeHour);
+                tempEnd.set(Calendar.MINUTE, eventEndTimeMin);
+                
+                startTime = tempStart.getTime();
+                endTime = tempEnd.getTime();
+                
+                Event week1 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
+                sepEvent.add(week1);
+                
+                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                
+                Event week2 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
+                sepEvent.add(week1);
+            }
+            
+            else if(dayOfWeek.equals("Fr")){
+                tempStart.set(Calendar.DAY_OF_WEEK, 6);
+                tempEnd.set(Calendar.DAY_OF_WEEK, 6);
+                tempStart.set(Calendar.HOUR_OF_DAY, eventStartTimeHour);
+                tempStart.set(Calendar.MINUTE, eventStartTimeMin);                
+                tempEnd.set(Calendar.HOUR_OF_DAY, eventEndTimeHour);
+                tempEnd.set(Calendar.MINUTE, eventEndTimeMin);
+                
+                startTime = tempStart.getTime();
+                endTime = tempEnd.getTime();
+                
+                Event week1 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
+                sepEvent.add(week1);
+                
+                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                
+                Event week2 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
+                sepEvent.add(week1);
+            }
+            
+            else if(dayOfWeek.equals("Sa")){
+                tempStart.set(Calendar.DAY_OF_WEEK, 7);
+                tempEnd.set(Calendar.DAY_OF_WEEK, 7);
+                tempStart.set(Calendar.HOUR_OF_DAY, eventStartTimeHour);
+                tempStart.set(Calendar.MINUTE, eventStartTimeMin);                
+                tempEnd.set(Calendar.HOUR_OF_DAY, eventEndTimeHour);
+                tempEnd.set(Calendar.MINUTE, eventEndTimeMin);
+                
+                startTime = tempStart.getTime();
+                endTime = tempEnd.getTime();
+                
+                Event week1 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
+                sepEvent.add(week1);
+                
+                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                
+                Event week2 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
+                sepEvent.add(week1);
+            }
         
         }
         return sepEvents;
@@ -446,29 +412,6 @@ public class Server {
         }
         return c;
     }
-    
-    /*
-    public int findEndOfDay(LinkedList<Calendar> calList, String day){
-        int calIndex = 0;
-        int returnInt = 0;
-        boolean onDay = false;
-        boolean found = false;
-        Calendar cal;
-        while(calIndex < calList.size() && !found){
-            cal = calList.get(calIndex);
-            if(cal.getDay().equals(day)){
-                onDay = true;
-            }
-            if(onDay && !(cal.getDay().equals(day))){
-                returnInt = calIndex;
-                found = true;
-            }
-            
-            calIndex++;
-        }
-        return returnInt;
-    }
-    */
     
 
     public static void main (String [] args){
