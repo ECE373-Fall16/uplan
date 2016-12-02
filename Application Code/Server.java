@@ -193,12 +193,13 @@ public class Server {
     }
     
     
-    public LinkedList<Event> splitEvent(Event eve){
+    public LinkedList<Event> splitEvent(Event eve) throws ParseException{
         LinkedList<Event> sepEvents = new LinkedList<Event>();
         String repeatDays = eve.getDays();
         char[] days = repeatDays.toCharArray();
         char tempDays[] = new char[2];
         int size = days.length;
+        df.setTimeZone(TimeZone.getTimeZone("EST"));
                 
         int counter = 0;
         int tempIndex = 0;
@@ -213,12 +214,15 @@ public class Server {
             int eventStartTimeMin;
             int eventEndTimeHour;
             int eventEndTimeMin;
-            Date startTime;
-            Date endTime;
+            java.util.Date startTime;
+            java.util.Date endTime;
             
             //create calendar objects based on current date, start date, end date
-            Date currentDate = c.getTime();
             Calendar currentCal = Calendar.getInstance();
+            java.util.Date currentDate = currentCal.getTime();
+            String tempDate = df.format(currentDate);
+            currentDate = df.parse(tempDate);
+            
             Calendar startCal = Calendar.getInstance();
             Calendar endCal = Calendar.getInstance();
             currentCal.setTime(currentDate);
@@ -246,14 +250,14 @@ public class Server {
                 startTime = tempStart.getTime();
                 endTime = tempEnd.getTime();
                 
-                Event week1 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
-                sepEvent.add(week1);
+                Event week1 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
+                sepEvents.add(week1);
                 
                 tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
                 tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
                 
-                Event week2 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
-                sepEvent.add(week1);
+                Event week2 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
+                sepEvents.add(week1);
                 
             }
             
@@ -268,14 +272,14 @@ public class Server {
                 startTime = tempStart.getTime();
                 endTime = tempEnd.getTime();
                 
-                Event week1 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
-                sepEvent.add(week1);
+                Event week1 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
+                sepEvents.add(week1);
                 
                 tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
                 tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
                 
-                Event week2 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
-                sepEvent.add(week1);
+                Event week2 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
+                sepEvents.add(week1);
             }
             
             else if(dayOfWeek.equals("Tu")){
@@ -289,14 +293,14 @@ public class Server {
                 startTime = tempStart.getTime();
                 endTime = tempEnd.getTime();
                 
-                Event week1 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
-                sepEvent.add(week1);
+                Event week1 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
+                sepEvents.add(week1);
                 
                 tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
                 tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
                 
-                Event week2 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
-                sepEvent.add(week1);
+                Event week2 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
+                sepEvents.add(week1);
             }
             
             else if(dayOfWeek.equals("We")){
@@ -310,14 +314,14 @@ public class Server {
                 startTime = tempStart.getTime();
                 endTime = tempEnd.getTime();
                 
-                Event week1 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
-                sepEvent.add(week1);
+                Event week1 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
+                sepEvents.add(week1);
                 
                 tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
                 tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
                 
-                Event week2 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
-                sepEvent.add(week1);                
+                Event week2 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
+                sepEvents.add(week1);                
             }
             
             else if(dayOfWeek.equals("Th")){
@@ -331,14 +335,14 @@ public class Server {
                 startTime = tempStart.getTime();
                 endTime = tempEnd.getTime();
                 
-                Event week1 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
-                sepEvent.add(week1);
+                Event week1 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
+                sepEvents.add(week1);
                 
                 tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
                 tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
                 
-                Event week2 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
-                sepEvent.add(week1);
+                Event week2 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
+                sepEvents.add(week1);
             }
             
             else if(dayOfWeek.equals("Fr")){
@@ -352,14 +356,14 @@ public class Server {
                 startTime = tempStart.getTime();
                 endTime = tempEnd.getTime();
                 
-                Event week1 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
-                sepEvent.add(week1);
+                Event week1 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
+                sepEvents.add(week1);
                 
                 tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
                 tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
                 
-                Event week2 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
-                sepEvent.add(week1);
+                Event week2 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
+                sepEvents.add(week1);
             }
             
             else if(dayOfWeek.equals("Sa")){
@@ -373,14 +377,14 @@ public class Server {
                 startTime = tempStart.getTime();
                 endTime = tempEnd.getTime();
                 
-                Event week1 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
-                sepEvent.add(week1);
+                Event week1 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
+                sepEvents.add(week1);
                 
                 tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
                 tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
                 
-                Event week2 = new Event(eve.getName(), startTime, endTime, eve.getLocation());
-                sepEvent.add(week1);
+                Event week2 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
+                sepEvents.add(week1);
             }
         
         }
