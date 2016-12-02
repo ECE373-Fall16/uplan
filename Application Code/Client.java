@@ -49,6 +49,23 @@ public class Client {
         username = null;
     }
     
+    public void createAccount(String user, String name, String email, String password, int bedtime){
+        try {
+            XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
+            Vector params = new Vector();
+            params.addElement(user);
+            params.addElement(name);
+            params.addElement(email);
+            params.addElement(password);
+            params.addElement(bedtime);
+  
+            Vector returnValue = (Vector)server.execute("sample.createAccount", params);
+          } 
+          catch (Exception exception) {
+             System.err.println("Client: " + exception);
+          }        
+    }
+    
     
     public LinkedList<CalendarEvent> display(){
         LinkedList<CalendarEvent> calList = null;
@@ -239,21 +256,4 @@ public class Client {
         return calList;
     }
     
-   
-    public void createAccount(String user, String name, String email, String password, int bedtime){
-        try {
-            XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
-            Vector params = new Vector();
-            params.addElement(user);
-            params.addElement(name);
-            params.addElement(email);
-            params.addElement(password);
-            params.addElement(bedtime);
-  
-            Vector returnValue = (Vector)server.execute("sample.createAccount", params);
-          } 
-          catch (Exception exception) {
-             System.err.println("Client: " + exception);
-          }        
-    }
 }

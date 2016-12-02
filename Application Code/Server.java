@@ -387,7 +387,37 @@ public class Server {
     }
     
     public LinkedList<Event> splitEvent(Event eve){
-        LinkedList<Event> sepEvents = new LinkedList<Event>(); 
+        LinkedList<Event> sepEvents = new LinkedList<Event>();
+        String repeatDays = eve.getDays();
+        char[] days = repeatDays.toCharArray();
+        char tempDays[] = new char[2];
+        int size = days.length;
+                
+        int counter = 0;
+        int tempIndex = 0;
+        while (counter < size){
+            tempDays[0] = days[counter++];
+            tempDays[1] = days[counter++];
+             
+            String dayOfWeek = new String(tempDays);
+            if(dayOfWeek.equals("Su"))
+                dayOfWeek = "Sunday";
+            else if(dayOfWeek.equals("Mo"))
+                dayOfWeek = "Monday";
+            else if(dayOfWeek.equals("Tu"))
+                dayOfWeek = "Tuesday";
+            else if(dayOfWeek.equals("We"))
+                dayOfWeek = "Wednesday";
+            else if(dayOfWeek.equals("Th"))
+                dayOfWeek = "Thursday";
+            else if(dayOfWeek.equals("Fr"))
+                dayOfWeek = "Friday";
+            else if(dayOfWeek.equals("Sa"))
+                dayOfWeek = "Saturday";
+            
+            //Event splitEvent = new Event(eve.getName(), "", )
+        
+        }
         return sepEvents;
     }
     
