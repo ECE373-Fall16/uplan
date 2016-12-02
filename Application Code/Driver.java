@@ -7,7 +7,7 @@ public class Driver{
         //*
         r.deleteAccount("steve");
         r.createAccount("steve", "2", "3", "4",10);
-        r.login("steve");
+        r.login("steve", "ahhahaha");
         r.addAssignment("Hw1","classname", "dueDate", "2", "4325");
         r.addAssignment("Hw2","classname", "dueDate", "1", "4325");
         r.addAssignment("Hw3","classname", "dueDate", "20", "4325");

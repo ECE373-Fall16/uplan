@@ -3,21 +3,21 @@ import java.util.*;
 public class Event{
     
     private String eventName;
-    private String days;
-    private String startTime;
-    private String endTime;
+    private String repeatedDays;
+    private Date startTime;
+    private Date endTime;
     private String location;
     
-    public Event(String name, String d, String start, String end, String loc){
+    public Event(String name, String d, Date start, Date end, String loc){
         eventName = name;
-        days = d;
+        repeatedDays = d;
         startTime = start;
         endTime = end;
         location = loc;
     }
     
     public String toString(){
-        return eventName + " " + days + " " + startTime + " " + endTime + " " + location;
+        return eventName + " " + repeatedDays + " " + startTime + " " + endTime + " " + location;
     }
     
     public String getEventName(){
@@ -29,26 +29,26 @@ public class Event{
     }
     
     public String getDays(){
-        return days;
+        return repeatedDays;
     }
     
     public void setDays(String d){
-        days = d;
+        repeatedDays = d;
     }
     
-    public String getStart(){
+    public Date getStart(){
         return startTime;
     }
     
-    public String getEnd(){
+    public Date getEnd(){
         return endTime;
     }
     
-    public void setStart(String time){
+    public void setStart(Date time){
         startTime = time;
     }
     
-    public void setEnd(String time){
+    public void setEnd(Date time){
         endTime = time;
     }
     

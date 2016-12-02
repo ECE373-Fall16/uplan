@@ -1,5 +1,6 @@
 import java.sql.*;
 import java.util.*;
+import java.text.*;
 
 public class DataBase{
     
@@ -8,6 +9,7 @@ public class DataBase{
     private String sql = null;
     private ResultSet rs = null;
     private Connection c = null;
+    private DateFormat df;
     
     public DataBase(){
         
@@ -105,7 +107,6 @@ public class DataBase{
             System.err.println( "ValidateUser:" + e.getClass().getName() + ": " + e.getMessage() );
             return 0;
         }
-        return 0;
     }
     
     public void createAssignment(String name, String user, String className, String dueDate, String toCompletion, String priority) throws SQLException {
@@ -406,9 +407,10 @@ public class DataBase{
                 String assignName = rs.getString("ASSIGNMENTNAME");
                 String className = rs.getString("CLASSNAME");
                 String dueDate = rs.getString("DUE");
+                java.util.Date due = df.parse(dueDate);
                 String hoursLeft = rs.getString("HOURSTOCOMPLETION");
                 String pri = rs.getString("PRIORITY");
-                Assignment assign = new Assignment(assignName, className, dueDate, hoursLeft, pri);
+                Assignment assign = new Assignment(assignName, className, due, hoursLeft, pri);
                 assignList.addLast(assign);
             }
             rs.close();
@@ -424,6 +426,7 @@ public class DataBase{
     
     public LinkedList<Event> getEventList(String user) throws SQLException{
         LinkedList<Event> eventList= new LinkedList<Event>();
+        df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
         try{
             c = connect();
             stmt = c.createStatement();
@@ -434,9 +437,11 @@ public class DataBase{
                 String eventName = rs.getString("EVENTNAME");
                 String days = rs.getString("DAYS");
                 String start = rs.getString("START_TIME");
+                java.util.Date startTime = df.parse(start);
                 String end = rs.getString("END_TIME");
+                java.util.Date endTime = df.parse(end);
                 String loc = rs.getString("LOCATION");
-                Event eve = new Event(eventName, days, start, end, loc);
+                Event eve = new Event(eventName, days, startTime, endTime, loc);
                 eventList.addLast(eve);              
             }
             

@@ -4,11 +4,11 @@ public class Assignment{
     
     private String assignment;
     private String nameClass;
-    private String dueDate;
+    private Date dueDate;
     private String completion;
     private String priority;
     
-    public Assignment(String nameAssign, String nClass, String days, String compTime, String pri){
+    public Assignment(String nameAssign, String nClass, Date days, String compTime, String pri){
         assignment = nameAssign;
         nameClass = nClass;
         dueDate = days;
@@ -36,11 +36,11 @@ public class Assignment{
         nameClass = name;
     }
     
-    public String getDueDate(){
+    public Date getDueDate(){
         return dueDate;
     }
     
-    public void setDueDate(String date){
+    public void setDueDate(Date date){
         dueDate = date;
     }
     

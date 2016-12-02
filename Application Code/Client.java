@@ -1,6 +1,5 @@
-//https://github.com/ECE373-Fall16/uplan.git
-
 import java.util.*;
+import java.text.*;
 import org.apache.xmlrpc.*;
 
 public class Client {
@@ -29,7 +28,7 @@ public class Client {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
             params.addElement(user);
-            params.addElement(password);
+            params.addElement(pass);
             Vector returnValue = (Vector)server.execute("sample.validateUser", params);
             if(returnValue.get(0) == 1){
                 username = user;
@@ -41,7 +40,7 @@ public class Client {
                 return 0;
             }
         } catch (Exception e){
-            System.err.println("Login: " + exception);
+            System.err.println("Login: " + e);
         }
         return 0;
     }
@@ -51,18 +50,19 @@ public class Client {
     }
     
     
-    public void display(){
+    public LinkedList<CalendarEvent> display(){
+        LinkedList<CalendarEvent> calList = null;
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR);
             Vector params = new Vector();
             params.addElement(username);
 
             Vector returnValue = (Vector)server.execute("sample.display", params);
-            vectorToCalList(returnValue);
-          } 
-          catch (Exception exception) {
-             System.err.println("Client: " + exception);
-      } 
+            calList = vectorToCalList(returnValue);
+        } catch (Exception exception) {
+             System.err.println("display " + exception);
+        } 
+        return calList;
     }
     
     
@@ -200,35 +200,43 @@ public class Client {
     }
     
     
-    public void schedule(){         //Creates schedule and returns list
+    public LinkedList<CalendarEvent> schedule(){         //Creates schedule and returns list
+        LinkedList<CalendarEvent> calList = null;
         try{
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
             params.addElement(username);
             Vector returnValue = (Vector)server.execute("sample.scheduleAlgo", params);
+            calList = vectorToCalList(returnValue);
         } catch (Exception e){
             System.err.println("Client: " + e);
         }
+        return calList;
     }
     
     
-    private void vectorToCalList(Vector calList){       //going to be used to parse vector lists into Calendar object list or 2d array
-        Iterator iter = calList.iterator();
+    private LinkedList<CalendarEvent> vectorToCalList(Vector vectorList) throws ParseException{       //going to be used to parse vector lists into Calendar object list or 2d array
+        Iterator iter = vectorList.iterator();
         int calCount = 1;       //number of calendar objects
-        int paramCount = 1;         //new line after 5 parameters
-        System.out.println("CalendarList:");
+        CalendarEvent temp;
+        LinkedList<CalendarEvent> calList = new LinkedList<CalendarEvent>();
+        String name;
+        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL,DateFormat.FULL);
+        df.setTimeZone(TimeZone.getTimeZone("EST"));
+        Date start;
+        Date end;
+        String loc;
+        int counter = 0;
         while(iter.hasNext()){
-            if(paramCount == 1){
-                System.out.print("[" + calCount + "]");
-            }
-            System.out.print(iter.next() + " ");
-            if(paramCount >= 5){
-                System.out.println();
-                calCount++;
-                paramCount = 0;
-            }
-            paramCount++;
+            /*name = iter.next();
+            start = df.parse(iter.next());
+            end = df.parse(iter.next());
+            loc = iter.next();
+            temp = new CalendarEvent(name, start, end, loc);
+            calList.add(temp);*/
+            calCount++;
         }
+        return calList;
     }
     
    
