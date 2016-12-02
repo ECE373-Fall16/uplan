@@ -33,6 +33,17 @@ public class Server {
         return new Vector();
    }
    
+   public Vector validateUser(String username, String password){
+       try{
+           int validation = data.valUser(username, password);
+       } catch (Exception e){
+           System.err.println( "Validate: " + e.getClass().getName() + ": " + e.getMessage() );
+       }
+       Vector returnValue = new Vector();
+       returnValue.add(validation);
+       return returnValue;
+   }
+   
    
    public Vector addAssignment(String name, String username, String className, String date, String comp, String pri){
        try{
