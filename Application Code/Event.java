@@ -19,7 +19,7 @@ public class Event{
     
 
     public String toString(){
-        return eventName + " " + repeatedDays + " " + startTime + " " + endTime + " " + location;
+        return "Event Name: " + eventName + " Repeated Days: " + repeatedDays + " Start: " + startTime + " End: " + endTime + " Location: " + location;
     }
     
 

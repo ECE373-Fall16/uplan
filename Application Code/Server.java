@@ -187,12 +187,14 @@ public class Server {
                     while(splitIter.hasNext()){
                         index2 = splitIter.nextIndex();
                         eventList.addLast(tempEventList.get(index2));
+                        System.out.println("index1: " + index1 + "  splitIndex " + index2);
                         splitIter.next();
                     }
 
                 }
                 else
                     eventList.add(temp);
+                //System.out.println("index1: " + index1);
                 iter1.next();
             }
             
@@ -232,7 +234,6 @@ public class Server {
         while (counter < size){
             tempDays[0] = days[counter++];
             tempDays[1] = days[counter++];
-             
             String dayOfWeek = new String(tempDays);
             int dayNum;
             int weekOfYear;
@@ -285,6 +286,9 @@ public class Server {
                 Event week2 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
                 sepEvents.add(week1);
                 
+                System.out.println(week1.toString());
+                System.out.println(week2.toString());
+                System.out.println("");
             }
             
             else if(dayOfWeek.equals("Mo")){
@@ -306,6 +310,10 @@ public class Server {
                 
                 Event week2 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
                 sepEvents.add(week1);
+
+                System.out.println(week1.toString());
+                System.out.println(week2.toString());
+                System.out.println("");
             }
             
             else if(dayOfWeek.equals("Tu")){
@@ -327,6 +335,10 @@ public class Server {
                 
                 Event week2 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
                 sepEvents.add(week1);
+
+                System.out.println(week1.toString());
+                System.out.println(week2.toString());
+                System.out.println("");
             }
             
             else if(dayOfWeek.equals("We")){
@@ -347,7 +359,11 @@ public class Server {
                 tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
                 
                 Event week2 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
-                sepEvents.add(week1);                
+                sepEvents.add(week1);
+
+                System.out.println(week1.toString());
+                System.out.println(week2.toString());
+                System.out.println("");                
             }
             
             else if(dayOfWeek.equals("Th")){
@@ -369,6 +385,10 @@ public class Server {
                 
                 Event week2 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
                 sepEvents.add(week1);
+
+                System.out.println(week1.toString());
+                System.out.println(week2.toString());
+                System.out.println("");
             }
             
             else if(dayOfWeek.equals("Fr")){
@@ -390,6 +410,10 @@ public class Server {
                 
                 Event week2 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
                 sepEvents.add(week1);
+
+                System.out.println(week1.toString());
+                System.out.println(week2.toString());
+                System.out.println("");
             }
             
             else if(dayOfWeek.equals("Sa")){
@@ -411,6 +435,10 @@ public class Server {
                 
                 Event week2 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
                 sepEvents.add(week1);
+
+                System.out.println(week1.toString());
+                System.out.println(week2.toString());
+                System.out.println("");
             }
         
         }
@@ -450,7 +478,7 @@ public class Server {
         try {
             WebServer server = new WebServer(PORT);
             server.addHandler("sample", new Server());
-            
+
             server.start();
         } catch (Exception exception){
             System.err.println("JavaServer: " + exception);
