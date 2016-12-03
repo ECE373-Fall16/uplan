@@ -11,6 +11,7 @@ public class DataBase{
     private Connection c = null;
     private DateFormat df;
     
+
     public DataBase(){
         
     }
@@ -25,7 +26,7 @@ public class DataBase{
             createTable(username,"SCHEDULE");
             
         } catch (Exception e){
-            System.err.println( "CreateUser:" + e.getClass().getName() + ": " + e.getMessage() );
+            System.err.println( "DatabaseCreateUser:" + e.getClass().getName() + ": " + e.getMessage() );
         }
         try{
             c = connect();
@@ -43,7 +44,7 @@ public class DataBase{
             pstmt.executeUpdate();
             pstmt.close();
         }catch (Exception e){
-            System.err.println( "CreateProfile:" + e.getClass().getName() + ": " + e.getMessage() );
+            System.err.println( "DatabaseCreateProfile:" + e.getClass().getName() + ": " + e.getMessage() );
         }
         c.close();
     }
@@ -81,8 +82,7 @@ public class DataBase{
             stmt.close();
             
         } catch ( Exception e ) {
-            System.err.println( "CreateTable:" + e.getClass().getName() + ": " + e.getMessage() );
-            
+            System.err.println( "DatabaseCreateTable:" + e.getClass().getName() + ": " + e.getMessage() );    
         }
         System.out.println(type + " Tables Created Successfully");
         c.close();
@@ -98,17 +98,22 @@ public class DataBase{
                 String curUser = rs.getString("USERNAME");
                 String curPass = rs.getString("PASSWORD");
                 if(curUser.equals(username) && curPass.equals(password)){
+                    rs.close();
+                    stmt.close();
+                    c.close();
                     return 1;
                 }
-            }
-            return 0;
-            
+            } 
         } catch(Exception e){
-            System.err.println( "ValidateUser:" + e.getClass().getName() + ": " + e.getMessage() );
-            return 0;
+            System.err.println( "DatabaseValidateUser:" + e.getClass().getName() + ": " + e.getMessage() );
         }
+        rs.close();
+        stmt.close();
+        c.close();
+        return 0;
     }
     
+
     public void createAssignment(String name, String user, String className, String dueDate, String toCompletion, String priority) throws SQLException {
         try{
             c = connect();
@@ -131,7 +136,7 @@ public class DataBase{
             
             System.out.println("Assignment created");
         } catch ( Exception e ) {
-            System.err.println( "CreateAssignment:" + e.getClass().getName() + ": " + e.getMessage() );
+            System.err.println( "DatabaseCreateAssignment:" + e.getClass().getName() + ": " + e.getMessage() );
         }
         c.close();
     }
@@ -156,7 +161,7 @@ public class DataBase{
             
             System.out.println("Event created");
         } catch ( Exception e ) {
-            System.err.println( "CreateEvent:" + e.getClass().getName() + ": " + e.getMessage() );
+            System.err.println( "DatabaseCreateEvent:" + e.getClass().getName() + ": " + e.getMessage() );
         }
         c.close();
     }
@@ -186,7 +191,7 @@ public class DataBase{
             stmt.close();
  
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("DatabaseRemoveProfile1: " + e.getMessage());
         }
         
         System.out.println("Deleting Profile " + username + "...");
@@ -203,7 +208,7 @@ public class DataBase{
             pstmt.close();
  
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("DatabaseRemoveProfile2: " + e.getMessage());
         }
         c.close();
     }
@@ -218,11 +223,10 @@ public class DataBase{
             pstmt.setString(1, name1);
             // execute the delete statement
             pstmt.executeUpdate();
-//            System.out.println("hey");
             pstmt.close();
  
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("DatabaseRemoveEvent: " + e.getMessage());
         }
         c.close();
     }
@@ -240,11 +244,12 @@ public class DataBase{
             pstmt.close();
  
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            System.out.println("DatabaseRemoveAssignment: " + e.getMessage());
         }
         c.close();
     }
     
+
     //updates
     public void updateAssignment(String assignmentName, String type, String newData, String user) throws SQLException{
         try{
@@ -252,14 +257,13 @@ public class DataBase{
             c = connect();
             sql = "UPDATE " + user + "ASSIGNMENT " + "SET " + type+ " = ? where ASSIGNMENTNAME=?;";
             pstmt = c.prepareStatement(sql); 
-            //pstmt.setString(1, type);
             pstmt.setString(1, newData);
             pstmt.setString(2, assignmentName);
             pstmt.executeUpdate();
             pstmt.close();
             
         } catch (SQLException e) {
-            System.out.println("UpdateAssignment:" + e.getMessage());
+            System.out.println("DatabaseUpdateAssignment: " + e.getMessage());
         }
         c.close();
     }
@@ -277,7 +281,7 @@ public class DataBase{
             pstmt.close();
             
         } catch (SQLException e) {
-            System.out.println("UpdateAssignment:" + e.getMessage());
+            System.out.println("DatabaseUpdateEvent: " + e.getMessage());
         }
         c.close();
     }
@@ -295,7 +299,7 @@ public class DataBase{
             pstmt.close();
             
         } catch (SQLException e) {
-            System.out.println("UpdateAssignment:" + e.getMessage());
+            System.out.println("DatabaseUpdateProfile: " + e.getMessage());
         }
         c.close();
     }
@@ -310,7 +314,7 @@ public class DataBase{
             stmt.executeUpdate(sql);
             stmt.close();
         } catch (SQLException e) {
-            System.out.println("Clear schedule:" + e.getMessage());
+            System.out.println("DatabaseClearSchedule: " + e.getMessage());
         }
     }
     
@@ -389,7 +393,7 @@ public class DataBase{
             stmt.close();
             
         }catch (Exception e){
-            System.err.println( "Display:" + e.getClass().getName() + ": " + e.getMessage() );
+            System.err.println( "DatabaseDisplay: " + e.getClass().getName() + ": " + e.getMessage() );
         }
         c.close();
     }
@@ -416,7 +420,7 @@ public class DataBase{
             rs.close();
             stmt.close();
         } catch (Exception e){
-            System.err.println( "getAssignmentList:" + e.getClass().getName() + ": " + e.getMessage() );
+            System.err.println( "DatabaseGetAssignmentList:" + e.getClass().getName() + ": " + e.getMessage() );
         }
         
         c.close();
@@ -448,7 +452,7 @@ public class DataBase{
             rs.close();
             stmt.close();
         } catch (Exception e){
-            System.err.println( "getAssignmentList:" + e.getClass().getName() + ": " + e.getMessage() );
+            System.err.println( "DatabaseGetEventList:" + e.getClass().getName() + ": " + e.getMessage() );
         }
         
         c.close();
@@ -463,7 +467,7 @@ public class DataBase{
             c = DriverManager.getConnection("jdbc:sqlite:inventory.db");
             return c;
         } catch (Exception e){
-            System.err.println("Connection:" + e.getClass() + ": " + e.getMessage());
+            System.err.println("DatabaseConnection:" + e.getClass() + ": " + e.getMessage());
             System.exit(0);
         }
         System.out.println("Opened database successfully");

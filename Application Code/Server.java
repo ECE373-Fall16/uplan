@@ -4,8 +4,7 @@ import java.sql.*;
 import java.text.*;
 
 public class Server {
-    //private LinkedList<Assignment> assignmentList = new LinkedList<Assignment>();
-    //private LinkedList<Event> eventList = new LinkedList<Event>();
+    
     private int alCounter = 0;
     private int elCounter = 0;
     private DataBase data = new DataBase();
@@ -14,60 +13,66 @@ public class Server {
     private DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
 
 
-   public Vector display(String user){
-       try{
-           //data.display(user);
-           Vector values = new Vector();
-           System.out.println("\nPrinting list...");
-           for(int k = 0; k < calendarList.size(); k++){
-               System.out.println("[" + k + "]" + calendarList.get(k).toString());
-               values.add(calendarList.get(k).getName());
-               values.add(df.format(calendarList.get(k).getStartTime()));
-               values.add(df.format(calendarList.get(k).getEndTime()));
-               values.add(calendarList.get(k).getLocation());
-           }
-           System.out.println();
-           return values;
-       } catch (Exception e){
-           System.err.println( "ServerDisplay: " + e.getClass().getName() + ": " + e.getMessage() );
-       }
+    public Vector display(String user){
+        try{
+            Vector values = new Vector();
+            System.out.println("\nPrinting list...");
+            for(int k = 0; k < calendarList.size(); k++){
+                System.out.println("[" + k + "]" + calendarList.get(k).toString());
+                values.add(calendarList.get(k).getName());
+                values.add(df.format(calendarList.get(k).getStartTime()));
+                values.add(df.format(calendarList.get(k).getEndTime()));
+                values.add(calendarList.get(k).getLocation());
+            }
+            System.out.println();
+            return values;
+
+        } catch (Exception e){
+            System.err.println( "ServerDisplay: " + e.getClass().getName() + ": " + e.getMessage() );
+        }
+
         return new Vector();
-   }
+    }
+
+
+    public Vector validateUser(String username, String password){
+        Vector returnValue = new Vector();
+        try{
+            int validation = data.valUser(username, password);
+            returnValue.add(validation);
+
+        } catch (Exception e){
+            System.err.println( "ServerValidate: " + e.getClass().getName() + ": " + e.getMessage() );
+        }
+
+        return returnValue;
+    }
    
-   public Vector validateUser(String username, String password){
-       Vector returnValue = new Vector();
-       try{
-           int validation = data.valUser(username, password);
-           returnValue.add(validation);
-       } catch (Exception e){
-           System.err.println( "Validate: " + e.getClass().getName() + ": " + e.getMessage() );
-       }
-       return returnValue;
-   }
    
-   
-   public Vector addAssignment(String name, String username, String className, String date, String comp, String pri){
-       try{
-           data.createAssignment(name, username, className, date, comp, pri);
-       }catch( Exception e ){
-           System.err.println( "ServerAddAssign: " + e.getClass().getName() + ": " + e.getMessage() );
-       }
+    public Vector addAssignment(String name, String username, String className, String date, String comp, String pri){
+        try{
+            data.createAssignment(name, username, className, date, comp, pri);
+
+        }catch( Exception e ){
+            System.err.println( "ServerAddAssign: " + e.getClass().getName() + ": " + e.getMessage() );
+        }
       
-       //return as vector
-       Vector returnValue = new Vector();
-       returnValue.add(name);
-       returnValue.add(className);
-       returnValue.add(date);
-       returnValue.add(comp);
-       returnValue.add(pri);
-       return returnValue;
-   }
+        //return as vector
+        Vector returnValue = new Vector();
+        /*returnValue.add(name);
+        returnValue.add(className);
+        returnValue.add(date);
+        returnValue.add(comp);
+        returnValue.add(pri);*/
+        return returnValue;
+    }
    
    
-   public Vector addEvent(String name, String username, String days, String startTime, String endTime, String loc){
+    public Vector addEvent(String name, String username, String days, String startTime, String endTime, String loc){
        //send to database
         try{
             data.createEvent(name,username,days,startTime,endTime,loc);
+
         }catch( Exception e ){
             System.err.println( "ServerAddEvent:" + e.getClass().getName() + ": " + e.getMessage() );
         }
@@ -80,12 +85,13 @@ public class Server {
         returnValue.add(endTime);
         returnValue.add(loc);
         return returnValue;
-   }
+    }
    
    
     public Vector createAccount(String username, String name, String email, String password, int bedtime){
         try{
             data.createUser(username, name, email, password, bedtime);
+
         } catch (Exception e){
             System.err.println( "ServerCreateAccount:" + e.getClass().getName() + ": " + e.getMessage() );
         }
@@ -96,8 +102,9 @@ public class Server {
     public Vector deleteEvent(String name, String username){
         try{
             data.removeEvent(name, username);
+
         } catch (Exception e){
-            System.err.println( "DeleteEvent:" + e.getClass().getName() + ": " + e.getMessage() );
+            System.err.println( "ServerDeleteEvent:" + e.getClass().getName() + ": " + e.getMessage() );
         }
         return new Vector();
     }
@@ -106,8 +113,9 @@ public class Server {
     public Vector deleteAssignment(String name, String username){
         try{
             data.removeAssignment(name, username);
+
         } catch (Exception e){
-            System.err.println( "DeleteEvent:" + e.getClass().getName() + ": " + e.getMessage() );
+            System.err.println( "ServerDeleteEvent:" + e.getClass().getName() + ": " + e.getMessage() );
         }
         return new Vector();
     }
@@ -116,9 +124,11 @@ public class Server {
     public Vector deleteAccount(String username){
         try{
             data.removeProfile(username);
+
         } catch (Exception e){
-            System.err.println( "DeleteEvent:" + e.getClass().getName() + ": " + e.getMessage() );
+            System.err.println( "ServerDeleteEvent:" + e.getClass().getName() + ": " + e.getMessage() );
         }
+
         return new Vector();
     }
     
@@ -126,9 +136,11 @@ public class Server {
     public Vector updateAssignment(String assignmentName, String type, String newName, String user){
         try{
             data.updateAssignment(assignmentName, type, newName, user);
+
         } catch (Exception e){
-            System.err.println( "UpdateAssignment:" + e.getClass().getName() + ": " + e.getMessage() );
+            System.err.println( "ServerUpdateAssignment:" + e.getClass().getName() + ": " + e.getMessage() );
         }
+
         return new Vector();
     }
     
@@ -136,9 +148,11 @@ public class Server {
     public Vector updateEvent(String eventName, String type, String newName, String user){
         try{
             data.updateEvent(eventName, type, newName, user);
+
         } catch (Exception e){
-            System.err.println( "UpdateEvent:" + e.getClass().getName() + ": " + e.getMessage() );
+            System.err.println( "ServerUpdateEvent:" + e.getClass().getName() + ": " + e.getMessage() );
         }
+
         return new Vector();
     }
     
@@ -146,9 +160,11 @@ public class Server {
     public Vector updateProfile(String type, String newName, String user){
         try{
             data.updateProfile(type, newName, user);
+
         } catch (Exception e){
-            System.err.println( "UpdateProfile:" + e.getClass().getName() + ": " + e.getMessage() );
+            System.err.println( "ServerUpdateProfile:" + e.getClass().getName() + ": " + e.getMessage() );
         }
+
         return new Vector();
     }
     
@@ -171,6 +187,7 @@ public class Server {
                     while(splitIter.hasNext()){
                         index2 = splitIter.nextIndex();
                         eventList.addLast(tempEventList.get(index2));
+                        splitIter.next();
                     }
 
                 }
@@ -185,10 +202,19 @@ public class Server {
                 index3 = iter2.nextIndex();
                 CalendarEvent calTemp = eventToCal(tempEventList.get(index3));
                 calendarList.add(calTemp);
+                iter2.next();
+            }
+
+            ListIterator iter3 = calendarList.listIterator();
+            int index4;
+            while(iter3.hasNext()){
+                index4 = iter3.nextIndex();
+                System.out.println(calendarList.get(index4).toString());
+                iter3.next();
             }
         
         } catch (Exception e){
-            System.err.println( "schedule algo:" + e.getClass().getName() + ": " + e.getMessage() );
+            System.err.println( "Serverschedule algo:" + e.getClass().getName() + ": " + e.getMessage() );
         }    
     }
     
@@ -411,9 +437,11 @@ public class Server {
             java.util.Date end = df.parse(endTime);
             String loc = "ASSIGNMENT";
             c = new CalendarEvent(name,start,end,loc);
+
         } catch (Exception e){
-            System.err.println( "assigntocal:" + e.getClass().getName() + ": " + e.getMessage() );
+            System.err.println( "ServerAssignToCal:" + e.getClass().getName() + ": " + e.getMessage() );
         }
+
         return c;
     }
     
@@ -422,6 +450,7 @@ public class Server {
         try {
             WebServer server = new WebServer(PORT);
             server.addHandler("sample", new Server());
+            
             server.start();
         } catch (Exception exception){
             System.err.println("JavaServer: " + exception);
