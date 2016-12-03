@@ -17,7 +17,7 @@ public class DataBase{
     }
     
     
-    public void createUser(String username, String name, String email, String password, int bedTime) throws SQLException {
+    public void createUser(String username, String name, String email, String password, String bedTime) throws SQLException {
         
         try {
             
@@ -35,12 +35,11 @@ public class DataBase{
             
             pstmt = c.prepareStatement(sql);
             
-            String bed = Integer.toString(bedTime);
             pstmt.setString(1,username);
             pstmt.setString(2,name);
             pstmt.setString(3,email);
             pstmt.setString(4,password);
-            pstmt.setString(5,bed);
+            pstmt.setString(5,bedTime);
             pstmt.executeUpdate();
             pstmt.close();
         }catch (Exception e){
@@ -457,6 +456,32 @@ public class DataBase{
         
         c.close();
         return eventList;
+    }
+
+    public int[] getBedTime(String user) throws SQLException{
+        String bedTime = "";
+        int[] times = {10,30};
+        try{
+            c = connect();
+            stmt= c.createStatement();
+
+            rs = stmt.executeQuery( "SELECT * FROM PROFILE" );
+
+            while(rs.next()){
+                if(rs.getString("USERNAME").equals(user)){
+                    bedTime = rs.getString("BEDTIME");
+                }
+            }
+
+            stmt.close();
+            rs.close();
+
+        } catch (Exception e){
+            System.err.println( "DatabaseGetBedTime:" + e.getClass().getName() + ": " + e.getMessage() );
+        }
+        
+        c.close();
+        return times;
     }
     
     

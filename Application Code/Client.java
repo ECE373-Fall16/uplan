@@ -54,7 +54,7 @@ public class Client {
     }
     
 
-    public void createAccount(String user, String name, String email, String password, int bedtime){
+    public void createAccount(String user, String name, String email, String password, String bedtime){
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();

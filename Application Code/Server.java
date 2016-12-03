@@ -8,12 +8,11 @@ public class Server {
     private int alCounter = 0;
     private int elCounter = 0;
     private DataBase data = new DataBase();
-    private LinkedList<CalendarEvent> calendarList;
     private static int PORT = 8082;
     private DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
 
 
-    public Vector display(String user){
+    /*public Vector display(String user, LinkedList<CalendarEvent> calendarList){
         try{
             Vector values = new Vector();
             System.out.println("\nPrinting list...");
@@ -32,7 +31,7 @@ public class Server {
         }
 
         return new Vector();
-    }
+    }*/
 
 
     public Vector validateUser(String username, String password){
@@ -88,7 +87,7 @@ public class Server {
     }
    
    
-    public Vector createAccount(String username, String name, String email, String password, int bedtime){
+    public Vector createAccount(String username, String name, String email, String password, String bedtime){
         try{
             data.createUser(username, name, email, password, bedtime);
 
@@ -171,30 +170,32 @@ public class Server {
    
     public void scheduleAlgo(String username) throws SQLException{
         try{
+            LinkedList<CalendarEvent> calendarList = new LinkedList<CalendarEvent>();
+            LinkedList<FreeTime> freeblocks = new LinkedList<FreeTime>();
             LinkedList<Event> tempEventList = new LinkedList<Event>();
             tempEventList = data.getEventList(username);
             LinkedList<Event> eventList = new LinkedList<Event>();
             ListIterator iter1 = tempEventList.listIterator();
+            
             int index1;
             Event temp;
             while(iter1.hasNext()){
                 index1 = iter1.nextIndex();
                 temp = tempEventList.get(index1);
+
                 if(!temp.getDays().equals("")){
                     LinkedList<Event> splitEvents = splitEvent(temp);
                     ListIterator splitIter = splitEvents.listIterator();
                     int index2;
                     while(splitIter.hasNext()){
                         index2 = splitIter.nextIndex();
-                        eventList.addLast(tempEventList.get(index2));
-                        System.out.println("index1: " + index1 + "  splitIndex " + index2);
+                        eventList.addLast(splitEvents.get(index2));
                         splitIter.next();
                     }
 
                 }
                 else
                     eventList.add(temp);
-                //System.out.println("index1: " + index1);
                 iter1.next();
             }
             
@@ -202,18 +203,22 @@ public class Server {
             int index3;
             while(iter2.hasNext()){
                 index3 = iter2.nextIndex();
-                CalendarEvent calTemp = eventToCal(tempEventList.get(index3));
-                calendarList.add(calTemp);
+                CalendarEvent calTemp = eventToCal(eventList.get(index3));
+                calendarList = addToCalList(calTemp, calendarList);
                 iter2.next();
             }
 
-            ListIterator iter3 = calendarList.listIterator();
+            /*ListIterator iter3 = calendarList.listIterator();
             int index4;
             while(iter3.hasNext()){
                 index4 = iter3.nextIndex();
                 System.out.println(calendarList.get(index4).toString());
                 iter3.next();
-            }
+            }*/
+
+
+            freeblocks = findFreeTime(calendarList, username);
+
         
         } catch (Exception e){
             System.err.println( "Serverschedule algo:" + e.getClass().getName() + ": " + e.getMessage() );
@@ -257,13 +262,14 @@ public class Server {
             endCal.setTime(eve.getEnd());
             
             weekOfYear = startCal.get(Calendar.WEEK_OF_YEAR);
+
             eventStartTimeHour = startCal.get(Calendar.HOUR_OF_DAY);
             eventStartTimeMin = startCal.get(Calendar.MINUTE);
             eventEndTimeHour = endCal.get(Calendar.HOUR_OF_DAY);
             eventEndTimeMin = endCal.get(Calendar.MINUTE);
             
-            Calendar tempStart = currentCal;
-            Calendar tempEnd = currentCal;
+            Calendar tempStart = Calendar.getInstance();
+            Calendar tempEnd = Calendar.getInstance();
             
             if(dayOfWeek.equals("Su")){
                 
@@ -280,15 +286,15 @@ public class Server {
                 Event week1 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
                 sepEvents.add(week1);
                 
-                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
-                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+
+                startTime = tempStart.getTime();
+                endTime = tempEnd.getTime();
                 
                 Event week2 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
-                sepEvents.add(week1);
+                sepEvents.add(week2);
                 
-                System.out.println(week1.toString());
-                System.out.println(week2.toString());
-                System.out.println("");
             }
             
             else if(dayOfWeek.equals("Mo")){
@@ -305,15 +311,15 @@ public class Server {
                 Event week1 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
                 sepEvents.add(week1);
                 
-                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
-                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+
+                startTime = tempStart.getTime();
+                endTime = tempEnd.getTime();
                 
                 Event week2 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
-                sepEvents.add(week1);
+                sepEvents.add(week2);
 
-                System.out.println(week1.toString());
-                System.out.println(week2.toString());
-                System.out.println("");
             }
             
             else if(dayOfWeek.equals("Tu")){
@@ -330,15 +336,14 @@ public class Server {
                 Event week1 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
                 sepEvents.add(week1);
                 
-                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
-                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+
+                startTime = tempStart.getTime();
+                endTime = tempEnd.getTime();
                 
                 Event week2 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
-                sepEvents.add(week1);
-
-                System.out.println(week1.toString());
-                System.out.println(week2.toString());
-                System.out.println("");
+                sepEvents.add(week2);
             }
             
             else if(dayOfWeek.equals("We")){
@@ -355,15 +360,14 @@ public class Server {
                 Event week1 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
                 sepEvents.add(week1);
                 
-                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
-                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+
+                startTime = tempStart.getTime();
+                endTime = tempEnd.getTime();
                 
                 Event week2 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
-                sepEvents.add(week1);
-
-                System.out.println(week1.toString());
-                System.out.println(week2.toString());
-                System.out.println("");                
+                sepEvents.add(week2);                
             }
             
             else if(dayOfWeek.equals("Th")){
@@ -380,15 +384,14 @@ public class Server {
                 Event week1 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
                 sepEvents.add(week1);
                 
-                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
-                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+
+                startTime = tempStart.getTime();
+                endTime = tempEnd.getTime();
                 
                 Event week2 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
-                sepEvents.add(week1);
-
-                System.out.println(week1.toString());
-                System.out.println(week2.toString());
-                System.out.println("");
+                sepEvents.add(week2);
             }
             
             else if(dayOfWeek.equals("Fr")){
@@ -405,15 +408,14 @@ public class Server {
                 Event week1 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
                 sepEvents.add(week1);
                 
-                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
-                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+
+                startTime = tempStart.getTime();
+                endTime = tempEnd.getTime();
                 
                 Event week2 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
-                sepEvents.add(week1);
-
-                System.out.println(week1.toString());
-                System.out.println(week2.toString());
-                System.out.println("");
+                sepEvents.add(week2);
             }
             
             else if(dayOfWeek.equals("Sa")){
@@ -430,15 +432,14 @@ public class Server {
                 Event week1 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
                 sepEvents.add(week1);
                 
-                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
-                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+
+                startTime = tempStart.getTime();
+                endTime = tempEnd.getTime();
                 
                 Event week2 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
-                sepEvents.add(week1);
-
-                System.out.println(week1.toString());
-                System.out.println(week2.toString());
-                System.out.println("");
+                sepEvents.add(week2);
             }
         
         }
@@ -471,6 +472,62 @@ public class Server {
         }
 
         return c;
+    }
+
+
+    public LinkedList<CalendarEvent> addToCalList(CalendarEvent curCal, LinkedList<CalendarEvent> curList){
+        Calendar calToAdd = Calendar.getInstance();
+        Calendar curCalendar = Calendar.getInstance();
+        calToAdd.setTime(curCal.getStartTime());
+        
+        ListIterator calListIter = curList.listIterator();
+        Boolean added = false;
+        int correctIndex = 0;
+        int index;
+        
+        while(calListIter.hasNext() && !added){
+            index = calListIter.nextIndex();
+            curCalendar.setTime(curList.get(index).getStartTime());
+            if(calToAdd.compareTo(curCalendar) < 0){          //after curList object
+                correctIndex = index;
+                added = true;
+            }
+            calListIter.next();
+        }
+
+        if(added){
+            curList.add(correctIndex, curCal);
+        }
+
+        if(curList.size() == 0){
+            curList.addFirst(curCal);
+            added = true;
+        }
+
+        if(!added){
+            curList.addLast(curCal);
+            added = true;
+        }
+        return curList;
+    }
+
+
+    public LinkedList<FreeTime> findFreeTime(LinkedList<CalendarEvent> calList, String user) throws SQLException{
+        LinkedList<FreeTime> freeTimeList = new LinkedList<FreeTime>();
+        int[] bedTime = data.getBedTime(user);
+        Calendar currentTime = Calendar.getInstance();
+        ListIterator<CalendarEvent> calListIter = calList.listIterator();
+
+        int dayOfMonth;
+        Date endOfEvent;
+
+        while(calListIter.hasNext()){
+            endOfEvent = calListIter.nextIndex().getEndTime();
+            currentTime.setTime(endOfEvent);
+            dayOfMonth = currentTime.get(Calendar.DAY_OF_MONTH);
+            
+        }
+        return freeTimeList;
     }
     
 
