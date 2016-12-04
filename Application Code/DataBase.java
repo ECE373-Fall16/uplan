@@ -461,20 +461,23 @@ public class DataBase{
     public int[] getBedTime(String user) throws SQLException{
         String bedTime = "";
         int[] times = {10,30};
+        Boolean found = false;
         try{
             c = connect();
             stmt= c.createStatement();
 
-            rs = stmt.executeQuery( "SELECT * FROM PROFILE" );
+            rs = stmt.executeQuery( "SELECT USERNAME,BEDTIME FROM PROFILE" );
 
-            while(rs.next()){
+            while(rs.next() && !found){
                 if(rs.getString("USERNAME").equals(user)){
                     bedTime = rs.getString("BEDTIME");
+                    found = true;
                 }
             }
-
-            stmt.close();
+            System.out.println(bedTime);
+            
             rs.close();
+            stmt.close();
 
         } catch (Exception e){
             System.err.println( "DatabaseGetBedTime:" + e.getClass().getName() + ": " + e.getMessage() );
@@ -486,7 +489,6 @@ public class DataBase{
     
     
     private Connection connect() throws SQLException{
-        Connection c = null;
         try {
             Class.forName("org.sqlite.JDBC");
             c = DriverManager.getConnection("jdbc:sqlite:inventory.db");

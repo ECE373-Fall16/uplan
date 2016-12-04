@@ -12,6 +12,9 @@ public class FreeTime{
 		endTime = end;
 	}
 
+    public String toString(){
+        return "StartTime: " + startTime + " || EndTime: " + endTime;       
+    }
 
 	public Date getStartTime(){
 		return startTime;

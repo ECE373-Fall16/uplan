@@ -207,17 +207,19 @@ public class Server {
                 calendarList = addToCalList(calTemp, calendarList);
                 iter2.next();
             }
-
-            /*ListIterator iter3 = calendarList.listIterator();
+            
+            freeblocks = findFreeTime(calendarList, username);
+            
+            ListIterator iter3 = calendarList.listIterator();
             int index4;
             while(iter3.hasNext()){
                 index4 = iter3.nextIndex();
                 System.out.println(calendarList.get(index4).toString());
                 iter3.next();
-            }*/
+            }
 
 
-            freeblocks = findFreeTime(calendarList, username);
+            
 
         
         } catch (Exception e){
@@ -515,17 +517,49 @@ public class Server {
     public LinkedList<FreeTime> findFreeTime(LinkedList<CalendarEvent> calList, String user) throws SQLException{
         LinkedList<FreeTime> freeTimeList = new LinkedList<FreeTime>();
         int[] bedTime = data.getBedTime(user);
-        Calendar currentTime = Calendar.getInstance();
+        Calendar endTime = Calendar.getInstance();
+        Calendar priorEndTime = Calendar.getInstance();
         ListIterator<CalendarEvent> calListIter = calList.listIterator();
 
-        int dayOfMonth;
-        Date endOfEvent;
+        int dayOfWeek;
+        int priorDayOfWeek = -1;
+        int calListIndex;
+        java.util.Date endOfEvent;
+        java.util.Date startOfFree;
+        java.util.Date endOfFree;
+        FreeTime newFreeTime;
 
-        while(calListIter.hasNext()){
-            endOfEvent = calListIter.nextIndex().getEndTime();
-            currentTime.setTime(endOfEvent);
-            dayOfMonth = currentTime.get(Calendar.DAY_OF_MONTH);
+        while(calListIter.hasNext()){           //runs through calendar list for end of each event
+            //finds end time of current event
+            calListIndex = calListIter.nextIndex();
+            endOfEvent = calList.get(calListIndex).getEndTime();
+            endTime.setTime(endOfEvent);
             
+            
+            dayOfWeek = endTime.get(Calendar.DAY_OF_WEEK);    //used to know when switching days
+            if(priorDayOfWeek == -1){
+                priorDayOfWeek = dayOfWeek;
+            }
+
+            if(dayOfWeek != priorDayOfWeek){            //just passed last event of the day
+                
+                //creates and adds free time block to free time list
+                startOfFree = priorEndTime.getTime();
+                priorEndTime.set(Calendar.HOUR, bedTime[0]);            //currently using 12 hour time, if event ends in AM so will bedtime
+                priorEndTime.set(Calendar.MINUTE, bedTime[1]);
+                endOfFree = priorEndTime.getTime();
+                newFreeTime = new FreeTime(startOfFree, endOfFree);
+                freeTimeList.add(newFreeTime);
+                
+                priorDayOfWeek++;
+                if(priorDayOfWeek == 7){
+                    priorDayOfWeek = 0;
+                }
+            }
+            
+            priorEndTime = endTime;
+            
+            calListIter.next();
         }
         return freeTimeList;
     }
