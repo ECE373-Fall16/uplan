@@ -27,10 +27,13 @@ public class Client {
         try{
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
+            
             params.addElement(user);
             params.addElement(pass);
+            
             Vector returnValue = (Vector)server.execute("sample.validateUser", params);
-            if(returnValue.get(0) == 1){
+            
+            if(Integer.parseInt(returnValue.get(0).toString()) == 1){
                 username = user;
                 System.out.println("You are logged in as: " + username);
                 return 1;
@@ -40,13 +43,33 @@ public class Client {
                 return 0;
             }
         } catch (Exception e){
-            System.err.println("Login: " + e);
+            System.err.println("ClientLogin: " + e);
         }
         return 0;
     }
     
+
     public void logout(){
         username = null;
+    }
+    
+
+    public void createAccount(String user, String name, String email, String password, String bedtime){
+        try {
+            XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
+            Vector params = new Vector();
+
+            params.addElement(user);
+            params.addElement(name);
+            params.addElement(email);
+            params.addElement(password);
+            params.addElement(bedtime);
+  
+            Vector returnValue = (Vector)server.execute("sample.createAccount", params);
+        } 
+        catch (Exception exception) {
+            System.err.println("ClientCreateAccount " + exception);
+        }        
     }
     
     
@@ -60,7 +83,7 @@ public class Client {
             Vector returnValue = (Vector)server.execute("sample.display", params);
             calList = vectorToCalList(returnValue);
         } catch (Exception exception) {
-             System.err.println("display " + exception);
+            System.err.println("ClientDisplay " + exception);
         } 
         return calList;
     }
@@ -78,11 +101,9 @@ public class Client {
             params.addElement(location);         
 
             Vector returnValue = (Vector)server.execute("sample.addEvent", params);
-          } 
-          catch (Exception exception) {
-             System.err.println("Client: " + exception);
-      }  
-
+        } catch (Exception exception) {
+            System.err.println("ClientAddEvent: " + exception);
+        }  
     }
     
     
@@ -99,10 +120,9 @@ public class Client {
             params.addElement(hours);
   
             Vector returnValue = (Vector)server.execute("sample.addAssignment", params);
-          } 
-          catch (Exception exception) {
-             System.err.println("Client: " + exception);
-          }        
+        } catch (Exception exception) {
+            System.err.println("ClientAddEvent: " + exception);
+        }        
     }
     
     
@@ -114,10 +134,9 @@ public class Client {
             params.addElement(username);
   
             Vector returnValue = (Vector)server.execute("sample.deleteEvent", params);
-          } 
-          catch (Exception exception) {
-             System.err.println("Client: " + exception);
-          } 
+        } catch (Exception exception) {
+            System.err.println("ClientDeleteEvent: " + exception);
+        } 
     }
     
     
@@ -129,10 +148,9 @@ public class Client {
             params.addElement(username);
   
             Vector returnValue = (Vector)server.execute("sample.deleteAssignment", params);
-          } 
-          catch (Exception exception) {
-             System.err.println("Client: " + exception);
-          } 
+        } catch (Exception exception) {
+            System.err.println("ClientDeleteAssignment: " + exception);
+        } 
     }
     
     
@@ -143,13 +161,12 @@ public class Client {
             params.addElement(user);
   
             Vector returnValue = (Vector)server.execute("sample.deleteAccount", params);
-          } 
-          catch (Exception exception) {
-             System.err.println("Client: " + exception);
-          }
-          if(user.equals(username)){
-              username = null;
-          }
+        } catch (Exception exception) {
+            System.err.println("ClientDeleteAccount: " + exception);
+        }
+        if(user.equals(username)){
+            username = null;
+        }
     }
     
     
@@ -161,11 +178,11 @@ public class Client {
             params.addElement(type);
             params.addElement(newName);
             params.addElement(username);
+
             Vector returnValue = (Vector)server.execute("sample.updateAssignment", params);
-          } 
-          catch (Exception exception) {
-             System.err.println("Client: " + exception);
-          }
+        } catch (Exception exception) {
+            System.err.println("ClientUpdateAssignment: " + exception);
+        }
     }
     
     
@@ -177,11 +194,11 @@ public class Client {
             params.addElement(type);
             params.addElement(newName);
             params.addElement(username);
+            
             Vector returnValue = (Vector)server.execute("sample.updateEvent", params);
-          } 
-          catch (Exception exception) {
-             System.err.println("Client: " + exception);
-          }
+        } catch (Exception exception) {
+            System.err.println("ClientUpdateEvent: " + exception);
+        }
     }
     
     
@@ -192,11 +209,11 @@ public class Client {
             params.addElement(type);
             params.addElement(newName);
             params.addElement(username);
+            
             Vector returnValue = (Vector)server.execute("sample.updateProfile", params);
-          } 
-          catch (Exception exception) {
-             System.err.println("Client: " + exception);
-          }
+        } catch (Exception exception) {
+            System.err.println("ClientUpdateProfile: " + exception);
+        }
     }
     
     
@@ -206,11 +223,13 @@ public class Client {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
             params.addElement(username);
+            
             Vector returnValue = (Vector)server.execute("sample.scheduleAlgo", params);
             calList = vectorToCalList(returnValue);
         } catch (Exception e){
-            System.err.println("Client: " + e);
+            System.err.println("ClientSchedule: " + e);
         }
+
         return calList;
     }
     
@@ -227,33 +246,16 @@ public class Client {
         Date end;
         String loc;
         int counter = 0;
-        while(iter.hasNext()){
-            /*name = iter.next();
+        /*while(iter.hasNext()){
+            name = iter.next();
             start = df.parse(iter.next());
             end = df.parse(iter.next());
             loc = iter.next();
             temp = new CalendarEvent(name, start, end, loc);
-            calList.add(temp);*/
+            calList.add(temp);
             calCount++;
-        }
+        }*/
         return calList;
     }
     
-   
-    public void createAccount(String user, String name, String email, String password, int bedtime){
-        try {
-            XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
-            Vector params = new Vector();
-            params.addElement(user);
-            params.addElement(name);
-            params.addElement(email);
-            params.addElement(password);
-            params.addElement(bedtime);
-  
-            Vector returnValue = (Vector)server.execute("sample.createAccount", params);
-          } 
-          catch (Exception exception) {
-             System.err.println("Client: " + exception);
-          }        
-    }
 }

@@ -3,31 +3,27 @@ import java.util.*;
 public class Driver{
     public static void main(String[] args){
         Client r = new Client();
-        //r.login("stevesprofile");
-        //*
-        r.deleteAccount("steve");
-        r.createAccount("steve", "2", "3", "4",10);
-        r.login("steve", "ahhahaha");
-        r.addAssignment("Hw1","classname", "dueDate", "2", "4325");
-        r.addAssignment("Hw2","classname", "dueDate", "1", "4325");
-        r.addAssignment("Hw3","classname", "dueDate", "20", "4325");
-        /*r.addAssignment("Hw4","classname", "dueDate", 20, 4325);
-        r.addAssignment("Hw5","classname", "dueDate", 20, 4325);
-        r.addAssignment("Hw6","classname", "dueDate", 20, 4325);
-        r.addAssignment("Hw7","classname", "dueDate", 20, 4325);
-        */r.addEvent("Electronics","MoWeFr","1030","1230","location");
-        r.addEvent("Circuits","MoWeFr","1330","1430","location");
-        r.addEvent("EnginWrit","TuTh","1330","1430","location");
-        //r.addEvent("ECE3732","TuTh",930,1130,"location");
+
+        r.deleteAccount("rhartnett1233");
+        r.createAccount("rhartnett1233", "Richie Hartnett", "rhartnett@umass.edu", "UMASS","10:00:00");
+
+        int validateLogin = r.login("rhartnett1233", "UMASS");
+        while(validateLogin == 0)
+            r.login("rhartnett1233", "UMASS");
+
+        r.addAssignment("Hw1","Circuits", "Sunday, December 4, 2016 11:00:00 PM EST", "2", "10");
+        r.addAssignment("Hw2","Comp Sys", "Monday, December 5, 2016 07:00:00 PM EST", "1", "4");
+        r.addAssignment("Hw3","Hardware", "Thursday, December 8, 2016 11:00:00 PM EST", "2", "15");
+
+        r.addEvent("Electronics","MoWe","Monday, December 5, 2016 10:00:00 AM EST","Monday, December 5, 2016 11:00:00 AM EST","Elab 202");
+        r.addEvent("Circuits","MoWeFrSa","Monday, December 5, 2016 12:00:00 PM EST","Monday, December 5, 2016 01:00:00 PM EST","LRC 301");
+        r.addEvent("EnginWrit","TuTh","Tuesday, December 6, 2016 08:00:00 AM EST","Tuesday, December 6, 2016 10:00:00 AM EST","Marcus 110");
+        r.addEvent("Seminar", "", "Thursday, December 8, 2016 02:00:00 PM EST", "Thursday, December 8, 2016 04:00:00 PM EST", "Marston 5");
+
         r.schedule();
-        r.updateEvent("Electronics", "START_TIME", "1000");
-        r.updateAssignment("Hw1", "CLASSNAME", "Homework 1");
-        r.schedule();
-        System.out.println("Account \"steve\" made and initiated");
-        //r.deleteEvent("second");
-        //r.deleteAssignment("secondAssign");//*/
-        //r.display();
-        //r.deleteAccount("steve");
+
+        System.out.println("Account \"" + r.getUserName()+ "\" made and initiated");
+
     }
 
 }
