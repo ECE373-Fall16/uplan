@@ -495,7 +495,7 @@ public class DataBase{
             bedTime = new String(temp);
             int bed = Integer.parseInt(bedTime);
 
-            time[intArrayIndex++] = bed;
+            times[intArrayIndex++] = bed;
         }
         
         c.close();

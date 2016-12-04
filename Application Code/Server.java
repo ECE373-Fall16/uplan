@@ -522,7 +522,7 @@ public class Server {
         ListIterator<CalendarEvent> calListIter = calList.listIterator();
 
         int dayOfWeek;
-        int priorDayOfWeek = -1;
+        int priorDayOfWeek = 0;
         int calListIndex;
         java.util.Date endOfEvent;
         java.util.Date startOfFree;
@@ -537,11 +537,14 @@ public class Server {
             
             
             dayOfWeek = endTime.get(Calendar.DAY_OF_WEEK);    //used to know when switching days
-            if(priorDayOfWeek == -1){
+            if(priorDayOfWeek == 0){
                 priorDayOfWeek = dayOfWeek;
+                System.out.println("Initial: DayOfWeek: " + dayOfWeek + " || PriorDayOfWeek: " + priorDayOfWeek);
             }
 
             if(dayOfWeek != priorDayOfWeek){            //just passed last event of the day
+                System.out.println("Last calendar object: " + calList.get(calListIndex-1).toString());
+                System.out.println("Just Passed Last Event: DayOfWeek: " + dayOfWeek + " || PriorDayOfWeek: " + priorDayOfWeek);
                 
                 //creates and adds free time block to free time list
                 startOfFree = priorEndTime.getTime();
@@ -550,14 +553,15 @@ public class Server {
                 endOfFree = priorEndTime.getTime();
                 newFreeTime = new FreeTime(startOfFree, endOfFree);
                 freeTimeList.add(newFreeTime);
+                System.out.println("New freeTime block: " + newFreeTime.toString());
                 
                 priorDayOfWeek++;
-                if(priorDayOfWeek == 7){
-                    priorDayOfWeek = 0;
+                if(priorDayOfWeek == 8){
+                    priorDayOfWeek = 1;
                 }
             }
             
-            priorEndTime = endTime;
+            priorEndTime.setTime(endTime.getTime());           //old end time is now prior end time
             
             calListIter.next();
         }

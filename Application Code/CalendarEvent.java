@@ -17,7 +17,7 @@ public class CalendarEvent{
     
 
     public String toString(){
-        return "Calendar: " + name + " " + starttime + " " + endtime + " " + location;
+        return name + " | " + starttime + " | " + endtime + " | " + location;
     }
     
 
