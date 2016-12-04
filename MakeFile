@@ -1,3 +1,0 @@
-all: DataTest.class
-DataTest.class: DataTest.java
-    javac DataTest.java

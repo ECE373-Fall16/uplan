@@ -2,7 +2,7 @@ import java.util.*;
 
 public class HomePage {
 	
-	private Scanner scan = new Scanner(System.in);
+	/*private Scanner scan = new Scanner(System.in);
 	private Client client = new Client();     //client for creating accounts
 	private Client user;
 	
@@ -40,7 +40,7 @@ public class HomePage {
 	   for(int i = 0; i < length; i++){
 	       System.out.println("Name: " + ca[i].getName() + " Time: " + ca[i].getTime() + " Location: " + ca[i].getLocation());
 	   }
-	}//*/
+	}//
 	
 	public void displaySchedule(){
 	    user.display();
@@ -150,6 +150,6 @@ public class HomePage {
 		//check to see if they are valid
 		
 		return false;         //dont exit program
-	}
+	}*/
 	
 }
