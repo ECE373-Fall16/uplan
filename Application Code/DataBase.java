@@ -460,7 +460,7 @@ public class DataBase{
 
     public int[] getBedTime(String user) throws SQLException{
         String bedTime = "";
-        int[] times = {10,30};
+        int[] times = new int[2];
         Boolean found = false;
         try{
             c = connect();
@@ -481,6 +481,21 @@ public class DataBase{
 
         } catch (Exception e){
             System.err.println( "DatabaseGetBedTime:" + e.getClass().getName() + ": " + e.getMessage() );
+        }
+
+        char[] bedToChar = bedTime.toCharArray();
+        char[] temp = new char[2];
+        int count = 0;
+        int intArrayIndex = 0;
+
+        while (count < 4){
+            temp[0] = bedToChar[count++];
+            temp[1] = bedToChar[count++];
+
+            bedTime = new String(temp);
+            int bed = Integer.parseInt(bedTime);
+
+            time[intArrayIndex++] = bed;
         }
         
         c.close();
