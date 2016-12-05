@@ -7,19 +7,21 @@ public class Assignment{
     private Date dueDate;
     private String completion;
     private String priority;
+    private String appPriority;
     
 
-    public Assignment(String nameAssign, String nClass, Date days, String compTime, String pri){
+    public Assignment(String nameAssign, String nClass, Date days, String compTime, String pri, String appPri){
         assignment = nameAssign;
         nameClass = nClass;
         dueDate = days;
         completion = compTime;
         priority = pri;
+        appPriority = appPri;
     }
     
 
     public String toString(){
-        return assignment + " " + nameClass + " " + dueDate + " " + completion + " " + priority;
+        return "Assignment Name: " + assignment + " Classname: " + nameClass + " DueDate: " + dueDate + " Hours to Completion: " + completion + " Priority: " + priority + " App Priority: " + appPriority;
     }
     
 
@@ -70,6 +72,16 @@ public class Assignment{
 
     public void setPriority(String pri){
         priority = pri;
+    }
+
+
+    public String getAppPriority(){
+        return appPriority;
+    }
+
+
+    public void setAppPriority(String appPri){
+        appPriority = appPri;
     }
     
 }

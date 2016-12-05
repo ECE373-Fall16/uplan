@@ -107,7 +107,7 @@ public class Client {
     }
     
     
-    public void addAssignment(String name, String classname, String dueDate, String priority, String hours){
+    public void addAssignment(String name, String classname, String dueDate, String hours, String priority, String appPriority){
         try {
             
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
@@ -116,8 +116,9 @@ public class Client {
             params.addElement(username);
             params.addElement(classname);
             params.addElement(dueDate);
-            params.addElement(priority);
             params.addElement(hours);
+            params.addElement(priority);
+            params.addElement(appPriority);
   
             Vector returnValue = (Vector)server.execute("sample.addAssignment", params);
         } catch (Exception exception) {
@@ -235,26 +236,33 @@ public class Client {
     
     
     private LinkedList<CalendarEvent> vectorToCalList(Vector vectorList) throws ParseException{       //going to be used to parse vector lists into Calendar object list or 2d array
+        LinkedList<CalendarEvent> calList = new LinkedList<CalendarEvent>();
         Iterator iter = vectorList.iterator();
         int calCount = 1;       //number of calendar objects
         CalendarEvent temp;
-        LinkedList<CalendarEvent> calList = new LinkedList<CalendarEvent>();
-        String name;
-        DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL,DateFormat.FULL);
-        df.setTimeZone(TimeZone.getTimeZone("EST"));
-        Date start;
-        Date end;
-        String loc;
-        int counter = 0;
-        /*while(iter.hasNext()){
-            name = iter.next();
-            start = df.parse(iter.next());
-            end = df.parse(iter.next());
-            loc = iter.next();
-            temp = new CalendarEvent(name, start, end, loc);
-            calList.add(temp);
-            calCount++;
-        }*/
+
+        try{
+            DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL,DateFormat.FULL);
+            df.setTimeZone(TimeZone.getTimeZone("EST"));
+            String name;
+            Date start;
+            Date end;
+            String loc;
+            int counter = 0;
+            while(iter.hasNext()){
+                name = iter.next().toString();
+                start = df.parse(iter.next().toString());
+                end = df.parse(iter.next().toString());
+                loc = iter.next().toString();
+                temp = new CalendarEvent(name, start, end, loc);
+                calList.add(temp);
+                calCount++;
+            }
+
+        } catch (Exception e){
+            System.err.println("ClientVectorToCalList: " + e);
+        }
+
         return calList;
     }
     

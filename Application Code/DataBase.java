@@ -9,7 +9,7 @@ public class DataBase{
     private String sql = null;
     private ResultSet rs = null;
     private Connection c = null;
-    private DateFormat df;
+    private DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
     
 
     public DataBase(){
@@ -67,7 +67,8 @@ public class DataBase{
                 "CLASSNAME TEXT NOT NULL," + 
                 "DUE TEXT NOT NULL," +
                 "HOURSTOCOMPLETION TEXT NOT NULL," +
-                "PRIORITY TEXT NOT NULL);";
+                "PRIORITY TEXT NOT NULL," +
+                "APPPRIORITY TEXT NOT NULL);";
             }
             if(type.equals("SCHEDULE")){
                 sql = "CREATE TABLE " + username + "SCHEDULE(" +
@@ -113,25 +114,22 @@ public class DataBase{
     }
     
 
-    public void createAssignment(String name, String user, String className, String dueDate, String toCompletion, String priority) throws SQLException {
+    public void createAssignment(String name, String user, String className, String dueDate, String toCompletion, String priority, String appPriority) throws SQLException {
         try{
             c = connect();
-            //stmt = c.createStatement();
-            sql = "INSERT INTO " + user + "ASSIGNMENT VALUES(?,?,?,?,?)";
+            sql = "INSERT INTO " + user + "ASSIGNMENT VALUES(?,?,?,?,?,?)";
             pstmt = c.prepareStatement(sql);
+
+            //System.out.println(toCompletion);
             
-            //String comp = Integer.toString(toCompletion);
-            //String pri = Integer.toString(priority);
             pstmt.setString(1,name);
             pstmt.setString(2,className);
             pstmt.setString(3,dueDate);
             pstmt.setString(4,toCompletion);
             pstmt.setString(5,priority);
+            pstmt.setString(6,appPriority);
             pstmt.executeUpdate();
             pstmt.close();
-            
-            //stmt.executeUpdate(sql);
-            //stmt.close();
             
             System.out.println("Assignment created");
         } catch ( Exception e ) {
@@ -380,11 +378,13 @@ public class DataBase{
                 String dueDate = rs.getString("due");
                 String hours = rs.getString("hourstocompletion");
                 String pri = rs.getString("priority");
+                String appPri = rs.getString("apppriority");
                 System.out.println(name);
                 System.out.println(className);
                 System.out.println(dueDate);
                 System.out.println(hours);
                 System.out.println(pri);
+                System.out.println(appPri);
                 System.out.println();
             }
             System.out.println("------------------------end");
@@ -407,14 +407,15 @@ public class DataBase{
             rs = stmt.executeQuery( "SELECT * FROM " + user + "ASSIGNMENT;" );
             
             while(rs.next()){
-                String assignName = rs.getString("ASSIGNMENTNAME");
-                String className = rs.getString("CLASSNAME");
-                String dueDate = rs.getString("DUE");
+                String name = rs.getString("ASSIGNMENTNAME");
+                String className = rs.getString("classname");
+                String dueDate = rs.getString("due");
+                String hours = rs.getString("hourstocompletion");
+                String pri = rs.getString("priority");
+                String appPri = rs.getString("apppriority");
                 java.util.Date due = df.parse(dueDate);
-                String hoursLeft = rs.getString("HOURSTOCOMPLETION");
-                String pri = rs.getString("PRIORITY");
-                Assignment assign = new Assignment(assignName, className, due, hoursLeft, pri);
-                assignList.addLast(assign);
+                Assignment assign = new Assignment(name, className, due, hours, pri, appPri);
+                assignList.add(assign);
             }
             rs.close();
             stmt.close();
