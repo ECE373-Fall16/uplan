@@ -223,8 +223,12 @@ public class Server {
                     addToCalList(curCalEvent, calendarList);        //add to cal list
                     freeblocks = useFreeTime(curCalEvent, freeblocks);          //modify freetime for next assignment
                     curDayFreeTime = getDayFreeTime(freeblocks.get(schedIter.nextIndex()));
+
+                    assignIter.next();
                 
                 }
+
+                schedIter.next();
             
             }
 

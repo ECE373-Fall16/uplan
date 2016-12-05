@@ -301,7 +301,7 @@ public class DataBase{
         c.close();
     }
     
-    
+    //schedule section
     public void clearSchedule(String user) throws SQLException{
         try{
             System.out.println("Clearing " + user + " schedule");
@@ -313,16 +313,79 @@ public class DataBase{
         } catch (SQLException e) {
             System.out.println("DatabaseClearSchedule: " + e.getMessage());
         }
+
+        c.close();
     }
     
     
-    /*public void saveSchedule(String user) throws SQLException{
+    public void saveSchedule(String user, LinkedList<CalendarEvent> calList) {
         try{
-            c.connect();
+            System.out.println("Saving " + user + " schedule");
             clearSchedule(user);
-            System.out.println("Saving schedule");
+            ListIterator calIter = calList.listIterator();
+            while(calIter.hasNext()){
+                CalendarEvent curCal = calList.get(calIter.nextIndex());
+                addCalEvent(user, curCal);
+                calIter.next();
+            }
+        } catch (Exception e) {
+            System.err.println( "DatabaseSaveSchedule:" + e.getClass().getName() + ": " + e.getMessage() );
         }
-    }*/
+    }
+
+
+    public void addCalEvent(String username, CalendarEvent curCal) throws SQLException{
+        try{
+            c = connect();
+
+            sql = "INSERT INTO " + username + "SCHEDULE VALUES(?,?,?,?)";
+            pstmt = c.prepareStatement(sql);
+            
+            pstmt.setString(1,curCal.getName());
+            String startDate = df.format(curCal.getStartTime());
+            pstmt.setString(2,startDate);
+            String endDate = df.format(curCal.getEndTime());
+            pstmt.setString(3,endDate);
+            pstmt.setString(4,curCal.getLocation());
+            pstmt.executeUpdate();
+            pstmt.close();
+            
+            System.out.println("CalendarEvent created");
+
+        } catch (Exception e){
+            System.err.println( "DatabaseCreateCalenadarEvent:" + e.getClass().getName() + ": " + e.getMessage() );
+        }
+    }
+
+
+    public LinkedList<CalendarEvent> getSchedule(String username) throws SQLException{
+        LinkedList<CalendarEvent> calList= new LinkedList<CalendarEvent>();
+        try{
+            c = connect();
+            stmt = c.createStatement();
+            
+            rs = stmt.executeQuery( "SELECT * FROM " + username + "SCHEDULE;" );
+            
+            while(rs.next()){
+                String name = rs.getString("NAME");
+                String start = rs.getString("START_TIME");
+                String end = rs.getString("END_TIME");
+                String location = rs.getString("LOCATION");
+                java.util.Date startTime = df.parse(start);
+                java.util.Date endTime = df.parse(end);
+                CalendarEvent curCal = new CalendarEvent(name, startTime, endTime, location);
+                calList.add(curCal);
+            }
+            rs.close();
+            stmt.close();
+
+        } catch (Exception e){
+            System.err.println( "DatabaseGetSchedule:" + e.getClass().getName() + ": " + e.getMessage() );
+        }
+        
+        c.close();
+        return calList;
+    }
     
     
     //displays
