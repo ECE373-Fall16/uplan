@@ -289,8 +289,8 @@ public class Server {
                 Event week1 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
                 sepEvents.add(week1);
                 
-                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear);
-                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
 
                 startTime = tempStart.getTime();
                 endTime = tempEnd.getTime();
@@ -314,8 +314,8 @@ public class Server {
                 Event week1 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
                 sepEvents.add(week1);
                 
-                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear);
-                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
 
                 startTime = tempStart.getTime();
                 endTime = tempEnd.getTime();
@@ -339,8 +339,8 @@ public class Server {
                 Event week1 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
                 sepEvents.add(week1);
                 
-                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear);
-                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
 
                 startTime = tempStart.getTime();
                 endTime = tempEnd.getTime();
@@ -363,8 +363,8 @@ public class Server {
                 Event week1 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
                 sepEvents.add(week1);
                 
-                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear);
-                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
 
                 startTime = tempStart.getTime();
                 endTime = tempEnd.getTime();
@@ -387,8 +387,8 @@ public class Server {
                 Event week1 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
                 sepEvents.add(week1);
                 
-                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear);
-                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
 
                 startTime = tempStart.getTime();
                 endTime = tempEnd.getTime();
@@ -411,8 +411,8 @@ public class Server {
                 Event week1 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
                 sepEvents.add(week1);
                 
-                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear);
-                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
 
                 startTime = tempStart.getTime();
                 endTime = tempEnd.getTime();
@@ -435,8 +435,8 @@ public class Server {
                 Event week1 = new Event(eve.getEventName(),"",startTime, endTime, eve.getLocation());
                 sepEvents.add(week1);
                 
-                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear);
-                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+                tempStart.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
+                tempEnd.set(Calendar.WEEK_OF_YEAR, weekOfYear+1);
 
                 startTime = tempStart.getTime();
                 endTime = tempEnd.getTime();
