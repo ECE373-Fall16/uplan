@@ -11,9 +11,10 @@ public class Driver{
         while(validateLogin == 0)
             r.login("rhartnett1233", "UMASS");
 
-        r.addAssignment("Hw1","Circuits", "Sunday, December 4, 2016 11:00:00 PM EST", "2", "10");
-        r.addAssignment("Hw2","Comp Sys", "Monday, December 5, 2016 07:00:00 PM EST", "1", "4");
-        r.addAssignment("Hw3","Hardware", "Thursday, December 8, 2016 11:00:00 PM EST", "2", "15");
+        r.addAssignment("Hw1","Circuits", "Sunday, December 4, 2016 11:00:00 PM EST", "10", "2", "");
+        r.addAssignment("Hw2","Comp Sys", "Monday, December 5, 2016 07:00:00 PM EST", "4", "3", "");
+        r.addAssignment("Hw3","Hardware", "Thursday, December 8, 2016 11:00:00 PM EST", "15", "1", "");
+        r.addAssignment("Hw4","Har", "Saturday, December 10, 2016 6:00:00 AM EST", "25", "3", "");
 
         r.addEvent("Electronics","MoWe","Monday, December 5, 2016 10:00:00 AM EST","Monday, December 5, 2016 11:00:00 AM EST","Elab 202");
         r.addEvent("Circuits","MoWeFrSa","Monday, December 5, 2016 12:00:00 PM EST","Monday, December 5, 2016 01:00:00 PM EST","LRC 301");
