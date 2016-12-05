@@ -13,12 +13,12 @@ public class Server {
     private TimeZone timezone = TimeZone.getTimeZone("EST");
 
 
-    /*public Vector display(String user, LinkedList<CalendarEvent> calendarList){
+    public Vector display(String user, LinkedList<CalendarEvent> calendarList){
         try{
             Vector values = new Vector();
             System.out.println("\nPrinting list...");
             for(int k = 0; k < calendarList.size(); k++){
-                System.out.println("[" + k + "]" + calendarList.get(k).toString());
+                //System.out.println("[" + k + "]" + calendarList.get(k).toString());
                 values.add(calendarList.get(k).getName());
                 values.add(df.format(calendarList.get(k).getStartTime()));
                 values.add(df.format(calendarList.get(k).getEndTime()));
@@ -32,7 +32,7 @@ public class Server {
         }
 
         return new Vector();
-    }*/
+    }
 
 
     public Vector validateUser(String username, String password){
@@ -49,9 +49,9 @@ public class Server {
     }
    
    
-    public Vector addAssignment(String name, String username, String className, String date, String comp, String pri){
+    public Vector addAssignment(String name, String username, String className, String date, String comp, String pri, String appPri){
         try{
-            data.createAssignment(name, username, className, date, comp, pri);
+            data.createAssignment(name, username, className, date, comp, pri, appPri);
 
         }catch( Exception e ){
             System.err.println( "ServerAddAssign: " + e.getClass().getName() + ": " + e.getMessage() );
@@ -174,6 +174,7 @@ public class Server {
             LinkedList<CalendarEvent> calendarList = new LinkedList<CalendarEvent>();
             LinkedList<FreeTime> freeblocks = new LinkedList<FreeTime>();
             LinkedList<Event> tempEventList = new LinkedList<Event>();
+            LinkedList<Assignment> assignList = data.getAssignmentList(username);
             tempEventList = data.getEventList(username);
             LinkedList<Event> eventList = new LinkedList<Event>();
             ListIterator iter1 = tempEventList.listIterator();
@@ -208,21 +209,21 @@ public class Server {
                 calendarList = addToCalList(calTemp, calendarList);
                 iter2.next();
             }
+
+            assignList = orderAssignmentList(assignList);
+
+            //display(username, calendarList);
             
-            freeblocks = findFreeTime(calendarList, username);
+            //freeblocks = findFreeTime(calendarList, username);
             
-            ListIterator iter3 = calendarList.listIterator();
+            /*ListIterator iter3 = calendarList.listIterator();
             int index4;
             while(iter3.hasNext()){
                 index4 = iter3.nextIndex();
                 System.out.println(calendarList.get(index4).toString());
                 iter3.next();
-            }
+            }*/
 
-
-            
-
-        
         } catch (Exception e){
             System.err.println( "Serverschedule algo:" + e.getClass().getName() + ": " + e.getMessage() );
         }    
@@ -461,10 +462,10 @@ public class Server {
     }
     
     
-    public CalendarEvent assignmentToCal(Assignment ass, String startTime, String endTime) throws ParseException{
+    public CalendarEvent assignmentToCal(Assignment assign, String startTime, String endTime) throws ParseException{
         CalendarEvent c = null;
         try{
-            String name = ass.getAssignName();
+            String name = assign.getAssignName();
             java.util.Date start = df.parse(startTime);
             java.util.Date end = df.parse(endTime);
             String loc = "ASSIGNMENT";
@@ -512,6 +513,100 @@ public class Server {
             added = true;
         }
         return curList;
+    }
+
+
+    public LinkedList<Assignment> orderAssignmentList(LinkedList<Assignment> assignList){
+        LinkedList<Assignment> tempList = new LinkedList<Assignment>();
+        ListIterator assignIter = assignList.listIterator();
+
+        Assignment curAssign;
+        int appPriority;
+
+        while(assignIter.hasNext()){
+            int index = assignIter.nextIndex();
+            curAssign = assignList.get(index);
+            double hoursToComp = (double)Integer.parseInt(curAssign.getCompletionTime());
+            double userPriority = (double)Integer.parseInt(curAssign.getPriority());
+            double hoursLeft = (double)findHoursTillDue(curAssign);
+            if(hoursLeft != -1){
+                appPriority = (int)(hoursToComp*userPriority/hoursLeft*1000);
+                curAssign.setAppPriority(Integer.toString(appPriority));
+                tempList = addToAssignList(tempList, curAssign);
+            }
+            assignIter.next();
+        }
+
+        ListIterator iter = tempList.listIterator();
+        while(iter.hasNext()){
+            int index = iter.nextIndex();
+            System.out.println(tempList.get(index).toString());
+            iter.next();
+        }
+        return tempList;
+    }
+
+
+    public LinkedList<Assignment> addToAssignList(LinkedList<Assignment> assignList, Assignment assign){
+        ListIterator iter = assignList.listIterator();
+        LinkedList<Assignment> temp = assignList;
+        Assignment curAssign;
+
+        boolean added = false;
+        int assignAppPri = Integer.parseInt(assign.getAppPriority());  //app priority for assignment brought in
+        int curAppPri;                                                   //app priority for iterator assignment
+        int correctIndex = 0;
+
+        while(iter.hasNext() && !added){
+            int iterIndex = iter.nextIndex();
+            curAssign = assignList.get(iterIndex);
+            curAppPri = Integer.parseInt(curAssign.getAppPriority());
+            /*System.out.println("----------------------------------");
+            System.out.println("assignPri: " + assignAppPri + "curPri: " + curAppPri);
+            System.out.println("----------------------------------");
+            System.out.println("");*/
+            if(assignAppPri > curAppPri){
+                correctIndex = iterIndex;
+                added = true;
+            }
+            iter.next();
+        }
+
+        if(added == true)
+            assignList.add(correctIndex, assign);
+
+        if(added == false){                     //for if there is nothing in the list to begin with or it belongs at end
+            temp.addLast(assign);
+            added = true;
+        }
+
+        return assignList;
+    }
+
+
+    public int findHoursTillDue(Assignment assign){
+        Calendar curCal = Calendar.getInstance();
+        Calendar dueCal = Calendar.getInstance();
+
+        java.util.Date dueDate = assign.getDueDate();
+        dueCal.setTime(dueDate);
+
+        int hoursTillDue;
+        int x = curCal.get(Calendar.DAY_OF_YEAR) + 1;
+        int y = dueCal.get(Calendar.DAY_OF_YEAR) - 1;
+        int days = y - x + 1;
+        int w = 24 - curCal.get(Calendar.HOUR_OF_DAY);
+        int z = dueCal.get(Calendar.HOUR_OF_DAY);
+
+        if(days == -1){
+            hoursTillDue = w - z;
+            if(hoursTillDue >= 0)
+                return -1;
+        }
+
+        hoursTillDue = (days)*24 + w + z;
+
+        return hoursTillDue;
     }
 
 
