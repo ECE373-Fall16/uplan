@@ -50,122 +50,157 @@ public class Server {
    
    
     public Vector addAssignment(String name, String username, String className, String date, String comp, String pri, String appPri){
+        int valid = 1;
         try{
-            data.createAssignment(name, username, className, date, comp, pri, appPri);
+            valid = data.createAssignment(name, username, className, date, comp, pri, appPri);
 
         }catch( Exception e ){
             System.err.println( "ServerAddAssign: " + e.getClass().getName() + ": " + e.getMessage() );
+            valid = 0;
         }
       
         //return as vector
         Vector returnValue = new Vector();
-        /*returnValue.add(name);
-        returnValue.add(className);
-        returnValue.add(date);
-        returnValue.add(comp);
-        returnValue.add(pri);*/
+        returnValue.add(valid);
+
         return returnValue;
     }
    
    
     public Vector addEvent(String name, String username, String days, String startTime, String endTime, String loc){
-       //send to database
+        int valid = 1;
         try{
-            data.createEvent(name,username,days,startTime,endTime,loc);
+            valid = data.createEvent(name,username,days,startTime,endTime,loc);
 
         }catch( Exception e ){
             System.err.println( "ServerAddEvent:" + e.getClass().getName() + ": " + e.getMessage() );
+            valid = 0;
         }
  
         //return vector
         Vector returnValue = new Vector();
-        returnValue.add(name);
-        returnValue.add(days);
-        returnValue.add(startTime);
-        returnValue.add(endTime);
-        returnValue.add(loc);
+        returnValue.add(valid);
+
         return returnValue;
     }
    
    
     public Vector createAccount(String username, String name, String email, String password, String bedtime){
+        int valid = 1;
         try{
-            data.createUser(username, name, email, password, bedtime);
+            valid = data.createUser(username, name, email, password, bedtime);
 
         } catch (Exception e){
             System.err.println( "ServerCreateAccount:" + e.getClass().getName() + ": " + e.getMessage() );
+            valid = 0;
         }
-        return new Vector();
+
+        Vector returnValue = new Vector();
+        returnValue.add(valid);
+
+        return returnValue;
     }
 
 
     public Vector deleteEvent(String name, String username){
+        int valid = 1;
         try{
-            data.removeEvent(name, username);
+            valid = data.removeEvent(name, username);
 
         } catch (Exception e){
             System.err.println( "ServerDeleteEvent:" + e.getClass().getName() + ": " + e.getMessage() );
+            valid = 0;
         }
-        return new Vector();
+
+        Vector returnValue = new Vector();
+        returnValue.add(valid);
+
+        return returnValue;
     }
     
     
     public Vector deleteAssignment(String name, String username){
+        int valid = 1;
         try{
-            data.removeAssignment(name, username);
+            valid = data.removeAssignment(name, username);
 
         } catch (Exception e){
             System.err.println( "ServerDeleteEvent:" + e.getClass().getName() + ": " + e.getMessage() );
+            valid = 0;
         }
-        return new Vector();
+
+        Vector returnValue = new Vector();
+        returnValue.add(valid);
+
+        return returnValue;
     }
     
     
     public Vector deleteAccount(String username){
+        int valid = 1;
         try{
-            data.removeProfile(username);
+            valid = data.removeProfile(username);
 
         } catch (Exception e){
             System.err.println( "ServerDeleteEvent:" + e.getClass().getName() + ": " + e.getMessage() );
+            valid = 0;
         }
 
-        return new Vector();
+        Vector returnValue = new Vector();
+        returnValue.add(valid);
+
+        return returnValue;
     }
     
     
     public Vector updateAssignment(String assignmentName, String type, String newName, String user){
+        int valid = 1;
         try{
-            data.updateAssignment(assignmentName, type, newName, user);
+            valid = data.updateAssignment(assignmentName, type, newName, user);
 
         } catch (Exception e){
             System.err.println( "ServerUpdateAssignment:" + e.getClass().getName() + ": " + e.getMessage() );
+            valid = 0;
         }
 
-        return new Vector();
+        Vector returnValue = new Vector();
+        returnValue.add(valid);
+
+        return returnValue;
     }
     
     
     public Vector updateEvent(String eventName, String type, String newName, String user){
+        int valid = 1;
         try{
-            data.updateEvent(eventName, type, newName, user);
+            valid = data.updateEvent(eventName, type, newName, user);
 
         } catch (Exception e){
             System.err.println( "ServerUpdateEvent:" + e.getClass().getName() + ": " + e.getMessage() );
+            valid = 0;
         }
 
-        return new Vector();
+        Vector returnValue = new Vector();
+        returnValue.add(valid);
+
+        return returnValue;
     }
     
     
     public Vector updateProfile(String type, String newName, String user){
+        int valid = 1;
         try{
-            data.updateProfile(type, newName, user);
+            valid = data.updateProfile(type, newName, user);
 
         } catch (Exception e){
             System.err.println( "ServerUpdateProfile:" + e.getClass().getName() + ": " + e.getMessage() );
+            valid = 0;
         }
 
-        return new Vector();
+        Vector returnValue = new Vector();
+        returnValue.add(valid);
+
+        return returnValue;
     }
     
    
@@ -188,7 +223,6 @@ public class Server {
             }
 
             assignList = orderAssignmentList(assignList);
-            
             freeblocks = findFreeTime(calendarList, username);
             
             //At this point we have the event list converted into the CalendarEvent list.
@@ -197,37 +231,47 @@ public class Server {
             //list based on which assignments should be scheduled first for each day so 
             //they have enough time to be completed based on hours to completetion
 
+            LinkedList<FreeTime> tempFree = freeblocks;
             ListIterator schedIter = freeblocks.listIterator();
 
             while(schedIter.hasNext()){                         //goes day by day through freetime
                 
-                FreeTime curDay = freeblocks.get(schedIter.nextIndex());
+                FreeTime curBlock = freeblocks.get(schedIter.nextIndex());
                 assignList = orderAssignmentList(assignList);
+                LinkedList<Assignment> tempAssign = assignList;
                 ListIterator assignIter = assignList.listIterator();
-                int curDayFreeTime = getDayFreeTime(curDay);        //need to complete
+                int curBlockFreeTime = getDayFreeTime(curBlock);        //need to complete
                 CalendarEvent curCalEvent;
                 
-                while(assignIter.hasNext() && curDayFreeTime > 0){      //goes assignment by assignment per day
+                while(assignIter.hasNext() && curBlockFreeTime > 0){      //goes assignment by assignment per day
                     
-                    Assignment curAssign = assignList.get(assignIter.nextIndex());
+                    Assignment curAssign = tempAssign.get(assignIter.nextIndex());
                     int hoursToComp = Integer.parseInt(curAssign.getCompletionTime());
                     int daysTillDue = getDaysTillDue(curAssign);
                     int workHours = hoursToComp/daysTillDue + 1;        //hours should be worked on that day
-                    java.util.Date assignStart = curDay.getStartTime();           //starttime = starttime of freetime
+                    
+                    if(workHours > curBlockFreeTime)
+                        workHours = curBlockFreeTime;
+
+                    java.util.Date assignStart = curBlock.getStartTime();           //starttime = starttime of freetime
                     Calendar end = dateToCalendar(assignStart);  
                     int hourOfDay = end.get(Calendar.HOUR_OF_DAY);
                     end.set(Calendar.HOUR_OF_DAY, hourOfDay + workHours);   //endtime = starttime + workhours
+                    
                     java.util.Date assignEnd = end.getTime();
-                    assignList.get(assignIter.nextIndex()).setCompletionTime(Integer.toString(hoursToComp - workHours));  //modify assignment with reduced completiontime
+                    tempAssign.get(assignIter.nextIndex()).setCompletionTime(Integer.toString(hoursToComp - workHours));  //modify assignment with reduced completiontime
+                    
                     curCalEvent = assignmentToCal(curAssign, assignStart, assignEnd);   //create cal event
                     addToCalList(curCalEvent, calendarList);        //add to cal list
-                    freeblocks = useFreeTime(curCalEvent, freeblocks);          //modify freetime for next assignment
-                    curDayFreeTime = getDayFreeTime(freeblocks.get(schedIter.nextIndex()));
+                    
+                    tempFree = useFreeTime(curCalEvent, tempFree);          //modify freetime for next assignment
+                    curBlockFreeTime = getDayFreeTime(tempFree.get(schedIter.nextIndex()));
 
                     assignIter.next();
                 
                 }
 
+                assignList = tempAssign;
                 schedIter.next();
             
             }
