@@ -8,7 +8,7 @@ public class Server {
     private int alCounter = 0;
     private int elCounter = 0;
     private DataBase data = new DataBase();
-    private static int PORT = 8082;
+    private static int PORT = 8095;
     private DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
     private TimeZone timezone = TimeZone.getTimeZone("EST");
 
@@ -571,6 +571,30 @@ public class Server {
             priorEndTime.setTime(endTime.getTime());           //old end time is now prior end time
             
             calListIter.next();
+        }
+        return freeTimeList;
+    }
+    
+    private LinkedList<FreeTime> useFreeTime(CalendarEvent workTime, LinkedList<FreeTime> freeTimeList){
+        Calendar workStart = dateToCalendar(workTime.getStartTime());
+        Calendar workEnd = dateToCalendar(workTime.getEndTime());
+        Calendar freeStart;
+        Calendar freeEnd;
+        
+        int freeTimeIndex;
+        Boolean found = false;
+        
+        ListIterator<FreeTime> freeTimeIter = freeTimeList.listIterator();
+        
+        while(freeTimeIter.hasNext() && !found){
+            freeTimeIndex = freeTimeIter.nextIndex();
+            freeStart = dateToCalendar(freeTimeList.get(freeTimeIndex).getStartTime());
+            if(workStart.compareTo(freeStart) < 0){         //workStart passes freeStart
+                found = true;
+            }
+            
+            freeTimeIter.next();
+            
         }
         return freeTimeList;
     }
