@@ -17,21 +17,25 @@ public class DataBase{
     }
     
     
-    public void createUser(String username, String name, String email, String password, String bedTime) throws SQLException {
-        
+    public int createUser(String username, String name, String email, String password, String bedTime) throws SQLException {
+        int valid = 1;
         try {
             
-            createTable(username,"ASSIGNMENT");
-            createTable(username,"EVENT"); 
-            createTable(username,"SCHEDULE");
-            
+            int a = createTable(username,"ASSIGNMENT");
+            int b = createTable(username,"EVENT"); 
+            int c = createTable(username,"SCHEDULE");
+
+            if(a == 1 && b == 1 && c == 1)
+                valid = 0;
+   
         } catch (Exception e){
             System.err.println( "DatabaseCreateUser:" + e.getClass().getName() + ": " + e.getMessage() );
+            valid = 0;
         }
+
         try{
             c = connect();
             sql = "INSERT INTO PROFILE VALUES(?,?,?,?,?)";
-            //stmt = c.createStatement();
             
             pstmt = c.prepareStatement(sql);
             
@@ -42,14 +46,19 @@ public class DataBase{
             pstmt.setString(5,bedTime);
             pstmt.executeUpdate();
             pstmt.close();
+
         }catch (Exception e){
             System.err.println( "DatabaseCreateProfile:" + e.getClass().getName() + ": " + e.getMessage() );
+            valid = 0;
         }
+
         c.close();
+        return valid;
     }
     
     
-    public void createTable(String username, String type) throws SQLException {
+    public int createTable(String username, String type) throws SQLException {
+        int valid = 1;
         try{
             c = connect();
             stmt = c.createStatement();
@@ -83,13 +92,17 @@ public class DataBase{
             
         } catch ( Exception e ) {
             System.err.println( "DatabaseCreateTable:" + e.getClass().getName() + ": " + e.getMessage() );    
+            valid = 0;
         }
+
         System.out.println(type + " Tables Created Successfully");
         c.close();
+        return valid;
     }
     
     
     public int valUser(String username, String password) throws SQLException{
+        int valid = 1;
         try{
             c = connect();
             stmt = c.createStatement();
@@ -101,26 +114,25 @@ public class DataBase{
                     rs.close();
                     stmt.close();
                     c.close();
-                    return 1;
                 }
             } 
         } catch(Exception e){
             System.err.println( "DatabaseValidateUser:" + e.getClass().getName() + ": " + e.getMessage() );
+            valid = 0;
         }
         rs.close();
         stmt.close();
         c.close();
-        return 0;
+        return valid;
     }
     
 
-    public void createAssignment(String name, String user, String className, String dueDate, String toCompletion, String priority, String appPriority) throws SQLException {
+    public int createAssignment(String name, String user, String className, String dueDate, String toCompletion, String priority, String appPriority) throws SQLException {
+        int valid = 1;
         try{
             c = connect();
             sql = "INSERT INTO " + user + "ASSIGNMENT VALUES(?,?,?,?,?,?)";
             pstmt = c.prepareStatement(sql);
-
-            //System.out.println(toCompletion);
             
             pstmt.setString(1,name);
             pstmt.setString(2,className);
@@ -132,14 +144,19 @@ public class DataBase{
             pstmt.close();
             
             System.out.println("Assignment created");
+
         } catch ( Exception e ) {
             System.err.println( "DatabaseCreateAssignment:" + e.getClass().getName() + ": " + e.getMessage() );
+            valid = 0;
         }
+
         c.close();
+        return valid;
     }
     
     
-    public void createEvent(String name, String username, String repeatDays, String startTime, String endTime, String loc) throws SQLException {
+    public int createEvent(String name, String username, String repeatDays, String startTime, String endTime, String loc) throws SQLException {
+        int valid = 1;
         try{
             c = connect();
 
@@ -159,14 +176,20 @@ public class DataBase{
             System.out.println("Event created");
         } catch ( Exception e ) {
             System.err.println( "DatabaseCreateEvent:" + e.getClass().getName() + ": " + e.getMessage() );
+            valid = 0;
         }
+
         c.close();
+        return valid;
+
     }
     
     
-    public void removeProfile(String username) throws SQLException{
+    public int removeProfile(String username) throws SQLException{
+        int valid = 1;
         System.out.println("Deleting " + username + "'s AssignmentTable...");
         sql = "DROP TABLE " + username + "ASSIGNMENT";
+        
         try{
             c = connect();
             stmt = c.createStatement();
@@ -175,6 +198,7 @@ public class DataBase{
  
         } catch (SQLException e) {
             System.out.println(e.getMessage());
+            valid = 0;
         }
         
         System.out.println("Deleting " + username + "'s EventTable...");
@@ -189,6 +213,7 @@ public class DataBase{
  
         } catch (SQLException e) {
             System.out.println("DatabaseRemoveProfile1: " + e.getMessage());
+            valid = 0;
         }
         
         System.out.println("Deleting Profile " + username + "...");
@@ -206,12 +231,16 @@ public class DataBase{
  
         } catch (SQLException e) {
             System.out.println("DatabaseRemoveProfile2: " + e.getMessage());
+            valid = 0;
         }
+
         c.close();
+        return valid;
     }
     
     
-    public void removeEvent(String name1, String username) throws SQLException{
+    public int removeEvent(String name1, String username) throws SQLException{
+        int valid = 1;
         try{
             c = connect();
             sql = "DELETE FROM " + username + "EVENT WHERE EVENTNAME = ?";
@@ -224,12 +253,16 @@ public class DataBase{
  
         } catch (SQLException e) {
             System.out.println("DatabaseRemoveEvent: " + e.getMessage());
+            valid = 0;
         }
+
         c.close();
+        return valid;
     }
     
     
-    public void removeAssignment(String name1, String username) throws SQLException{
+    public int removeAssignment(String name1, String username) throws SQLException{
+        int valid = 1;
         try{
             c = connect();
             sql = "DELETE FROM " + username + "ASSIGNMENT WHERE ASSIGNMENTNAME = ?";
@@ -242,13 +275,17 @@ public class DataBase{
  
         } catch (SQLException e) {
             System.out.println("DatabaseRemoveAssignment: " + e.getMessage());
+            valid = 0;;
         }
+
         c.close();
+        return valid;
     }
     
 
     //updates
-    public void updateAssignment(String assignmentName, String type, String newData, String user) throws SQLException{
+    public int updateAssignment(String assignmentName, String type, String newData, String user) throws SQLException{
+        int valid = 1;
         try{
             System.out.println("Updating " + assignmentName + " assignment to " + newData + " for " + user);
             c = connect();
@@ -261,12 +298,16 @@ public class DataBase{
             
         } catch (SQLException e) {
             System.out.println("DatabaseUpdateAssignment: " + e.getMessage());
+            valid = 0;
         }
+
         c.close();
+        return valid;
     }
     
     
-    public void updateEvent(String eventName, String type, String newData, String user) throws SQLException{
+    public int updateEvent(String eventName, String type, String newData, String user) throws SQLException{
+        int valid = 1;
         try{
             System.out.println("Updating " + eventName + " event to " + newData + " for " + user);
             c = connect();
@@ -279,12 +320,16 @@ public class DataBase{
             
         } catch (SQLException e) {
             System.out.println("DatabaseUpdateEvent: " + e.getMessage());
+            valid = 0;
         }
+
         c.close();
+        return valid;
     }
     
     
-    public void updateProfile(String type, String newData, String user) throws SQLException{
+    public int updateProfile(String type, String newData, String user) throws SQLException{
+        int valid = 1;
         try{
             System.out.println("Updating " + user + " profile to " + newData + " for " + user);
             c = connect();
@@ -297,12 +342,16 @@ public class DataBase{
             
         } catch (SQLException e) {
             System.out.println("DatabaseUpdateProfile: " + e.getMessage());
+            valid = 0;
         }
+
         c.close();
+        return valid;
     }
     
     //schedule section
-    public void clearSchedule(String user) throws SQLException{
+    public int clearSchedule(String user) throws SQLException{
+        int valid = 1;
         try{
             System.out.println("Clearing " + user + " schedule");
             c = connect();
@@ -310,31 +359,38 @@ public class DataBase{
             stmt = c.createStatement();
             stmt.executeUpdate(sql);
             stmt.close();
+
         } catch (SQLException e) {
             System.out.println("DatabaseClearSchedule: " + e.getMessage());
+            valid = 0;
         }
 
         c.close();
+        return valid;
     }
     
     
-    public void saveSchedule(String user, LinkedList<CalendarEvent> calList) {
+    public int saveSchedule(String user, LinkedList<CalendarEvent> calList) {
+        int valid = 1;
         try{
             System.out.println("Saving " + user + " schedule");
             clearSchedule(user);
             ListIterator calIter = calList.listIterator();
             while(calIter.hasNext()){
                 CalendarEvent curCal = calList.get(calIter.nextIndex());
-                addCalEvent(user, curCal);
+                valid = addCalEvent(user, curCal);
                 calIter.next();
             }
         } catch (Exception e) {
             System.err.println( "DatabaseSaveSchedule:" + e.getClass().getName() + ": " + e.getMessage() );
+            valid = 0;
         }
+        return valid;
     }
 
 
-    public void addCalEvent(String username, CalendarEvent curCal) throws SQLException{
+    public int addCalEvent(String username, CalendarEvent curCal) throws SQLException{
+        int valid = 1;
         try{
             c = connect();
 
@@ -354,7 +410,11 @@ public class DataBase{
 
         } catch (Exception e){
             System.err.println( "DatabaseCreateCalenadarEvent:" + e.getClass().getName() + ": " + e.getMessage() );
+            valid = 0;
         }
+
+        c.close();
+        return valid;
     }
 
 
@@ -381,6 +441,7 @@ public class DataBase{
 
         } catch (Exception e){
             System.err.println( "DatabaseGetSchedule:" + e.getClass().getName() + ": " + e.getMessage() );
+            calList = null;
         }
         
         c.close();
@@ -389,7 +450,8 @@ public class DataBase{
     
     
     //displays
-    public void display(String user) throws SQLException{
+    public int display(String user) throws SQLException{
+        int valid = 1;
         Connection c = null;
         try{
             c = connect();
@@ -456,8 +518,11 @@ public class DataBase{
             
         }catch (Exception e){
             System.err.println( "DatabaseDisplay: " + e.getClass().getName() + ": " + e.getMessage() );
+            valid = 0;
         }
+
         c.close();
+        return valid;
     }
     
     
