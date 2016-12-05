@@ -9,7 +9,7 @@ public class DataBase{
     private String sql = null;
     private ResultSet rs = null;
     private Connection c = null;
-    private DateFormat df;
+    private DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
     
 
     public DataBase(){
@@ -407,15 +407,14 @@ public class DataBase{
             rs = stmt.executeQuery( "SELECT * FROM " + user + "ASSIGNMENT;" );
             
             while(rs.next()){
-                String assignName = rs.getString("ASSIGNMENTNAME");
-                String className = rs.getString("CLASSNAME");
-                String dueDate = rs.getString("DUE");
+                String name = rs.getString("ASSIGNMENTNAME");
+                String className = rs.getString("classname");
+                String dueDate = rs.getString("due");
+                String hours = rs.getString("hourstocompletion");
+                String pri = rs.getString("priority");
+                String appPri = rs.getString("apppriority");
                 java.util.Date due = df.parse(dueDate);
-                String hoursLeft = rs.getString("HOURSTOCOMPLETION");
-                System.out.println("hey");
-                String pri = rs.getString("PRIORITY");
-                String appPri = rs.getString("APPPRIORITY");
-                Assignment assign = new Assignment(assignName, className, due, hoursLeft, pri, appPri);
+                Assignment assign = new Assignment(name, className, due, hours, pri, appPri);
                 assignList.add(assign);
             }
             rs.close();

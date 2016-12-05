@@ -177,7 +177,6 @@ public class Server {
             tempEventList = data.getEventList(username);
             LinkedList<Event> eventList = new LinkedList<Event>();
             ListIterator iter1 = tempEventList.listIterator();
-            //data.display(username);
             
             int index1;
             Event temp;
@@ -210,7 +209,7 @@ public class Server {
                 iter2.next();
             }
 
-            //assignList = orderAssignmentList(assignList);
+            assignList = orderAssignmentList(assignList);
 
             //display(username, calendarList);
             
@@ -521,25 +520,27 @@ public class Server {
         ListIterator assignIter = assignList.listIterator();
 
         Assignment curAssign;
-        double appPriority;
+        int appPriority;
 
         while(assignIter.hasNext()){
             int index = assignIter.nextIndex();
             curAssign = assignList.get(index);
-            int hoursToComp = Integer.parseInt(curAssign.getCompletionTime());
-            int userPriority = Integer.parseInt(curAssign.getPriority());
-            int hoursLeft = findHoursTillDue(curAssign);
+            double hoursToComp = (double)Integer.parseInt(curAssign.getCompletionTime());
+            double userPriority = (double)Integer.parseInt(curAssign.getPriority());
+            double hoursLeft = (double)findHoursTillDue(curAssign);
             if(hoursLeft != -1){
-                appPriority = (double)(hoursToComp*userPriority/hoursLeft);
-                curAssign.setAppPriority(String.valueOf(appPriority));
+                appPriority = (int)(hoursToComp*userPriority/hoursLeft*1000);
+                curAssign.setAppPriority(Integer.toString(appPriority));
                 tempList = addToAssignList(tempList, curAssign);
             }
+            assignIter.next();
         }
 
         ListIterator iter = tempList.listIterator();
         while(iter.hasNext()){
             int index = iter.nextIndex();
             System.out.println(tempList.get(index).toString());
+            iter.next();
         }
         return tempList;
     }
@@ -547,24 +548,34 @@ public class Server {
 
     public LinkedList<Assignment> addToAssignList(LinkedList<Assignment> assignList, Assignment assign){
         ListIterator iter = assignList.listIterator();
+        LinkedList<Assignment> temp = assignList;
         Assignment curAssign;
 
         boolean added = false;
-        double assignAppPri = Double.parseDouble(assign.getAppPriority());  //app priority for assignment brought in
-        double curAppPri;                                                   //app priority for iterator assignment
+        int assignAppPri = Integer.parseInt(assign.getAppPriority());  //app priority for assignment brought in
+        int curAppPri;                                                   //app priority for iterator assignment
+        int correctIndex = 0;
 
-        while(iter.hasNext()){
+        while(iter.hasNext() && !added){
             int iterIndex = iter.nextIndex();
             curAssign = assignList.get(iterIndex);
-            curAppPri = Double.parseDouble(curAssign.getAppPriority());
-            if(assignAppPri < curAppPri){
-                assignList.add(iterIndex, assign);
+            curAppPri = Integer.parseInt(curAssign.getAppPriority());
+            /*System.out.println("----------------------------------");
+            System.out.println("assignPri: " + assignAppPri + "curPri: " + curAppPri);
+            System.out.println("----------------------------------");
+            System.out.println("");*/
+            if(assignAppPri > curAppPri){
+                correctIndex = iterIndex;
                 added = true;
             }
+            iter.next();
         }
 
+        if(added == true)
+            assignList.add(correctIndex, assign);
+
         if(added == false){                     //for if there is nothing in the list to begin with or it belongs at end
-            assignList.add(assign);
+            temp.addLast(assign);
             added = true;
         }
 
