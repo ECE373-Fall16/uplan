@@ -458,7 +458,7 @@ public class DataBase{
         return eventList;
     }
 
-    public int[] getBedTime(String user) throws SQLException{
+    public int[] getBedTime(String user)throws SQLException{
         String bedTime = "";
         int[] times = new int[2];
         Boolean found = false;

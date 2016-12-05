@@ -530,10 +530,11 @@ public class Server {
         FreeTime newFreeTime;
 
         while(calListIter.hasNext()){           //runs through calendar list for end of each event
+            
             //finds end time of current event
             calListIndex = calListIter.nextIndex();
-            endOfEvent = calList.get(calListIndex).getEndTime();
-            endTime.setTime(endOfEvent);
+            endOfEvent = calList.get(calListIndex).getEndTime();    //get date
+            endTime = dateToCalendar(endOfEvent);                   //translate to EST calendar
             
             
             dayOfWeek = endTime.get(Calendar.DAY_OF_WEEK);    //used to know when switching days
@@ -548,12 +549,17 @@ public class Server {
                 
                 //creates and adds free time block to free time list
                 startOfFree = priorEndTime.getTime();
-                priorEndTime.set(Calendar.HOUR, bedTime[0]);            //currently using 12 hour time, if event ends in AM so will bedtime
+                
+                System.out.println("Start of Free: " + priorEndTime.get(Calendar.HOUR_OF_DAY));
+                
+                priorEndTime.set(Calendar.HOUR_OF_DAY, bedTime[0]+12);      //Bedtime always in PM
                 priorEndTime.set(Calendar.MINUTE, bedTime[1]);
+                
+                System.out.println("End of Free: " + priorEndTime.get(Calendar.HOUR_OF_DAY));
+                
                 endOfFree = priorEndTime.getTime();
                 newFreeTime = new FreeTime(startOfFree, endOfFree);
                 freeTimeList.add(newFreeTime);
-                System.out.println("New freeTime block: " + newFreeTime.toString());
                 
                 priorDayOfWeek++;
                 if(priorDayOfWeek == 8){
@@ -566,6 +572,16 @@ public class Server {
             calListIter.next();
         }
         return freeTimeList;
+    }
+    
+    private Calendar dateToCalendar(java.util.Date date){          //converts to calendar of EST
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        df.setCalendar(cal);
+        df.setTimeZone(TimeZone.getTimeZone("EST"));
+        cal = df.getCalendar();
+        
+        return cal;
     }
     
 
