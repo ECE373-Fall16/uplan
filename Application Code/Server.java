@@ -10,6 +10,7 @@ public class Server {
     private DataBase data = new DataBase();
     private static int PORT = 8082;
     private DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
+    private TimeZone timezone = TimeZone.getTimeZone("EST");
 
 
     /*public Vector display(String user, LinkedList<CalendarEvent> calendarList){
@@ -259,9 +260,9 @@ public class Server {
             
             Calendar startCal = Calendar.getInstance();
             Calendar endCal = Calendar.getInstance();
-            currentCal.setTime(currentDate);
-            startCal.setTime(eve.getStart());
-            endCal.setTime(eve.getEnd());
+            currentCal = dateToCalendar(currentDate);
+            startCal = dateToCalendar(eve.getStart());
+            endCal = dateToCalendar(eve.getEnd());
             
             weekOfYear = startCal.get(Calendar.WEEK_OF_YEAR);
 
@@ -270,8 +271,8 @@ public class Server {
             eventEndTimeHour = endCal.get(Calendar.HOUR_OF_DAY);
             eventEndTimeMin = endCal.get(Calendar.MINUTE);
             
-            Calendar tempStart = Calendar.getInstance();
-            Calendar tempEnd = Calendar.getInstance();
+            Calendar tempStart = Calendar.getInstance(timezone);
+            Calendar tempEnd = Calendar.getInstance(timezone);
             
             if(dayOfWeek.equals("Su")){
                 
@@ -480,7 +481,7 @@ public class Server {
     public LinkedList<CalendarEvent> addToCalList(CalendarEvent curCal, LinkedList<CalendarEvent> curList){
         Calendar calToAdd = Calendar.getInstance();
         Calendar curCalendar = Calendar.getInstance();
-        calToAdd.setTime(curCal.getStartTime());
+        calToAdd = dateToCalendar(curCal.getStartTime());
         
         ListIterator calListIter = curList.listIterator();
         Boolean added = false;
@@ -489,7 +490,7 @@ public class Server {
         
         while(calListIter.hasNext() && !added){
             index = calListIter.nextIndex();
-            curCalendar.setTime(curList.get(index).getStartTime());
+            curCalendar = dateToCalendar(curList.get(index).getStartTime());
             if(calToAdd.compareTo(curCalendar) < 0){          //after curList object
                 correctIndex = index;
                 added = true;
@@ -578,7 +579,7 @@ public class Server {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         df.setCalendar(cal);
-        df.setTimeZone(TimeZone.getTimeZone("EST"));
+        df.setTimeZone(timezone);
         cal = df.getCalendar();
         
         return cal;
