@@ -225,6 +225,12 @@ public class Server {
 
             assignList = orderAssignmentList(assignList);
             freeblocks = findFreeTime(calendarList, username);
+
+            ListIterator iter = freeblocks.listIterator();
+            while (iter.hasNext()){
+                System.out.println(freeblocks.get(iter.nextIndex()).toString());
+                iter.next();
+            }
             
             //At this point we have the event list converted into the CalendarEvent list.
             //Also we have calculated the total free time for each day based off this list
@@ -240,7 +246,8 @@ public class Server {
                 assignList = orderAssignmentList(assignList);
                 LinkedList<Assignment> tempAssign = assignList;
                 ListIterator assignIter = assignList.listIterator();
-                int curBlockFreeTime = getDayFreeTime(curBlock);        //need to complete
+                int curBlockFreeTime = getDayFreeTime(curBlock);
+                //System.out.println(curBlockFreeTime);        
                 CalendarEvent curCalEvent;
                 
                 while(assignIter.hasNext() && curBlockFreeTime > 0){      //goes assignment by assignment per day
@@ -264,8 +271,16 @@ public class Server {
                     curCalEvent = assignmentToCal(curAssign, assignStart, assignEnd);   //create cal event
                     addToCalList(curCalEvent, calendarList);        //add to cal list
                     
-                    freeblocks = useFreeTime(curCalEvent, freeblocks);          //modify freetime for next assignment
-                    System.out.println("First Free time: " + freeblocks.get(0).toString());
+                    FreeTime temp = useFreeTime(curCalEvent, freeblocks.get(index));
+
+                    Calendar tempCal = dateToCalendar(temp.getStartTime());
+                    int hour = tempCal.get(Calendar.HOUR_OF_DAY);
+
+                    if(hour != 0)
+                        freeblocks.set(index, temp);           //modify freetime for next assignment
+                    else
+                        freeblocks.remove(index);
+                    
                     curBlockFreeTime = getDayFreeTime(freeblocks.get(index));
 
                     assignIter.next();
@@ -278,11 +293,11 @@ public class Server {
 
 
             
-            ListIterator iter = calendarList.listIterator();
+            /*ListIterator iter = calendarList.listIterator();
             while (iter.hasNext()){
                 System.out.println(calendarList.get(iter.nextIndex()).toString());
                 iter.next();
-            }
+            }*/
 
         } catch (Exception e){
             System.err.println( "Serverschedule algo:" + e.getClass().getName() + ": " + e.getMessage() );
@@ -627,12 +642,6 @@ public class Server {
             assignIter.next();
         }
 
-        /*ListIterator iter = tempList.listIterator();
-        while(iter.hasNext()){
-            int index = iter.nextIndex();
-            System.out.println(tempList.get(index).toString());
-            iter.next();
-        }*/
         return tempList;
     }
 
@@ -761,6 +770,10 @@ public class Server {
 
         int hours = endHour - startHour;
 
+        System.out.println(curDay.toString());
+        System.out.println("startHour: " + startHour + " endHour: " + endHour + " hour: " + hours);
+        System.out.println("");
+
         return hours;
     }
 
@@ -778,62 +791,46 @@ public class Server {
 
     }
 
-    
-    private LinkedList<FreeTime> useFreeTime(CalendarEvent workTime, LinkedList<FreeTime> freeTimeList){
-        Calendar workEnd = dateToCalendar(workTime.getEndTime());
-        Calendar freeStart = Calendar.getInstance();
-        Calendar freeEnd = Calendar.getInstance();
-        FreeTime newFreeTime = null;
+
+    private FreeTime useFreeTime(CalendarEvent workTime, FreeTime block){
         
-        java.util.Date newStartTime = null;
+        Calendar cal = dateToCalendar(workTime.getEndTime());       //calendar objects for end times of calEvent and freeTime
+        Calendar free = dateToCalendar(block.getEndTime());
+        boolean delete = false;              
         
-        int freeTimeIndex = 0;
-        int halfHourBuffer;
-        int numOfFreeTimes = freeTimeList.size();
-        long timeDifference;
-        Boolean found = false;
-        Boolean modify = false;
-        
-        //ListIterator<FreeTime> freeTimeIter = freeTimeList.listIterator();
-        //LinkedList<FreeTime> tempFree = freeTimeList;
-        
-        //Finds matching freetime object and removes it from the list
-        while(freeTimeIndex < numOfFreeTimes && !found){
-            
-            freeStart = dateToCalendar(freeTimeList.get(freeTimeIndex).getStartTime());
-            if(workEnd.compareTo(freeStart) < 0){         //work end passes freeStart
-                freeStart = workEnd;
-                freeStart.add(Calendar.MINUTE, 30);       //30 minute buffer after event
-                if(freeStart.compareTo(freeEnd) > 0){       //work end within free block
-                    timeDifference = freeStart.getTimeInMillis() - freeEnd.getTimeInMillis();
-                    System.out.println(timeDifference);
-                    if(timeDifference >= hourInMS){         //at least an hour long free time block
-                        System.out.println("modifying freeTimeList");
-                        newStartTime = freeStart.getTime();
-                        modify = true;     //modify start time of free time
-                    }
-                }
-                
-                found = true;
-            }//close if statements
-            if(!found){
-                freeTimeIndex++;
-            }
-            
-        }//closes while loop
-        //modifies or deletes free time block
-        if(modify){
-            newFreeTime = freeTimeList.get(freeTimeIndex);
-            newFreeTime.setStartTime(newStartTime);
-            System.out.println("New start time: " + newStartTime + "\n New free time: " + newFreeTime.toString());
-            freeTimeList.set(freeTimeIndex, newFreeTime);
-        }else if(found){      //delete if not enough time
-            freeTimeList.remove(freeTimeIndex);
-            System.out.println("Deleting freeTime");
+        int calHour = cal.get(Calendar.HOUR_OF_DAY);
+        int freeHour = free.get(Calendar.HOUR_OF_DAY);
+        int hour = freeHour - calHour;                      //difference in hours of day
+
+        if(hour <= 0){
+            free.set(Calendar.HOUR_OF_DAY, 0);
+            block.setStartTime(free.getTime());
+            delete = true;
         }
-        System.out.println("New free time" + freeTimeList.get(freeTimeIndex).toString());
-        return freeTimeList;
+        else if(hour == 1){
+            int calMin = cal.get(Calendar.MINUTE);
+            int freeMin = free.get(Calendar.MINUTE);
+            int min = freeMin - calMin;
+
+            if(min < 0){
+                free.set(Calendar.HOUR_OF_DAY, 0);
+                block.setStartTime(free.getTime());
+                delete = true;
+            }
+            else
+                delete = false;
+        }
+        else
+            delete = false;
+
+        if(delete == false){
+            free = cal;
+            block.setStartTime(free.getTime());
+        }
+
+        return block;
     }
+
     
     private Calendar dateToCalendar(java.util.Date date){          //converts to calendar of EST
         Calendar cal = Calendar.getInstance();
