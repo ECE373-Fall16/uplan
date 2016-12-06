@@ -23,7 +23,7 @@ class LoginPage extends JPanel implements ActionListener{
 	static JLayeredPane pnlLogin;
 	static JLabel lblLogo,lblPassword,lblUser;
 	static int width, height,logowidth,logoheight,frmwidth,frmheight;
-	static private Client c;
+	static private Client d;
 	static LinkedList<JButton> btnAssignments;
 	static JButton btnLogin, btnCreate;
 	static JTextField user;
@@ -31,10 +31,12 @@ class LoginPage extends JPanel implements ActionListener{
 	static String userinput,passwordinput;
 	static String username;
 	static boolean result;
+	boolean done = false;
+	
 	
 
 	public LoginPage() {
-    	c = new Client();
+    	d= new Client();
 	}
 	public String LoginUser(){
 		try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
@@ -81,26 +83,7 @@ class LoginPage extends JPanel implements ActionListener{
         JTextField user = new JTextField();
         JPasswordField password = new JPasswordField(40);
         
-        btnLogin.addActionListener(new ActionListener() { 
-        	  public void actionPerformed(ActionEvent e) { 
-        		  userinput = user.getText();
-        		  passwordinput = String.valueOf(password.getPassword());
-        		  both[0] = userinput;
-        		  both[1] = passwordinput;
-        		  result = c.Login(both);
-        		  }});
-        btnCreate.addActionListener(new ActionListener() { 
-        	  public void actionPerformed(ActionEvent e) { 
-        	    
-        	  } 
-        	} );
         
-        if(result = true){
-        	username = both[0];
-		  }
-        else if(result = false){
-        	username = null;
-        }
         
         //PANEL
 		pnlLogin = new JLayeredPane();
@@ -119,6 +102,8 @@ class LoginPage extends JPanel implements ActionListener{
         pnlLogin.add(user);
         pnlLogin.add(lblUser);
         pnlLogin.add(lblPassword);
+        
+        
         //BOUNDS
         int gap = (int)((frmwidth-logowidth)/1.4);
         pnlLogin.setBounds(0,0,frmwidth, frmheight);
@@ -142,11 +127,34 @@ class LoginPage extends JPanel implements ActionListener{
         frmLogin.setMinimumSize(new Dimension(400,400));				//set minimize size
         frmLogin.setVisible(true);		
         
-        System.out.println(username);
-        return username;
-		
-
         
+      while(done == false){  
+      btnLogin.addActionListener(new ActionListener() { 
+      	  public void actionPerformed(ActionEvent e) { 
+      		  userinput = user.getText();
+      		  passwordinput = String.valueOf(password.getPassword());
+      		  both[0] = userinput;
+      		  both[1] = passwordinput;
+      		  result = d.Login(both);
+      		  if(result = true){
+      	      	username = both[0];
+      	      	done = true;
+      			  }
+      	      	else if(result = false){
+      	      	username = null;
+      	      	done = true;
+      	      }
+      		  }});
+      btnCreate.addActionListener(new ActionListener() { 
+      	  public void actionPerformed(ActionEvent e) { 
+      	    
+      	  } 
+      	} );
+      
+      
+      }
+      	frmLogin.setVisible(false);
+        return username;
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {

@@ -22,8 +22,8 @@ public class Client {
 		CalendarEvent cal2 = new CalendarEvent("HW2", start, end, "ASSIGNMENT");
 		calList.add(cal2);
 		
-		start = df.parse("Friday, December 2, 2016 07:00:00 AM EST");
-		end = df.parse("Friday, December 2, 2016 10:30:00 AM EST");
+		start = df.parse("Monday, December 5, 2016 07:00:00 AM EST");
+		end = df.parse("Monday, December 5, 2016 10:30:00 AM EST");
 		CalendarEvent cal3 = new CalendarEvent("HW3", start, end, "ASSIGNMENT");
 		calList.add(cal3);
 		
