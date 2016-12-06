@@ -8,7 +8,7 @@ public class Driver{
         r.createAccount("rhartnett1233", "Richie Hartnett", "rhartnett@umass.edu", "UMASS","1000");
 
         int validateLogin = r.login("rhartnett1233", "UMASS");
-        while(validateLogin == 0)
+        if(validateLogin == 0)
             r.login("rhartnett1233", "UMASS");
 
         r.addAssignment("Hw1","Circuits", "Sunday, December 4, 2016 9:00:00 PM EST", "10", "2", "");

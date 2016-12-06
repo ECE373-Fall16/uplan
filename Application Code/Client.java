@@ -54,7 +54,7 @@ public class Client {
     }
     
 
-    public void createAccount(String user, String name, String email, String password, String bedtime){
+    public int createAccount(String user, String name, String email, String password, String bedtime){
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
@@ -66,10 +66,15 @@ public class Client {
             params.addElement(bedtime);
   
             Vector returnValue = (Vector)server.execute("sample.createAccount", params);
+
+            if(Integer.parseInt(returnValue.get(0).toString()) == 1)
+                return 1;
         } 
         catch (Exception exception) {
             System.err.println("ClientCreateAccount " + exception);
-        }        
+        } 
+
+        return 0;       
     }
     
     
@@ -89,7 +94,7 @@ public class Client {
     }
     
     
-    public void addEvent(String name, String day, String startTime, String endTime, String location){
+    public int addEvent(String name, String day, String startTime, String endTime, String location){
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
@@ -101,13 +106,19 @@ public class Client {
             params.addElement(location);         
 
             Vector returnValue = (Vector)server.execute("sample.addEvent", params);
+
+            if(Integer.parseInt(returnValue.get(0).toString()) == 1)
+                return 1;
+
         } catch (Exception exception) {
             System.err.println("ClientAddEvent: " + exception);
-        }  
+        } 
+
+        return 0; 
     }
     
     
-    public void addAssignment(String name, String classname, String dueDate, String hours, String priority, String appPriority){
+    public int addAssignment(String name, String classname, String dueDate, String hours, String priority, String appPriority){
         try {
             
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
@@ -121,13 +132,19 @@ public class Client {
             params.addElement(appPriority);
   
             Vector returnValue = (Vector)server.execute("sample.addAssignment", params);
+
+            if(Integer.parseInt(returnValue.get(0).toString()) == 1)
+                return 1;
+
         } catch (Exception exception) {
             System.err.println("ClientAddEvent: " + exception);
-        }        
+        }
+
+        return 0;     
     }
     
     
-    public void deleteEvent(String name){
+    public int deleteEvent(String name){
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
@@ -135,13 +152,19 @@ public class Client {
             params.addElement(username);
   
             Vector returnValue = (Vector)server.execute("sample.deleteEvent", params);
+
+            if(Integer.parseInt(returnValue.get(0).toString()) == 1)
+                return 1;
+
         } catch (Exception exception) {
             System.err.println("ClientDeleteEvent: " + exception);
         } 
+
+        return 0;
     }
     
     
-    public void deleteAssignment(String name){
+    public int deleteAssignment(String name){
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
@@ -149,25 +172,36 @@ public class Client {
             params.addElement(username);
   
             Vector returnValue = (Vector)server.execute("sample.deleteAssignment", params);
+
+            if(Integer.parseInt(returnValue.get(0).toString()) == 1)
+                return 1;
         } catch (Exception exception) {
             System.err.println("ClientDeleteAssignment: " + exception);
         } 
+
+        return 0;
     }
     
     
-    public void deleteAccount(String user){
+    public int deleteAccount(String user){
+        int valid = 1;
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
             params.addElement(user);
   
             Vector returnValue = (Vector)server.execute("sample.deleteAccount", params);
+
+            if(Integer.parseInt(returnValue.get(0).toString()) == 0)
+                valid = 0;
         } catch (Exception exception) {
             System.err.println("ClientDeleteAccount: " + exception);
         }
         if(user.equals(username)){
             username = null;
         }
+
+        return valid;
     }
     
     
@@ -187,7 +221,7 @@ public class Client {
     }
     
     
-    public void updateEvent(String eventName, String type, String newName){
+    public int updateEvent(String eventName, String type, String newName){
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
@@ -197,13 +231,18 @@ public class Client {
             params.addElement(username);
             
             Vector returnValue = (Vector)server.execute("sample.updateEvent", params);
+
+            if(Integer.parseInt(returnValue.get(0).toString()) == 1)
+                return 1;
         } catch (Exception exception) {
             System.err.println("ClientUpdateEvent: " + exception);
         }
+
+        return 0;
     }
     
     
-    public void updateProfile(String type, String newName){
+    public int updateProfile(String type, String newName){
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
@@ -212,9 +251,14 @@ public class Client {
             params.addElement(username);
             
             Vector returnValue = (Vector)server.execute("sample.updateProfile", params);
+
+            if(Integer.parseInt(returnValue.get(0).toString()) == 1)
+                return 1;
         } catch (Exception exception) {
             System.err.println("ClientUpdateProfile: " + exception);
         }
+
+        return 0;
     }
     
     
