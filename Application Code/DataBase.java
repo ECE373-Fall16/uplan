@@ -114,6 +114,7 @@ public class DataBase{
                     rs.close();
                     stmt.close();
                     c.close();
+                    return valid;
                 }
             } 
         } catch(Exception e){

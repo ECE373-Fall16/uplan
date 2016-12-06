@@ -277,6 +277,13 @@ public class Server {
             
             }
 
+            /*assignList = orderAssignmentList(assignList);
+            ListIterator iter = assignList.listIterator();
+            while (iter.hasNext()){
+                System.out.println(assignList.get(iter.nextIndex()).toString());
+                iter.next();
+            }*/
+
         } catch (Exception e){
             System.err.println( "Serverschedule algo:" + e.getClass().getName() + ": " + e.getMessage() );
         }    
@@ -612,8 +619,10 @@ public class Server {
             double hoursLeft = (double)findHoursTillDue(curAssign);
             if(hoursLeft != -1){
                 appPriority = (int)(hoursToComp*userPriority/hoursLeft*1000);
-                curAssign.setAppPriority(Integer.toString(appPriority));
-                tempList = addToAssignList(tempList, curAssign);
+                if(appPriority > 0){
+                    curAssign.setAppPriority(Integer.toString(appPriority));
+                    tempList = addToAssignList(tempList, curAssign);
+                }
             }
             assignIter.next();
         }
@@ -677,7 +686,7 @@ public class Server {
 
         if(days == -1){
             hoursTillDue = w - z;
-            if(hoursTillDue >= 0)
+            if(hoursTillDue <= 0)
                 return -1;
         }
 
@@ -713,22 +722,17 @@ public class Server {
             dayOfWeek = endTime.get(Calendar.DAY_OF_WEEK);    //used to know when switching days
             if(priorDayOfWeek == 0){
                 priorDayOfWeek = dayOfWeek;
-                System.out.println("Initial: DayOfWeek: " + dayOfWeek + " || PriorDayOfWeek: " + priorDayOfWeek);
             }
 
             if(dayOfWeek != priorDayOfWeek){            //just passed last event of the day
-                System.out.println("Last calendar object: " + calList.get(calListIndex-1).toString());
-                System.out.println("Just Passed Last Event: DayOfWeek: " + dayOfWeek + " || PriorDayOfWeek: " + priorDayOfWeek);
                 
                 //creates and adds free time block to free time list
                 startOfFree = priorEndTime.getTime();
                 
-                System.out.println("Start of Free: " + priorEndTime.get(Calendar.HOUR_OF_DAY));
                 
                 priorEndTime.set(Calendar.HOUR_OF_DAY, bedTime[0]+12);      //Bedtime always in PM
                 priorEndTime.set(Calendar.MINUTE, bedTime[1]);
                 
-                System.out.println("End of Free: " + priorEndTime.get(Calendar.HOUR_OF_DAY));
                 
                 endOfFree = priorEndTime.getTime();
                 newFreeTime = new FreeTime(startOfFree, endOfFree);
@@ -780,12 +784,13 @@ public class Server {
         Calendar freeStart = Calendar.getInstance();
         Calendar freeEnd = Calendar.getInstance();
         
-        java.util.Date newStartTime;
+        java.util.Date newStartTime = null;
         
-        int freeTimeIndex;
+        int freeTimeIndex = -1;
         int halfHourBuffer;
         long timeDifference;
         Boolean found = false;
+        Boolean modify = false;
         
         ListIterator<FreeTime> freeTimeIter = freeTimeList.listIterator();
         
@@ -800,12 +805,8 @@ public class Server {
                     timeDifference = freeEnd.getTimeInMillis() - freeStart.getTimeInMillis();
                     if(timeDifference >= hourInMS){         //at least an hour long free time block
                         newStartTime = freeStart.getTime();
-                        freeTimeList.get(freeTimeIndex).setStartTime(newStartTime);     //modify start time of free time
-                    }else{       //delete freetime block
-                        freeTimeList.remove(freeTimeIndex);
+                        modify = true;     //modify start time of free time
                     }
-                }else{          //delete freeTimeblock in case extra check fails
-                    freeTimeList.remove(freeTimeIndex);                    
                 }
                 
                 found = true;
@@ -813,6 +814,11 @@ public class Server {
             
             freeTimeIter.next();
             
+        }//closes while loop
+        if(modify){
+            freeTimeList.get(freeTimeIndex).setStartTime(newStartTime);
+        }else if(freeTimeIndex != -1){      //delete if not enough time
+            freeTimeList.remove(freeTimeIndex);
         }
         return freeTimeList;
     }
