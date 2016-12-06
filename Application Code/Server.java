@@ -11,6 +11,7 @@ public class Server {
     private static int PORT = 8095;
     private DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
     private TimeZone timezone = TimeZone.getTimeZone("EST");
+    private static int hourInMS = 3600000;
 
 
     public Vector display(String user, LinkedList<CalendarEvent> calendarList){
@@ -775,22 +776,40 @@ public class Server {
 
     
     private LinkedList<FreeTime> useFreeTime(CalendarEvent workTime, LinkedList<FreeTime> freeTimeList){
-        Calendar workStart = dateToCalendar(workTime.getStartTime());
         Calendar workEnd = dateToCalendar(workTime.getEndTime());
-        Calendar freeStart;
-        Calendar freeEnd;
+        Calendar freeStart = Calendar.getInstance();
+        Calendar freeEnd = Calendar.getInstance();
+        
+        java.util.Date newStartTime;
         
         int freeTimeIndex;
+        int halfHourBuffer;
+        long timeDifference;
         Boolean found = false;
         
         ListIterator<FreeTime> freeTimeIter = freeTimeList.listIterator();
         
+        //Finds matching freetime object and removes it from the list
         while(freeTimeIter.hasNext() && !found){
             freeTimeIndex = freeTimeIter.nextIndex();
             freeStart = dateToCalendar(freeTimeList.get(freeTimeIndex).getStartTime());
-            if(workStart.compareTo(freeStart) < 0){         //workStart passes freeStart
+            if(workEnd.compareTo(freeStart) < 0){         //work end passes freeStart
+                freeStart = workEnd;
+                freeStart.add(Calendar.MINUTE, 30);       //30 minute buffer after event
+                if(freeStart.compareTo(freeEnd) > 0){       //work end within free block
+                    timeDifference = freeEnd.getTimeInMillis() - freeStart.getTimeInMillis();
+                    if(timeDifference >= hourInMS){         //at least an hour long free time block
+                        newStartTime = freeStart.getTime();
+                        freeTimeList.get(freeTimeIndex).setStartTime(newStartTime);     //modify start time of free time
+                    }else{       //delete freetime block
+                        freeTimeList.remove(freeTimeIndex);
+                    }
+                }else{          //delete freeTimeblock in case extra check fails
+                    freeTimeList.remove(freeTimeIndex);                    
+                }
+                
                 found = true;
-            }
+            }//close if statements
             
             freeTimeIter.next();
             
