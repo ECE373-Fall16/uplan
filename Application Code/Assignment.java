@@ -60,7 +60,7 @@ public class Assignment{
     }
     
 
-    public void set(String time){
+    public void setCompletionTime(String time){
         completion = time;
     }
     
