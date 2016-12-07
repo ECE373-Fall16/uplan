@@ -152,7 +152,7 @@ class LoginPage extends JPanel implements ActionListener{
       		  passwordinput = String.valueOf(password.getPassword());
       		  String userTry = userinput;
       		  String passwordTry = passwordinput;
-      		  result = c.Login(userTry, passwordTry);
+      		  //result = c.Login(userTry, passwordTry);
       		  if(result = true){
       	      	username = userTry;
       	      	System.out.println(userTry+"  "+passwordTry);
@@ -233,9 +233,21 @@ class LoginPage extends JPanel implements ActionListener{
       	  			}});
      	  		
       	  btnCreate1.addActionListener(new ActionListener(){public void actionPerformed(ActionEvent e){
-      	  		frmCreate.setVisible(false);
-      	  		a.DisplayHomePage();
-      	  		a.DisplayCalendarEvents();
+      	  		String recievedName = JTextName.getText();
+              String recievedEmail = JTextEmail.getText();
+              String recievedUsername = JTextUsername.getText();
+              String recievedPassword = JTextPassword.getText();
+              String recievedBedtime = (String) JComboStarttime.getSelectedItem();
+              String recievedWaketime = (String) JComboEndtime.getSelectedItem();
+
+              int validate = c.createAccount(recievedUsername, recievedName, recievedEmail, recievedPassword, recievedBedtime);
+
+              if(validate != 0){
+                frmCreate.setVisible(false);
+                a.DisplayHomePage();
+                a.DisplayCalendarEvents();
+              }
+              //Add else to have user re enter infor because it was invalid
       	  			
       	  		}});
       	  }});

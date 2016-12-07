@@ -35,7 +35,7 @@ class HomePage1{
     static JFrame frmAddAssignment,frmEditAssignment,frmAddEvent,frmEditEvent,frmAccount;
     private Client c;
     static JTextField JTextName,JTextClass, JTextLocation,JTextDays;
-    static JComboBox JComboDueDate,JComboTimetoComplete,JComboPriority,JComboPickAssignment,JComboStarttime,JComboEndtime,JComboPickEvent,JComboStartDate,JComboEndDate, JComboDueHour;
+    static JComboBox JComboDueDate, JComboTimetoComplete, JComboPriority, JComboPickAssignment, JComboStarttime, JComboEndtime, JComboPickEvent, JComboStartDate, JComboEndDate, JComboDueHour;
     static String[] times,dates,Assignments,Events;
     static Integer[] timeneeded,priority;
     static boolean wait;
@@ -435,7 +435,12 @@ class HomePage1{
   		  	frmAccount.setVisible(true);
   		  	btnChange.addActionListener(new ActionListener() { 
   		  		public void actionPerformed(ActionEvent e) { 
-  		  			frmEditEvent.setVisible(false);
+  		  			String recievedbedtime = (String) JComboEndtime.getSelectedItem();
+              String recievedwaketime = (String) JComboStarttime.getSelectedItem();
+
+              //client.updateProfile("BEDTIME", recievedbedtime);
+
+              frmEditEvent.setVisible(false);
   		  			frmMain.setVisible(true);
   		  		}});
   		  	btnCancel.addActionListener(new ActionListener() { 
@@ -445,6 +450,8 @@ class HomePage1{
    	    	  }});
     	}});
   
+
+  //edit event
     btnRefresh.addActionListener(new ActionListener(){public void actionPerformed(ActionEvent e){DisplayCalendarEvents();}});
     btnEditEvent.addActionListener(new ActionListener(){
     	public void actionPerformed(ActionEvent e){
@@ -463,12 +470,6 @@ class HomePage1{
    		  pane1.add(lblLocation);
    		  pane1.add(lblRepeatedDays);
    		  pane1.add(lblOther);
-   		  //pane1.add(lblClass);
-   		  //pane1.add(lblPriority);
-   		  //pane1.add(lblDueDate);
-   		  //pane1.add(lblEstimatedTime);
-   		  //pane1.add(JTextName);
-   		  //pane1.add(JTextClass);
    		  pane1.add(JTextLocation);
    		  pane1.add(JTextDays);
    		  pane1.add(btnChange);
@@ -478,22 +479,11 @@ class HomePage1{
    		  pane1.add(JComboPickEvent);
    		  pane1.add(JComboStartDate);
    		  pane1.add(JComboEndDate);
-   		  //pane1.add(JComboDueDate);
-   		  //pane1.add(JComboTimetoComplete);
-   		  //pane1.add(JComboPriority);
-   		  //pane1.add(JComboPickAssignment);
-   		  //pane1.add(lblPickAssignment);
    		  int col = (int)(frmwidth/7);
    		  int boxw = (int)(width/13.6);
    		  int gap = (int) (height/18.425);
    		  int boxh = (int)(height/36.85);
    		  lblPickEvent.setBounds(col,gap,boxw,boxh);
-   		  //lblStarttime.setBounds(col, 80, boxw, boxh);
-   		  //lblEndtime.setBounds(col,boxh,boxw, boxh);
-   		  //lblClass.setBounds(col, 80, boxw, boxh);
-   		  //lblPriority.setBounds(col, 120, boxw, boxh);
-   		  //lblDueDate.setBounds(col, 160, boxw, boxh);
-   		  //lblEstimatedTime.setBounds(col,200 ,(int)( boxw*1.25), boxh);
    		  lblStarttime.setBounds(col,gap*3,boxw,boxh);
    		  lblEndtime.setBounds(col,gap*4,boxw,boxh);
    		  lblLocation.setBounds(col, gap*5, boxw, boxh);
@@ -504,9 +494,6 @@ class HomePage1{
    		  JTextLocation.setBounds(3*col, gap*5, boxw, boxh);
    		  btnChange.setBounds(col,frmheight-(int)(gap*2.5),(int)(width/11.38), (int)(height/24.6));
    	      btnCancel.setBounds(4*col,frmheight-(int)(gap*2.5),(int)(width/11.38), (int)(height/24.6));
-   	      //JComboDueDate.setBounds(3*col,160,boxw,boxh);
-   	      //JComboPriority.setBounds(3*col,120,boxw,boxh);
-   	      //JComboTimetoComplete.setBounds(3*col,200,boxw,boxh);
    	      JComboStarttime.setBounds(3*col,gap*3,boxw,boxh);
    	      JComboEndtime.setBounds(3*col,gap*4,boxw,boxh);
    	      JComboStartDate.setBounds(5*col,gap*3,boxw,boxh);
@@ -519,7 +506,16 @@ class HomePage1{
    		  //while(wait == false){
    	      btnChange.addActionListener(new ActionListener() { 
    	    	  public void actionPerformed(ActionEvent e) { 
-   	    		  frmEditEvent.setVisible(false);
+   	    		  String pickedEvent = (String) JComboPickEvent.getSelectedItem();
+              String repeatedDays = JTextDays.getText();
+              String startHour = (String) JComboStarttime.getSelectedItem();
+              String endHour = (String) JComboEndtime.getSelectedItem();
+              String startDay = (String) JComboStartDate.getSelectedItem();
+              String endDay = (String) JComboEndDate.getSelectedItem();
+              String recLocation = JTextLocation.getText();
+              //c.updateEvent(String eventName, String type, String newName){
+
+              frmEditEvent.setVisible(false);
    	    		  frmMain.setVisible(true);
    	    	  }});
    	      btnCancel.addActionListener(new ActionListener() { 
@@ -540,8 +536,6 @@ class HomePage1{
     		  pane1.setLayout(null); //Apply null layout
     		  frmAddAssignment.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     		  pane1.add(lblName);
-    		  //pane1.add(lblStarttime);
-    		  //pane1.add(lblEndtime);
     		  pane1.add(lblClass);
     		  pane1.add(lblPriority);
     		  pane1.add(lblDueDate);
@@ -561,9 +555,7 @@ class HomePage1{
     		  int boxh = (int)(height/36.85);
        		  int gap = (int) (height/18.425);
     		  lblName.setBounds(col,gap,boxw,boxh);
-    		  //lblStarttime.setBounds(col, 80, boxw, boxh);
-    		  //lblEndtime.setBounds(col,1boxh,boxw, boxh);
-    		  lblClass.setBounds(col, gap*2, boxw, boxh);
+     		  lblClass.setBounds(col, gap*2, boxw, boxh);
     		  lblPriority.setBounds(col,gap*3, boxw, boxh);
     		  lblDueDate.setBounds(col,gap*4, boxw, boxh);
     		  lblEstimatedTime.setBounds(col,gap*5,(int)( boxw*1.25), boxh);
@@ -582,12 +574,17 @@ class HomePage1{
     		  //while(wait == false){
     	      btnCreate.addActionListener(new ActionListener() { 
     	    	  public void actionPerformed(ActionEvent e) { 
-    	    		  String name1 = (String) JTextName.getText();
-    	    		  String classname = (String) JTextClass.getText();
-    	    		  String Duedate = (String) JComboDueDate.getSelectedItem();
-    	    	      Integer priority1 = (Integer) JComboPriority.getSelectedItem();
-    	    	      Integer timeto = (Integer) JComboTimetoComplete.getSelectedItem();
-    	    		  System.out.println(name1+" "+classname+" "+ Duedate + " "+priority1+" "+timeto); 
+    	    		  String name1 = JTextName.getText();
+    	    		  String classname =  JTextClass.getText();
+    	    		  String recDueHour = (String) JComboDueHour.getSelectedItem();
+                String recDuedate = (String) JComboDueDate.getSelectedItem();
+    	    	    String priority1 = (String) JComboPriority.getSelectedItem();
+    	    	    String timeto =  (String) JComboTimetoComplete.getSelectedItem();
+    	    		  //System.out.println(name1+" "+classname+" "+ Duedate + " "+priority1+" "+timeto); 
+                 //USE DUEHOUR+DUEDATE = DUETIME
+                String dueTime = "Friday, December 9, 2016 6:00:00 AM EST";
+                 //c.addAssignment(name1,classname,dueTime, timeto, priority1,""){
+
     	    		  frmAddAssignment.setVisible(false);
     	    		  frmMain.setVisible(true);
     	    	  }});
@@ -655,11 +652,15 @@ class HomePage1{
     	    	      btnChange.addActionListener(new ActionListener() { 
     	    	    	  public void actionPerformed(ActionEvent e) { 
     	    	    		  //String name1 = (String) JTextName.getText();
-    	    	    		  String classname = (String) JTextClass.getText();
-    	    	    		  String Duedate = (String) JComboDueDate.getSelectedItem();
-    	    	    	      Integer priority1 = (Integer) JComboPriority.getSelectedItem();
-    	    	    	      Integer timeto = (Integer) JComboTimetoComplete.getSelectedItem();
+    	    	    		  String classname =  JTextClass.getText();
+    	    	    		  String duedate =  (String) JComboDueDate.getSelectedItem();
+    	    	    	     String dueTime = (String) JComboDueHour.getSelectedItem();
+                       String priority1 = (String) JComboPriority.getSelectedItem();
+    	    	    	     String timeto = (String) JComboTimetoComplete.getSelectedItem();
     	    	    		  //System.out.println(name1+" "+classname+" "+ Duedate + " "+priority1+" "+timeto); 
+                      //CHECK AND RUN AGAINST 
+                      //c.updateAssignment(String assignmentName,String type, String newName){
+
     	    	    		  frmEditAssignment.setVisible(false);
     	    	    		  frmMain.setVisible(true);
     	    	    	  }});
@@ -686,10 +687,6 @@ class HomePage1{
  		  pane1.add(lblLocation);
  		  pane1.add(lblRepeatedDays);
  		  pane1.add(lblOther);
- 		  //pane1.add(lblClass);
- 		  //pane1.add(lblPriority);
- 		  //pane1.add(lblDueDate);
- 		  //pane1.add(lblEstimatedTime);
  		  pane1.add(JTextName);
  		  //pane1.add(JTextClass);
  		  pane1.add(JTextLocation);
@@ -700,22 +697,11 @@ class HomePage1{
  		  pane1.add(JComboEndtime);
  		  pane1.add(JComboStartDate);
  		  pane1.add(JComboEndDate);
- 		  //pane1.add(JComboDueDate);
- 		  //pane1.add(JComboTimetoComplete);
- 		  //pane1.add(JComboPriority);
- 		  //pane1.add(JComboPickAssignment);
- 		  //pane1.add(lblPickAssignment);
  		  int col = (int)(frmwidth/7);
  		  int boxw = (int)(width/13.6);
  		  int gap = (int) (height/18.425);
  		  int boxh = (int)(height/36.85);
  		  lblName.setBounds(col,gap,boxw,boxh);
- 		  //lblStarttime.setBounds(col, 80, boxw, boxh);
- 		  //lblEndtime.setBounds(col,boxh,boxw, boxh);
- 		  //lblClass.setBounds(col, 80, boxw, boxh);
- 		  //lblPriority.setBounds(col, 120, boxw, boxh);
- 		  //lblDueDate.setBounds(col, 160, boxw, boxh);
- 		  //lblEstimatedTime.setBounds(col,200 ,(int)( boxw*1.25), boxh);
  		  lblStarttime.setBounds(col,gap*3,boxw,boxh);
  		  lblEndtime.setBounds(col,gap*4,boxw,boxh);
  		  lblLocation.setBounds(col, gap*5, boxw, boxh);
@@ -726,9 +712,6 @@ class HomePage1{
  		  JTextLocation.setBounds(3*col, gap*5, boxw, boxh);
  		  btnCreate.setBounds(col,frmheight-(int)(gap*2.5),(int)(width/11.38), (int)(height/24.6));
  	      btnCancel.setBounds(4*col,frmheight-(int)(gap*2.5),(int)(width/11.38), (int)(height/24.6));
- 	      //JComboDueDate.setBounds(3*col,160,boxw,boxh);
- 	      //JComboPriority.setBounds(3*col,120,boxw,boxh);
- 	      //JComboTimetoComplete.setBounds(3*col,200,boxw,boxh);
  	      JComboStarttime.setBounds(3*col,gap*3,boxw,boxh);
  	      JComboEndtime.setBounds(3*col,gap*4,boxw,boxh);
  	      JComboStartDate.setBounds(5*col,gap*3,boxw,boxh);
@@ -740,7 +723,19 @@ class HomePage1{
  		  //while(wait == false){
  	      btnCreate.addActionListener(new ActionListener() { 
  	    	  public void actionPerformed(ActionEvent e) { 
- 	    		   
+ 	    		  String recName = JTextName.getText();
+            String recDays = JTextDays.getText();
+            String location2 = JTextLocation.getText();
+            String recievedwaketime = (String)JComboStarttime.getSelectedItem();
+            String recievedbedtime = (String) JComboEndtime.getSelectedItem();
+
+            //c.addEvent(recName, recDays, recievedwaketime, recievedbedtime, location2){
+
+            /*char[] bed = recievedbedtime.toCharArray();
+            char[] temp = new char[bed.length()-3]
+            int lengthbed = bed.length;*/
+            
+
  	    		  frmAddEvent.setVisible(false);
  	    		  frmMain.setVisible(true);
  	    	  }});
@@ -888,10 +883,10 @@ class HomePage1{
 	    	  }	    	  
 	      }
 	      
-	    dates = new String[31];
-	    for(int bb = 1; bb<32;bb++){
-	    	dates[bb-1] = "12/"+bb+"/16";
-	    }
+	     dates = new String[31];
+	     for(int bb = 1; bb<32;bb++){
+	    	  dates[bb-1] = "12/"+bb+"/16";
+	     }
         timeneeded = new Integer[20];
         for(int cc = 1;cc<21;cc++){
         	timeneeded[cc-1] = cc;
@@ -901,9 +896,11 @@ class HomePage1{
         	priority[dd-1] = dd;
         }
         Assignments = new String[4];
+        //NEED ASSIGNMENT LIST
         for(int ee = 0;ee<4;ee++){
         	Assignments[ee] = "HW"+(ee+1);
         }
+        //NEED EVENTS
         Events = new String[4];
         for(int ee = 0;ee<4;ee++){
         	Events[ee] = "Event "+(ee+1);

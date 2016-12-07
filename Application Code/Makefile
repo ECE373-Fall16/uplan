@@ -6,6 +6,8 @@ start: update installJDK installJRE
 
 driver: cleandriver Driver.class rundriver
 
+gui: GUIDriver.class rungui
+
 uidriver: cleanui UIDriver.class runui
 
 server: cleanserver cleandb Server.class Client.class runserver
@@ -23,6 +25,9 @@ rundriver:
 rundb:
 	@java -classpath $(CLASSPATH) InitializeDB
 
+rungui:
+	@java -classpath $(CLASSPATH) GUIDriver
+
 runui:
 	@java -classpath $(CLASSPATH) UIDriver
 
@@ -34,6 +39,9 @@ Client.class: Client.java
 
 Driver.class: Driver.java
 	javac -classpath $(CLASSPATH) Driver.java
+
+GUIDriver.class: GUIDriver.java
+	javac -classpath $(CLASSPATH) GUIDriver.java
 
 Calendar.class: Calendar.java
 	javac -classpath $(CLASSPATH) Calendar.java
