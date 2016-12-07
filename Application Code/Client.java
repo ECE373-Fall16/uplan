@@ -23,7 +23,7 @@ public class Client {
     }
     
     
-    public int login(String user, String pass){
+    public boolean login(String user, String pass){
         try{
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
@@ -36,16 +36,16 @@ public class Client {
             if(Integer.parseInt(returnValue.get(0).toString()) == 1){
                 username = user;
                 System.out.println("You are logged in as: " + username);
-                return 1;
+                return true;
             }
             else{
                 System.out.println("Invalid Username or Password");
-                return 0;
+                return false;
             }
         } catch (Exception e){
             System.err.println("ClientLogin: " + e);
         }
-        return 0;
+        return false;
     }
     
 
