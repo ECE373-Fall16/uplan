@@ -271,6 +271,13 @@ public class Client {
             
             Vector returnValue = (Vector)server.execute("sample.scheduleAlgo", params);
             calList = vectorToCalList(returnValue);
+
+            ListIterator calIter = calList.listIterator();
+            while(calIter.hasNext()){
+                System.out.println(calList.get(calIter.nextIndex()));
+                calIter.next();
+            }
+            
         } catch (Exception e){
             System.err.println("ClientSchedule: " + e);
         }
