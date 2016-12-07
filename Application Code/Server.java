@@ -249,7 +249,7 @@ public class Server {
                 assignList = orderAssignmentList(assignList);
                 LinkedList<Assignment> tempAssign = assignList;
                 ListIterator assignIter = assignList.listIterator();
-                int curBlockFreeTime = getDayFreeTime(curBlock);
+                int curBlockFreeTime = getFreeTimeHours(curBlock);
                 //System.out.println(curBlockFreeTime);        
                 CalendarEvent curCalEvent;
                 
@@ -284,7 +284,7 @@ public class Server {
                     else
                         freeblocks.remove(index);
                     
-                    curBlockFreeTime = getDayFreeTime(freeblocks.get(index));
+                    curBlockFreeTime = getFreeTimeHours(freeblocks.get(index));
 
                     assignIter.next();
                 
@@ -700,7 +700,7 @@ public class Server {
         Calendar dueCal = Calendar.getInstance();
 
         java.util.Date dueDate = assign.getDueDate();
-        dueCal.setTime(dueDate);
+        dueCal = dateToCalendar(dueDate);
 
         int hoursTillDue;
         int x = curCal.get(Calendar.DAY_OF_YEAR) + 1;
@@ -751,7 +751,8 @@ public class Server {
 
             if(dayOfWeek != priorDayOfWeek){            //just passed last event of the day
                 
-                //creates and adds free time block to free time list
+                //adds 30 minute buffer to start time
+                priorEndTime.add(Calendar.MINUTE, 30);
                 startOfFree = priorEndTime.getTime();
                 
                 
@@ -769,7 +770,7 @@ public class Server {
                 }
             }
             
-            priorEndTime.setTime(endTime.getTime());           //old end time is now prior end time
+            priorEndTime = dateToCalendar(endTime.getTime());           //old end time is now prior end time
             
             calListIter.next();
         }
@@ -777,7 +778,7 @@ public class Server {
     }
 
 
-    public int getDayFreeTime(FreeTime curDay){
+    public int getFreeTimeHours(FreeTime curDay){
         Calendar start = dateToCalendar(curDay.getStartTime());
         Calendar end = dateToCalendar(curDay.getEndTime());
 
@@ -795,7 +796,7 @@ public class Server {
 
 
     public int getDaysTillDue(Assignment assign){
-        Calendar curCal = Calendar.getInstance();
+        Calendar curCal = Calendar.getInstance(timezone);
         Calendar dueCal = dateToCalendar(assign.getDueDate());
 
         int curDayOfYear = curCal.get(Calendar.DAY_OF_YEAR);
