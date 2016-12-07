@@ -205,7 +205,10 @@ public class Server {
     }
     
    
-    public void scheduleAlgo(String username) throws SQLException{
+    public Vector scheduleAlgo(String username) throws SQLException{
+
+        Vector returnValues = new Vector();
+        
         try{
             LinkedList<CalendarEvent> calendarList = new LinkedList<CalendarEvent>();
             LinkedList<FreeTime> freeblocks = new LinkedList<FreeTime>();
@@ -226,10 +229,10 @@ public class Server {
             assignList = orderAssignmentList(assignList);
             freeblocks = findFreeTime(calendarList, username);
 
-            ListIterator iter = freeblocks.listIterator();
-            while (iter.hasNext()){
-                System.out.println(freeblocks.get(iter.nextIndex()).toString());
-                iter.next();
+            ListIterator iter1 = freeblocks.listIterator();
+            while (iter1.hasNext()){
+                //System.out.println(freeblocks.get(iter1.nextIndex()).toString());
+                iter1.next();
             }
             
             //At this point we have the event list converted into the CalendarEvent list.
@@ -293,15 +296,28 @@ public class Server {
 
 
             
-            /*ListIterator iter = calendarList.listIterator();
+            ListIterator iter = calendarList.listIterator();
             while (iter.hasNext()){
                 System.out.println(calendarList.get(iter.nextIndex()).toString());
                 iter.next();
-            }*/
+            }
+
+            System.out.println("\nPrinting list...");
+            for(int k = 0; k < calendarList.size(); k++){
+                //System.out.println("[" + k + "]" + calendarList.get(k).toString());
+                returnValues.add(calendarList.get(k).getName());
+                returnValues.add(df.format(calendarList.get(k).getStartTime()));
+                returnValues.add(df.format(calendarList.get(k).getEndTime()));
+                returnValues.add(calendarList.get(k).getLocation());
+            }
+            System.out.println();
 
         } catch (Exception e){
             System.err.println( "Serverschedule algo:" + e.getClass().getName() + ": " + e.getMessage() );
-        }    
+        }
+
+        return returnValues;
+
     }
     
     
@@ -770,9 +786,9 @@ public class Server {
 
         int hours = endHour - startHour;
 
-        System.out.println(curDay.toString());
+        /*System.out.println(curDay.toString());
         System.out.println("startHour: " + startHour + " endHour: " + endHour + " hour: " + hours);
-        System.out.println("");
+        System.out.println("");*/
 
         return hours;
     }

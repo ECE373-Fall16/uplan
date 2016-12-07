@@ -15,9 +15,9 @@ public class Driver{
         r.addAssignment("Hw2","Comp Sys", "Monday, December 5, 2016 07:00:00 PM EST", "4", "3", "");
         r.addAssignment("Hw3","Hardware", "Thursday, December 8, 2016 11:00:00 PM EST", "15", "1", "");
         r.addAssignment("Hw4","Har", "Saturday, December 10, 2016 6:00:00 AM EST", "3", "3", "");
-        r.addAssignment("Hw5","math", "Friday, December 9, 2016 6:00:00 AM EST", "5", "1", "");
+        /*r.addAssignment("Hw5","math", "Friday, December 9, 2016 6:00:00 AM EST", "5", "1", "");
         r.addAssignment("Hw6","english", "Saturday, December 10, 2016 10:00:00 PM EST", "10", "1", "");
-        r.addAssignment("Hw7","dsds", "Sunday, December 11, 2016 12:00:00 PM EST", "4", "3", "");
+        r.addAssignment("Hw7","dsds", "Sunday, December 11, 2016 12:00:00 PM EST", "4", "3", "");*/
 
         r.addEvent("Electronics","MoWe","Monday, December 5, 2016 10:00:00 AM EST","Monday, December 5, 2016 11:00:00 AM EST","Elab 202");
         r.addEvent("Circuits","MoWeFrSa","Monday, December 5, 2016 12:00:00 PM EST","Monday, December 5, 2016 01:00:00 PM EST","LRC 301");
