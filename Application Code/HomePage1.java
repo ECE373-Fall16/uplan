@@ -452,7 +452,7 @@ class HomePage1{
   
 
   //edit event
-    btnRefresh.addActionListener(new ActionListener(){public void actionPerformed(ActionEvent e){DisplayCalendarEvents();}});
+    //btnRefresh.addActionListener(new ActionListener(){public void actionPerformed(ActionEvent e){DisplayCalendarEvents();}});
     btnEditEvent.addActionListener(new ActionListener(){
     	public void actionPerformed(ActionEvent e){
     	  frmEditEvent = new JFrame ("Edit Event"); //Create frame
