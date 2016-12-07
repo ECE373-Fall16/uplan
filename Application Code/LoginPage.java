@@ -38,6 +38,7 @@ class LoginPage{
 	public LoginPage() {
     	c= new Client();
     	a = new HomePage1();
+      a.DisplayHomePage();
 	}
 	public int LoginUser(){
 		try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}

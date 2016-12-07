@@ -55,6 +55,9 @@ public class Client {
     
 
     public int createAccount(String user, String name, String email, String password, String bedtime){
+
+        bedtime = formatTime(bedtime);
+
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
@@ -75,6 +78,31 @@ public class Client {
         } 
 
         return 0;       
+    }
+
+
+    public Profile getAccountInfo(){
+        Profile curUser = null;
+        try{
+            XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
+            Vector params = new Vector();
+
+            params.addElement(username);
+
+            Vector returnValue = (Vector)server.execute("sample.getAccountInfo", params);
+
+            String user = returnValue.get(0).toString();
+            String name = returnValue.get(1).toString();
+            String email = returnValue.get(2).toString();
+            String bedtime = returnValue.get(3).toString();
+
+            curUser = new Profile(user, name, email, bedtime);
+
+        } catch (Exception e){
+            System.err.println("ClientGetAccountInfo " + e);
+        }
+
+        return curUser;
     }
     
     
@@ -260,6 +288,59 @@ public class Client {
 
         return 0;
     }
+
+
+    public LinkedList<Assignment> getAssignmentList(){
+        LinkedList<Assignment> assignList = new LinkedList<Assignment>();
+
+        try{
+            XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
+            Vector params = new Vector();
+            params.addElement(username);
+            
+            Vector returnValue = (Vector)server.execute("sample.getAssignmentList", params);
+
+            assignList = vectorToAssignList(returnValue);
+
+        } catch (Exception exception) {
+            System.err.println("ClientGetAssignmentList: " + exception);
+        }
+
+        ListIterator iter = assignList.listIterator();
+        while(iter.hasNext()){
+            System.out.println(assignList.get(iter.nextIndex()).toString());
+            iter.next();
+        }
+        System.out.println("");
+
+        return assignList;
+    }
+
+
+    public LinkedList<Event> getEventList(){
+        LinkedList<Event> eventList = new LinkedList<Event>();
+
+        try{
+            XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
+            Vector params = new Vector();
+            params.addElement(username);
+
+            Vector returnValue = (Vector)server.execute("sample.getEventList", params);
+
+            eventList = vectorToEventList(returnValue);
+        } catch (Exception exception) {
+            System.err.println("ClientGetEventList: " + exception);
+        }
+
+        ListIterator iter = eventList.listIterator();
+        while(iter.hasNext()){
+            System.out.println(eventList.get(iter.nextIndex()).toString());
+            iter.next();
+        }
+        System.out.println("");
+
+        return eventList;
+    }
     
     
     public LinkedList<CalendarEvent> schedule(){         //Creates schedule and returns list
@@ -315,6 +396,139 @@ public class Client {
         }
 
         return calList;
+    }
+
+
+    private LinkedList<Assignment> vectorToAssignList(Vector vectorList) throws ParseException{
+        LinkedList<Assignment> assignList = new LinkedList<Assignment>();
+        Iterator iter = vectorList.iterator();
+
+        try{
+            DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL,DateFormat.FULL);
+            df.setTimeZone(TimeZone.getTimeZone("EST"));
+
+            String assignName;
+            String className;
+            Date dueDate;
+            String hours;
+            String pri;
+            String appPri;
+
+            while(iter.hasNext()){
+                assignName = iter.next().toString();
+                className = iter.next().toString();
+                dueDate = df.parse(iter.next().toString());
+                hours = iter.next().toString();
+                pri = iter.next().toString();
+                appPri = iter.next().toString();
+
+                Assignment temp = new Assignment(assignName, className, dueDate, hours, pri, appPri);
+                assignList.add(temp);
+            }
+
+        } catch (Exception e){
+            System.err.println("ClientVectorToAssignList: " + e);
+
+        }
+
+        return assignList;
+    }
+
+
+    private LinkedList<Event> vectorToEventList(Vector vectorList) throws ParseException{
+        LinkedList<Event> eventList = new LinkedList<Event>();
+        Iterator iter = vectorList.iterator();
+
+        try{
+            DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL,DateFormat.FULL);
+            df.setTimeZone(TimeZone.getTimeZone("EST"));
+
+            String name;
+            String reDays;
+            Date start;
+            Date end;
+            String loc;
+
+            while(iter.hasNext()){
+                name = iter.next().toString();
+                reDays = iter.next().toString();
+                start = df.parse(iter.next().toString());
+                end = df.parse(iter.next().toString());
+                loc = iter.next().toString();
+
+                Event temp = new Event(name, reDays, start, end, loc);
+                eventList.add(temp);
+            }
+        } catch (Exception e){
+            System.err.println("ClientVectorToEventList: " + e);
+
+        }
+
+        return eventList;
+    }
+
+
+    public String formatTime(String time){
+        char[] bed = time.toCharArray();
+        char[] temp = new char[2];
+
+        int size = bed.length;
+        int index = 0;
+
+        String hour = "";
+        String min = "";
+        String offset = "";
+
+        while(index < size){
+            if(size == 7){
+                if(index == 0){
+                    temp[0] = bed[index++];
+                    temp[1] = bed[index++];
+                    hour = new String(temp);
+                }
+                else if(index == 2){
+                    index++;
+                    temp[0] = bed[index++];
+                    temp[1] = bed[index++];
+                    min = new String(temp);
+                }
+                else{
+                    temp[0] = bed[index++];
+                    temp[1] = bed[index++];
+                    offset = new String(temp);
+                }
+            }
+            else{
+                if(index == 0){
+                    temp[0] = 0;
+                    temp[1] = bed[index++];
+                    hour = new String(temp);
+                }
+                else if(index == 1){
+                    index++;
+                    temp[0] = bed[index++];
+                    temp[1] = bed[index++];
+                    min = new String(temp);
+                }
+                else{
+                    temp[0] = bed[index++];
+                    temp[1] = bed[index++];
+                    offset = new String(temp);
+                }
+            }
+
+        }
+
+        int tempHour = Integer.parseInt(hour);
+
+        if(offset.equals("pm"))
+            tempHour = tempHour + 12;
+
+        hour = Integer.toString(tempHour);
+
+        String finalTime = hour + min;
+
+        return finalTime;
     }
     
 }

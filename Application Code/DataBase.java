@@ -525,6 +525,45 @@ public class DataBase{
         c.close();
         return valid;
     }
+
+
+    public Profile getAccountInfo(String user) throws SQLException{
+
+        Profile curUser = null;
+        String username = "";
+        String name = "";
+        String email = "";
+        String bedTime = "";
+        boolean found = false;
+
+        try{
+            c = connect();
+            stmt= c.createStatement();
+
+            rs = stmt.executeQuery( "SELECT * FROM PROFILE" );
+
+            while(rs.next() && !found){
+                if(rs.getString("USERNAME").equals(user)){
+                    username = user;
+                    name = rs.getString("PROFILENAME");
+                    email = rs.getString("EMAIL");
+                    bedTime = rs.getString("BEDTIME");
+                    found = true;
+                }
+            }
+
+            curUser = new Profile(username, name, email, bedTime);
+            
+            rs.close();
+            stmt.close();
+        } catch (Exception e){
+            System.err.println( "DatabaseGetAccoutnInfo: " + e.getClass().getName() + ": " + e.getMessage() );
+        }
+
+        c.close();
+
+        return curUser;
+    }
     
     
     public LinkedList<Assignment> getAssignmentList(String user) throws SQLException{

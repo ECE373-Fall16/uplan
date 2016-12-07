@@ -203,6 +203,72 @@ public class Server {
 
         return returnValue;
     }
+
+
+    public Vector getAccountInfo(String user){
+        Profile curUser = null;
+        try{
+            curUser = data.getAccountInfo(user);
+        } catch(Exception e){
+            System.err.println("ServerGetAccountInfo:" + e.getClass().getName() + ": " + e.getMessage() );
+        }
+
+        Vector returnValue = new Vector();
+        returnValue.add(curUser.getUsername());
+        returnValue.add(curUser.getName());
+        returnValue.add(curUser.getEmail());
+        returnValue.add(curUser.getBedtime());
+
+        return returnValue;
+
+    }
+
+
+    public Vector getAssignmentList(String user) throws SQLException{
+        Vector values = new Vector();
+        LinkedList<Assignment> assignList = data.getAssignmentList(user);
+
+        try{
+            
+            for(int k = 0; k < assignList.size(); k++){
+                values.add(assignList.get(k).getAssignName());
+                values.add(assignList.get(k).getClassName());
+                values.add(df.format(assignList.get(k).getDueDate()));
+                values.add(assignList.get(k).getCompletionTime());
+                values.add(assignList.get(k).getPriority());
+                values.add(assignList.get(k).getAppPriority());
+            }
+
+        } catch (Exception e){
+            System.err.println( "ServerGetAssignList: " + e.getClass().getName() + ": " + e.getMessage() );
+        }
+
+        return values;
+
+    }
+
+
+    public Vector getEventList(String user) throws SQLException{
+        Vector values = new Vector();
+        LinkedList<Event> eventList = data.getEventList(user);
+
+        try{
+            
+            for(int k = 0; k < eventList.size(); k++){
+                values.add(eventList.get(k).getEventName());
+                values.add(eventList.get(k).getDays());
+                values.add(df.format(eventList.get(k).getStart()));
+                values.add(df.format(eventList.get(k).getEnd()));
+                values.add(eventList.get(k).getLocation());
+            }
+
+        } catch (Exception e){
+            System.err.println( "ServerGetEventList: " + e.getClass().getName() + ": " + e.getMessage() );
+        }
+
+        return values;
+
+    }
     
    
     public Vector scheduleAlgo(String username) throws SQLException{
@@ -231,7 +297,6 @@ public class Server {
 
             ListIterator iter1 = freeblocks.listIterator();
             while (iter1.hasNext()){
-                //System.out.println(freeblocks.get(iter1.nextIndex()).toString());
                 iter1.next();
             }
             
@@ -250,7 +315,6 @@ public class Server {
                 LinkedList<Assignment> tempAssign = assignList;
                 ListIterator assignIter = assignList.listIterator();
                 int curBlockFreeTime = getFreeTimeHours(curBlock);
-                //System.out.println(curBlockFreeTime);        
                 CalendarEvent curCalEvent;
                 
                 while(assignIter.hasNext() && curBlockFreeTime > 0){      //goes assignment by assignment per day
