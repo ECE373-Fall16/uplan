@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.*;
 
 @SuppressWarnings("serial")
-class LoginPage extends JPanel implements ActionListener{
+class LoginPage{
 	static JFrame frmLogin,frmCreate;
 	static Container pane,pane1;
 	static JLayeredPane pnlLogin;
@@ -33,7 +33,7 @@ class LoginPage extends JPanel implements ActionListener{
     static String[] times,dates,Assignments,Events;
     static Integer[] timeneeded,priority;
     static Color Babyblue,back;
-    private static HomePage1 a;
+    private HomePage1 a;
 
 	public LoginPage() {
     	c= new Client();
@@ -161,8 +161,7 @@ class LoginPage extends JPanel implements ActionListener{
       	      	username = null;
       	      	done = false;
       	      }
-      		  });
-      
+      	  }});
       btnCreate.addActionListener(new ActionListener() { 
       	  public void actionPerformed(ActionEvent e) { 
       		  	frmCreate = new JFrame ("Account Information"); //Create frame
@@ -240,20 +239,19 @@ class LoginPage extends JPanel implements ActionListener{
               String recievedBedtime = (String) JComboStarttime.getSelectedItem();
               String recievedWaketime = (String) JComboEndtime.getSelectedItem();
 
-              int validate = c.createAccount(recievedUsername, recievedName, recievedEmail, recievedPassword, recievedBedtime);
+              //int validate = c.createAccount(recievedUsername, recievedName, recievedEmail, recievedPassword, recievedBedtime);
 
-              if(validate != 0){
+              /*if(validate != 0){
                 frmCreate.setVisible(false);
                 a.DisplayHomePage();
                 a.DisplayCalendarEvents();
-              }
+              }*/
               //Add else to have user re enter infor because it was invalid
       	  			
       	  		}});
       	  }});
-      }
-
-
+      return 0;
+	}
 	public void createComboBoxes(){
         times = new String[34];
 	      int hh = 7;
@@ -303,11 +301,8 @@ class LoginPage extends JPanel implements ActionListener{
         for(int ee = 0;ee<4;ee++){
         	Events[ee] = "Event "+(ee+1);
         }
-    }
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		
 	}
+	
+	
 }
       	
-	

@@ -910,11 +910,11 @@ class HomePage1{
 	
     //DISPLAY ASSIGNMENTS ON CALENDAR	
 	@SuppressWarnings("deprecation")
-	public void DisplayCalendarEvents(){
+	public void DisplayCalendarEvents() throws ParseException{
         LinkedList<CalendarEvent> calList = null;
 		try {
 			calList = c.display();
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
