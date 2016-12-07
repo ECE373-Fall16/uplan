@@ -1,10 +1,12 @@
-CLASSPATH=./lib/commons-codec-1.3.jar:./lib/xmlrpc-2.0.1.jar:./lib/sqlite-jdbc-3.14.2.1.jar:.
+CLASSPATH=./lib/commons-codec-1.3.jar:./lib/xmlrpc-2.0.1.jar:./lib/sqlite-jdbc-3.14.2.1.jar:./lib/rt.jar:./lib/resouces.jar:.
 
 all: Server.class UIDriver.class Driver.class
 
 start: update installJDK installJRE
 
 driver: cleandriver Driver.class rundriver
+
+gui: GUIDriver.class rungui
 
 uidriver: cleanui UIDriver.class runui
 
@@ -23,6 +25,9 @@ rundriver:
 rundb:
 	@java -classpath $(CLASSPATH) InitializeDB
 
+rungui:
+	@java -classpath $(CLASSPATH) GUIDriver
+
 runui:
 	@java -classpath $(CLASSPATH) UIDriver
 
@@ -34,6 +39,9 @@ Client.class: Client.java
 
 Driver.class: Driver.java
 	javac -classpath $(CLASSPATH) Driver.java
+
+GUIDriver.class: GUIDriver.java
+	javac -classpath $(CLASSPATH) GUIDriver.java
 
 Calendar.class: Calendar.java
 	javac -classpath $(CLASSPATH) Calendar.java

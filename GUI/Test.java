@@ -1,6 +1,10 @@
+
 public class Test{
 	public static void main(String[] args){
-		HomePage s = new HomePage();
-		s.DisplayHomePage();
+		LoginPage a = new LoginPage();
+		a.LoginUser();
+		
+		//s.DisplayHomePage();
+		//s.DisplayCalendarEvents();
 	}
 }
