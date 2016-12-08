@@ -437,25 +437,73 @@ public class DataBase{
     }
 
 
-    public LinkedList<CalendarEvent> getSchedule(String username) throws SQLException{
+    public LinkedList<CalendarEvent> getSchedule(String username, String method) throws SQLException{
         LinkedList<CalendarEvent> calList= new LinkedList<CalendarEvent>();
+        
+        Calendar twoWeekCal = Calendar.getInstance();
+        Calendar pastWeekCal = Calendar.getInstance();
+        
+        pastWeekCal.set(Calendar.DAY_OF_WEEK, 1);
+        int week = pastWeekCal.get(Calendar.WEEK_OF_YEAR);
+        pastWeekCal.set(Calendar.WEEK_OF_YEAR, week-1);
+        int pastDayOfYear = pastWeekCal.get(Calendar.DAY_OF_YEAR);
+
+        twoWeekCal.set(Calendar.DAY_OF_WEEK, 1);
+        week = twoWeekCal.get(Calendar.WEEK_OF_YEAR);
+        twoWeekCal.set(Calendar.WEEK_OF_YEAR, week+2);
+        int futureDayOfYear = twoWeekCal.get(Calendar.DAY_OF_YEAR);
+
+        Calendar calEventCal = Calendar.getInstance();
+        Calendar curCal = Calendar.getInstance();
+
+        int curDayOfYear = curCal.get(Calendar.DAY_OF_YEAR);
+
         try{
             c = connect();
             stmt = c.createStatement();
             
             rs = stmt.executeQuery( "SELECT * FROM " + username + "SCHEDULE;" );
-            
-            while(rs.next()){
-                String name = rs.getString("NAME");
-                String start = rs.getString("START_TIME");
-                String end = rs.getString("END_TIME");
-                String location = rs.getString("LOCATION");
-                String dis = rs.getString("DISPLAY");
-                java.util.Date startTime = df.parse(start);
-                java.util.Date endTime = df.parse(end);
-                boolean display = Boolean.parseBoolean(dis);
-                CalendarEvent curCal = new CalendarEvent(name, startTime, endTime, location, display);
-                calList.add(curCal);
+
+            if(method.equals("display")){
+                while(rs.next()){
+                    String name = rs.getString("NAME");
+                    String start = rs.getString("START_TIME");
+                    String end = rs.getString("END_TIME");
+                    String location = rs.getString("LOCATION");
+                    String dis = rs.getString("DISPLAY");
+                    java.util.Date startTime = df.parse(start);
+                    java.util.Date endTime = df.parse(end);
+                    boolean display = Boolean.parseBoolean(dis);
+
+                    calEventCal.setTime(startTime);
+                    int calEventDayOfYear = calEventCal.get(Calendar.DAY_OF_YEAR);
+
+                    CalendarEvent curCalEve = new CalendarEvent(name, startTime, endTime, location, display);
+
+                    if(calEventDayOfYear >= pastDayOfYear && calEventDayOfYear <= futureDayOfYear)
+                        calList.add(curCalEve);
+                }
+            }
+
+            else if(method.equals("schedule")){
+                while(rs.next()){
+                    String name = rs.getString("NAME");
+                    String start = rs.getString("START_TIME");
+                    String end = rs.getString("END_TIME");
+                    String location = rs.getString("LOCATION");
+                    String dis = rs.getString("DISPLAY");
+                    java.util.Date startTime = df.parse(start);
+                    java.util.Date endTime = df.parse(end);
+                    boolean display = Boolean.parseBoolean(dis);
+                    calEventCal.setTime(startTime);
+                    
+                    int calEventDayOfYear = calEventCal.get(Calendar.DAY_OF_YEAR);
+
+                    CalendarEvent curCaleve = new CalendarEvent(name, startTime, endTime, location, display);
+
+                    if(calEventDayOfYear >= pastDayOfYear && calEventDayOfYear <= curDayOfYear)
+                        calList.add(curCaleve);
+                }
             }
             rs.close();
             stmt.close();
@@ -700,7 +748,6 @@ public class DataBase{
                     found = true;
                 }
             }
-            System.out.println(bedTime);
             
             rs.close();
             stmt.close();

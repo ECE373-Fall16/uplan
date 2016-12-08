@@ -31,16 +31,16 @@ class HomePage1{
     static JLabel lblLogo,lblName,lblStarttime,lblEndtime,lblLocation,lblClass,lblPriority,lblDueDate,lblEstimatedTime,lblPickAssignment,lblRepeatedDays,lblOther,lblPickEvent,lblUsername,lblEmail,lblNameofUser,lblCurrentBedtime,lblCurrentWakeuptime,lblChangeBedtime,lblChangeWakup;
     static JTable tblTime;
     static DefaultTableModel timeTable; //Table model
-
+    static JLabel[] lblAssignments, lblEvents;
     int calendarwidth, width, height,calendarheight;
 
     static final String IMG_PATH = "src/Logo/Capture.jpg";
     static LinkedList<JButton> btnAssignments;
-    static JFrame frmAddAssignment,frmEditAssignment,frmAddEvent,frmEditEvent,frmAccount;
+    static JFrame frmAddAssignment,frmEditAssignment,frmAddEvent,frmEditEvent,frmAccount,frmAssignmentList,frmEventList;
     private Client c;
     static JTextField JTextName,JTextClass, JTextLocation,JTextDays;
     static JComboBox JComboDueDate, JComboTimetoComplete, JComboPriority, JComboPickAssignment, JComboStarttime, JComboEndtime, JComboPickEvent, JComboStartDate, JComboEndDate, JComboDueHour;
-    static String[] times,dates,Assignments,Events;
+    static String[] times,dates,Assignments2,Events2;
     static Integer[] timeneeded,priority;
     static boolean wait;
     static BufferedImage img = null;
@@ -87,8 +87,8 @@ class HomePage1{
         
         //GET SCREENSIZE FOR USER'S COMPUTER
 		  Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		  width = (int)screenSize.getWidth() ;
-		  height = (int)screenSize.getHeight()-((int)(screenSize.getHeight()/24.6));
+		  width = (int)screenSize.getWidth()-((int)(screenSize.getHeight()/12)) ;
+		  height = (int)screenSize.getHeight();
 		
 		  //READING/SCALING IN LOGO
 		  try {
@@ -162,9 +162,10 @@ class HomePage1{
       int x = (int) (width/6)*5-(int)width/14;
       int y = (int) (width/6)*4-(int)width/68;
       int z = (int) (width/6)*3-(int)width/68;
-      calendarheight = height - (int)(height/4.2);
-      calendarwidth = width - (int)(width/27.32);
-      int timeheight = calendarheight-(int)(height/73.8)	;
+      calendarheight = height-(int)(height/4.5);
+      calendarwidth = width - (int)(width/19.5);
+      int timewidth = (int)(width/19.5);
+      int timeheight = calendarheight-(int)(height/35);
         
       //SETTING LOCATIONS FOR ALL COMPONENTS
         
@@ -215,10 +216,12 @@ class HomePage1{
       //SET ROW/COLUMN COUNT
         
       tblCalendar.setRowHeight(calendarheight);
+      tblCalendar.getTableHeader().setFont(new Font("Arial",Font.PLAIN,10));
       mtblCalendar.setRowCount(1);
         
       tblTime.setRowHeight(timeheight/17);
       timeTable.setRowCount(17);
+
         
         
         
@@ -327,8 +330,8 @@ class HomePage1{
         }
         for (int i = 0; i<7; i++){
         	mtblCalendar.addColumn(headers[i]);
+          
         }
-        
         
         
         
@@ -345,6 +348,7 @@ class HomePage1{
         	if(b>12){
         		tblTime.setValueAt((Object)(b-12)+":00pm", b-7, 0);
         	}
+          tblTime.setFont(new Font("Arial",Font.PLAIN,8));
         }
         
         
@@ -756,10 +760,35 @@ class HomePage1{
  	    	  }});
 	   }});
 
-    btnEventList.addActionListener(new ActionListener(){
-    	public void actionPerformed(ActionEvent e){
-    		
-    	}});
+    btnAssignmentList.addActionListener(new ActionListener(){
+      public void actionPerformed(ActionEvent e){
+        frmAssignmentList = new JFrame ("Assignments"); //Create frame
+        int frmwidth = width/((int)(width/400));
+        int frmheight = (int)(height/2);
+        frmAssignmentList.setSize(frmwidth,frmheight);//Set screen to full
+        frmAssignmentList.setLocation((width/4)+(width/10), height/8);
+        pane1 = frmAssignmentList.getContentPane(); //Get content pane
+        pane1.setLayout(null); //Apply null layout
+        frmAssignmentList.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        LinkedList<Assignment> assignList = c.getAssignmentList();
+        int size = assignList.size();
+        JLabel[] lblAssignments = new JLabel[size];
+        int intercept = frmwidth/10;
+        int gap2 = frmwidth/15;
+        String name3, classname3, dueDate3, timeto3,priority3;
+        for(int mm = 0; mm<size;mm++){
+            Assignment h = assignList.get(mm);
+            name3 = h.getName();
+            classname3 = h.getClass();
+            dueDate3 = h.getDate();
+            timeto3 = h.getCompletionTime();
+            priority3 = h.getPriority();
+            lblAssignments[mm] = name3+" "+classname3+" "+dueDate3+" "+timeto3+" "+priority3;
+            pane1.add(lblAssignments[mm]);
+            lblAssignments[mm].setBounds((int)(frmwidht/5),intercept+(int)(gap*mm),(int)(width/11.38), (int)(height/24.6));
+        }}});
+
+
     btnEventList.addActionListener(new ActionListener(){
     	public void actionPerformed(ActionEvent e){
     		
@@ -796,7 +825,26 @@ class HomePage1{
         lblCurrentWakeuptime = new JLabel("Current Wake Up Time: 8:00am");
         lblChangeBedtime = new JLabel("Change Bedtime:");
         lblChangeWakup = new JLabel("Change Wake Up Time:");
-        
+
+        lblName.setFont(new Font("Arial", Font.PLAIN,9));
+        lblStarttime.setFont(new Font("Arial", Font.PLAIN,9));
+        lblEndtime.setFont(new Font("Arial", Font.PLAIN,9));
+        lblLocation.setFont(new Font("Arial", Font.PLAIN,9));
+        lblClass.setFont(new Font("Arial", Font.PLAIN,9));
+        lblPriority.setFont(new Font("Arial", Font.PLAIN,9));
+        lblDueDate.setFont(new Font("Arial", Font.PLAIN,9));
+        lblEstimatedTime.setFont(new Font("Arial", Font.PLAIN,9));
+        lblPickAssignment.setFont(new Font("Arial", Font.PLAIN,9));
+        lblRepeatedDays.setFont(new Font("Arial", Font.PLAIN,9));
+        lblOther.setFont(new Font("Arial", Font.PLAIN,9));
+        lblPickEvent.setFont(new Font("Arial", Font.PLAIN,9));
+        lblUsername.setFont(new Font("Arial", Font.PLAIN,9));
+        lblEmail.setFont(new Font("Arial", Font.PLAIN,9));
+        lblNameofUser.setFont((new Font("Arial", Font.PLAIN,9)));
+        lblCurrentBedtime.setFont(new Font("Arial", Font.PLAIN,9));
+        lblCurrentWakeuptime.setFont(new Font("Arial", Font.PLAIN,9));
+        lblChangeBedtime.setFont(new Font("Arial", Font.PLAIN,9));
+        lblChangeWakup.setFont(new Font("Arial", Font.PLAIN,9));
     	
     }
 	    
@@ -827,18 +875,30 @@ class HomePage1{
 	//BUTTON DECLARATION
     public void declareButtons(){
        	btnNextWeek = new JButton ("Next Week");
+        btnNextWeek.setFont(new Font("Arial", Font.PLAIN, 10));
         btnPrevWeek = new JButton ("Prev Week");
+        btnPrevWeek.setFont(new Font("Arial", Font.PLAIN, 10));
         btnAddAssignment = new JButton ("Add Assignment");
+        btnAddAssignment.setFont(new Font("Arial", Font.PLAIN, 10));
         btnAddEvent = new JButton ("Add Event");
+        btnAddEvent.setFont(new Font("Arial", Font.PLAIN, 10));
         btnEditAssignment = new JButton ("Edit Assignment");
+        btnEditAssignment.setFont(new Font("Arial", Font.PLAIN, 10));
         btnEditEvent = new JButton ("Edit Event");
+        btnEditEvent.setFont(new Font("Arial", Font.PLAIN, 10));
         btnRefresh = new JButton("Refresh Calendar");
+        btnRefresh.setFont(new Font("Arial", Font.PLAIN, 10));
         btnAccount = new JButton("Account");
+        btnAccount.setFont(new Font("Arial", Font.PLAIN, 10));
         btnCreate = new JButton("Create");
+        btnCreate.setFont(new Font("Arial", Font.PLAIN, 10));
         btnCancel = new JButton("Cancel");
+        btnCancel.setFont(new Font("Arial", Font.PLAIN, 10));
         btnChange = new JButton("Change");
         btnAssignmentList = new JButton("Assignments");
+        btnAssignmentList.setFont(new Font("Arial", Font.PLAIN, 10));
         btnEventList = new JButton("Events");
+        btnEventList.setFont(new Font("Arial", Font.PLAIN, 10));
     }
     
 	//FRAME SETUP

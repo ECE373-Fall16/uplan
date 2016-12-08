@@ -14,19 +14,19 @@ public class Server {
     private static long hourInMS = 3600000;
 
 
-    public Vector display(String user, LinkedList<CalendarEvent> calendarList){
+    public Vector display(String user){
+        
         try{
+            LinkedList<CalendarEvent> calendarList = data.getSchedule(user, "display");
+            
             Vector values = new Vector();
-            System.out.println("\nPrinting list...");
             for(int k = 0; k < calendarList.size(); k++){
-                //System.out.println("[" + k + "]" + calendarList.get(k).toString());
                 values.add(calendarList.get(k).getName());
                 values.add(df.format(calendarList.get(k).getStartTime()));
                 values.add(df.format(calendarList.get(k).getEndTime()));
                 values.add(calendarList.get(k).getLocation());
                 values.add(String.valueOf(calendarList.get(k).getDisplay()));
             }
-            System.out.println();
             return values;
 
         } catch (Exception e){
@@ -277,7 +277,7 @@ public class Server {
         Vector returnValues = new Vector();
         
         try{
-            LinkedList<CalendarEvent> calendarList = new LinkedList<CalendarEvent>();
+            LinkedList<CalendarEvent> calendarList = data.getSchedule(username, "schedule");
             LinkedList<FreeTime> freeblocks = new LinkedList<FreeTime>();
             LinkedList<Assignment> assignList = data.getAssignmentList(username);
             LinkedList<Event> tempEventList = new LinkedList<Event>();
@@ -373,8 +373,8 @@ public class Server {
                 returnValues.add(df.format(calendarList.get(k).getStartTime()));
                 returnValues.add(df.format(calendarList.get(k).getEndTime()));
                 returnValues.add(calendarList.get(k).getLocation());
+                returnValues.add(String.valueOf(calendarList.get(k).getDisplay()));
             }
-            System.out.println();
 
         } catch (Exception e){
             System.err.println( "Serverschedule algo:" + e.getClass().getName() + ": " + e.getMessage() );

@@ -125,9 +125,9 @@ class LoginPage{
         int gap = (int)((frmwidth-logowidth)/1.4);
         pnlLogin.setBounds(0,0,frmwidth, frmheight);
         
-        btnLogin.setBounds((int)(width/22.76),frmheight-((int)(height/4.372)),((int)(width/11.3833)),((int)(height/18.425)));
-        btnCreate.setBounds((int)(width/6.209),frmheight-((int)(height/4.372)),((int)(width/11.3833)),((int)(height/18.425)));
-        lblLogo.setBounds(gap,(int)(height/14.74), logowidth, logoheight);
+        btnLogin.setBounds((int)(frmwidth/6),frmheight-((int)(height/4.372)),((int)(width/11.3833)),((int)(height/18.425)));
+        btnCreate.setBounds((int)(frmwidth/1.66),frmheight-((int)(height/4.372)),((int)(width/11.3833)),((int)(height/18.425)));
+        lblLogo.setBounds((int)(gap/1.5),(int)(height/16.23), logowidth, logoheight);
         user.setBounds((int)(frmwidth/2.5), frmheight/2-60,100,((int)(height/30)));
         password.setBounds((int)(frmwidth/2.5), frmheight/2,100,((int)(height/30))) ;
         lblPassword.setBounds((int)(frmwidth/2.5), frmheight/2, gap, gap);
@@ -156,6 +156,7 @@ class LoginPage{
       		  if(result = true){
       	      	username = userTry;
                 a.DisplayHomePage();
+                frmLogin.setVisible(false);
       	      	//System.out.println(userTry+"  "+passwordTry);
       		  }
             else if(result = false){
