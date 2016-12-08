@@ -85,7 +85,8 @@ public class DataBase{
                 "DAY TEXT NOT NULL," + 
                 "START_TIME TEXT NOT NULL," +
                 "END_TIME TEXT NOT NULL," +
-                "LOCATION TEXT NOT NULL);";
+                "LOCATION TEXT NOT NULL," +
+                "DISPLAY TEXT NOT NULL);";
             }
             stmt.executeUpdate(sql);
             stmt.close();
@@ -410,7 +411,7 @@ public class DataBase{
         try{
             c = connect();
 
-            sql = "INSERT INTO " + username + "SCHEDULE VALUES(?,?,?,?)";
+            sql = "INSERT INTO " + username + "SCHEDULE VALUES(?,?,?,?,?)";
             pstmt = c.prepareStatement(sql);
             
             pstmt.setString(1,curCal.getName());
@@ -419,6 +420,8 @@ public class DataBase{
             String endDate = df.format(curCal.getEndTime());
             pstmt.setString(3,endDate);
             pstmt.setString(4,curCal.getLocation());
+            String dis = String.valueOf(curCal.getDisplay());
+            pstmt.setString(5,dis);
             pstmt.executeUpdate();
             pstmt.close();
             
@@ -447,9 +450,11 @@ public class DataBase{
                 String start = rs.getString("START_TIME");
                 String end = rs.getString("END_TIME");
                 String location = rs.getString("LOCATION");
+                String dis = rs.getString("DISPLAY");
                 java.util.Date startTime = df.parse(start);
                 java.util.Date endTime = df.parse(end);
-                CalendarEvent curCal = new CalendarEvent(name, startTime, endTime, location);
+                boolean display = Boolean.parseBoolean(dis);
+                CalendarEvent curCal = new CalendarEvent(name, startTime, endTime, location, display);
                 calList.add(curCal);
             }
             rs.close();

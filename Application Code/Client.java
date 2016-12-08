@@ -384,13 +384,15 @@ public class Client {
             Date start;
             Date end;
             String loc;
+            boolean dis;
             int counter = 0;
             while(iter.hasNext()){
                 name = iter.next().toString();
                 start = df.parse(iter.next().toString());
                 end = df.parse(iter.next().toString());
                 loc = iter.next().toString();
-                temp = new CalendarEvent(name, start, end, loc);
+                dis = Boolean.parseBoolean(iter.next().toString());
+                temp = new CalendarEvent(name, start, end, loc, dis);
                 calList.add(temp);
                 calCount++;
             }
@@ -432,7 +434,6 @@ public class Client {
 
         } catch (Exception e){
             System.err.println("ClientVectorToAssignList: " + e);
-
         }
 
         return assignList;

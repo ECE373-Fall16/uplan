@@ -6,9 +6,10 @@ public class CalendarEvent{
     private Date starttime;
     private Date endtime;
     private String location;
+    private boolean display;
     
 
-    public CalendarEvent(String name1, Date start, Date end, String loc){
+    public CalendarEvent(String name1, Date start, Date end, String loc, boolean dis){
         name = name1;
         starttime = start;
         endtime = end;
@@ -58,6 +59,16 @@ public class CalendarEvent{
     
     public void setLocation(String loc){
         location = loc;
+    }
+
+
+    public boolean getDisplay(){
+        return display;
+    }
+
+
+    public void setDisplay(boolean dis){
+        display = dis;
     }
 
 }

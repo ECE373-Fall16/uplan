@@ -24,6 +24,7 @@ public class Server {
                 values.add(df.format(calendarList.get(k).getStartTime()));
                 values.add(df.format(calendarList.get(k).getEndTime()));
                 values.add(calendarList.get(k).getLocation());
+                values.add(String.valueOf(calendarList.get(k).getDisplay()));
             }
             System.out.println();
             return values;
@@ -366,7 +367,6 @@ public class Server {
                 iter.next();
             }
 
-            System.out.println("\nPrinting list...");
             for(int k = 0; k < calendarList.size(); k++){
                 //System.out.println("[" + k + "]" + calendarList.get(k).toString());
                 returnValues.add(calendarList.get(k).getName());
@@ -611,7 +611,8 @@ public class Server {
         java.util.Date start = eve.getStart();
         java.util.Date end = eve.getEnd();
         String loc = eve.getLocation();
-        CalendarEvent c = new CalendarEvent(name, start, end, loc);
+        boolean display = true;                         //need to modify
+        CalendarEvent c = new CalendarEvent(name, start, end, loc, display);
         
         return c; 
     }
@@ -622,7 +623,8 @@ public class Server {
         try{
             String name = assign.getAssignName();
             String loc = "ASSIGNMENT";
-            c = new CalendarEvent(name,startTime,endTime,loc);
+            boolean display = true;                     //need to modify
+            c = new CalendarEvent(name,startTime,endTime,loc, display);
 
         } catch (Exception e){
             System.err.println( "ServerAssignToCal:" + e.getClass().getName() + ": " + e.getMessage() );
