@@ -38,7 +38,6 @@ class LoginPage{
 	public LoginPage() {
     	c= new Client();
     	a = new HomePage1();
-      a.DisplayHomePage();
 	}
 	public int LoginUser(){
 		try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
@@ -147,21 +146,22 @@ class LoginPage{
         frmLogin.setVisible(true);		
       btnLogin.addActionListener(new ActionListener() { 
       	  public void actionPerformed(ActionEvent e) { 
-      		  //a.DisplayHomePage();
+      		  
       		  //a.DisplayCalendarEvents();
       		  userinput = user.getText();
       		  passwordinput = String.valueOf(password.getPassword());
       		  String userTry = userinput;
       		  String passwordTry = passwordinput;
-      		  //result = c.Login(userTry, passwordTry);
+      		  result = c.login(userTry, passwordTry);
       		  if(result = true){
       	      	username = userTry;
-      	      	System.out.println(userTry+"  "+passwordTry);
+                a.DisplayHomePage();
+      	      	//System.out.println(userTry+"  "+passwordTry);
       		  }
-      	      else if(result = false){
-      	      	username = null;
-      	      	done = false;
-      	      }
+            else if(result = false){
+      	      username = null;
+      	      done = false;
+            }
       	  }});
       btnCreate.addActionListener(new ActionListener() { 
       	  public void actionPerformed(ActionEvent e) { 

@@ -712,12 +712,10 @@ public class Server {
             double hoursToComp = (double)Integer.parseInt(curAssign.getCompletionTime());
             double userPriority = (double)Integer.parseInt(curAssign.getPriority());
             double hoursLeft = (double)findHoursTillDue(curAssign);
-            if(hoursLeft != -1){
-                appPriority = (int)(hoursToComp*userPriority/hoursLeft*1000);
-                if(appPriority > 0){
-                    curAssign.setAppPriority(Integer.toString(appPriority));
-                    tempList = addToAssignList(tempList, curAssign);
-                }
+            appPriority = (int)(hoursToComp*userPriority/hoursLeft*1000);
+            if(appPriority > 0){
+                curAssign.setAppPriority(Integer.toString(appPriority));
+                tempList = addToAssignList(tempList, curAssign);
             }
             assignIter.next();
         }

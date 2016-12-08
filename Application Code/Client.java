@@ -271,6 +271,10 @@ public class Client {
     
     
     public int updateProfile(String type, String newName){
+        
+        if(type.equals("BEDTIME"))
+            newName = formatTime(newName);
+
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();

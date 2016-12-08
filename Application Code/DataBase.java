@@ -216,6 +216,21 @@ public class DataBase{
             System.out.println("DatabaseRemoveProfile1: " + e.getMessage());
             valid = 0;
         }
+
+        System.out.println("Deleting " + username + "'s ScheduleTable...");
+        sql = "DROP TABLE " + username + "SCHEDULE";
+        
+        try{
+            if(c == null)
+                c = connect();
+            stmt = c.createStatement();
+            stmt.executeUpdate(sql);
+            stmt.close();
+ 
+        } catch (SQLException e) {
+            System.out.println("DatabaseRemoveProfile1: " + e.getMessage());
+            valid = 0;
+        }
         
         System.out.println("Deleting Profile " + username + "...");
         sql = "DELETE FROM PROFILE WHERE USERNAME = ?";
@@ -567,7 +582,10 @@ public class DataBase{
     
     
     public LinkedList<Assignment> getAssignmentList(String user) throws SQLException{
-        LinkedList<Assignment> assignList= new LinkedList<Assignment>();
+        LinkedList<Assignment> assignList = new LinkedList<Assignment>();
+        LinkedList<Assignment> tempList = new LinkedList<Assignment>();
+        Calendar curCal = Calendar.getInstance();
+        Calendar assignCal = Calendar.getInstance();
         try{
             c = connect();
             stmt = c.createStatement();
@@ -582,13 +600,28 @@ public class DataBase{
                 String pri = rs.getString("priority");
                 String appPri = rs.getString("apppriority");
                 java.util.Date due = df.parse(dueDate);
+                int curDay = curCal.get(Calendar.DAY_OF_YEAR);
+                assignCal.setTime(due);
+                int assignDay = assignCal.get(Calendar.DAY_OF_YEAR);
                 Assignment assign = new Assignment(name, className, due, hours, pri, appPri);
-                assignList.add(assign);
+                if(curDay <= assignDay)
+                    assignList.add(assign);
+                else
+                    tempList.add(assign);
             }
+
             rs.close();
             stmt.close();
+
         } catch (Exception e){
             System.err.println( "DatabaseGetAssignmentList:" + e.getClass().getName() + ": " + e.getMessage() );
+        }
+
+        ListIterator iter = tempList.listIterator();
+
+        while(iter.hasNext()){
+            removeAssignment(tempList.get(iter.nextIndex()).getAssignName(), user);
+            iter.next();
         }
         
         c.close();
@@ -598,7 +631,10 @@ public class DataBase{
     
     public LinkedList<Event> getEventList(String user) throws SQLException{
         LinkedList<Event> eventList= new LinkedList<Event>();
+        LinkedList<Event> tempList = new LinkedList<Event>();
         df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
+        Calendar curCal = Calendar.getInstance();
+        Calendar eventCal = Calendar.getInstance();
         try{
             c = connect();
             stmt = c.createStatement();
@@ -610,17 +646,33 @@ public class DataBase{
                 String days = rs.getString("DAYS");
                 String start = rs.getString("START_TIME");
                 java.util.Date startTime = df.parse(start);
+                int curDay = curCal.get(Calendar.DAY_OF_YEAR);
+                eventCal.setTime(startTime);
+                int eventDay = eventCal.get(Calendar.DAY_OF_YEAR);
                 String end = rs.getString("END_TIME");
                 java.util.Date endTime = df.parse(end);
                 String loc = rs.getString("LOCATION");
                 Event eve = new Event(eventName, days, startTime, endTime, loc);
-                eventList.addLast(eve);              
+                if(!days.equals(""))  
+                    eventList.addLast(eve);   
+                else if(curDay <= eventDay)
+                    eventList.addLast(eve);   
+                else
+                    tempList.add(eve);
             }
             
             rs.close();
             stmt.close();
+
         } catch (Exception e){
             System.err.println( "DatabaseGetEventList:" + e.getClass().getName() + ": " + e.getMessage() );
+        }
+
+        ListIterator iter = tempList.listIterator();
+
+        while(iter.hasNext()){
+            removeEvent(tempList.get(iter.nextIndex()).getEventName(), user);
+            iter.next();
         }
         
         c.close();
