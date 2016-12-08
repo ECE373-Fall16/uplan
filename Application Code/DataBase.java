@@ -82,7 +82,6 @@ public class DataBase{
             if(type.equals("SCHEDULE")){
                 sql = "CREATE TABLE " + username + "SCHEDULE(" +
                 "NAME TEXT PRIMARY KEY NOT NULL," +
-                "DAY TEXT NOT NULL," + 
                 "START_TIME TEXT NOT NULL," +
                 "END_TIME TEXT NOT NULL," +
                 "LOCATION TEXT NOT NULL," +
@@ -387,17 +386,52 @@ public class DataBase{
     }
     
     
-    public int saveSchedule(String user, LinkedList<CalendarEvent> calList) {
+    public int saveSchedule(String username, LinkedList<CalendarEvent> calList) {
         int valid = 1;
+        Calendar tempCal = Calendar.getInstance();
+        Calendar curCalen = Calendar.getInstance();
+        int curDay = curCalen.get(Calendar.DAY_OF_YEAR);
+
         try{
-            System.out.println("Saving " + user + " schedule");
-            clearSchedule(user);
+            System.out.println("Saving " + username + " schedule");
+
+            c = connect();
+            stmt = c.createStatement();
+            
+            rs = stmt.executeQuery( "SELECT * FROM " + username + "SCHEDULE;" );
+
+            while(rs.next()){
+                String name = rs.getString("NAME");
+                String end = rs.getString("END_TIME");
+                java.util.Date endTime = df.parse(end);
+                tempCal.setTime(endTime);
+                int tempDay = tempCal.get(Calendar.DAY_OF_YEAR);
+                if(tempDay >= curDay){
+                    sql = "DELETE FROM " + username + "SCHEDULE WHERE NAME = ?";
+                    pstmt = c.prepareStatement(sql); 
+                    // set the corresponding param
+                    pstmt.setString(1, name);
+                    // execute the delete statement
+                    pstmt.executeUpdate();
+                    pstmt.close();
+                }
+            }
+
+            rs.close();
+            stmt.close();
+            c.close();
+
+            Calendar calEvent = Calendar.getInstance();
+            int calEventDay = calEvent.get(Calendar.DAY_OF_YEAR);
+
             ListIterator calIter = calList.listIterator();
             while(calIter.hasNext()){
                 CalendarEvent curCal = calList.get(calIter.nextIndex());
-                valid = addCalEvent(user, curCal);
+                if(calEventDay >= curDay)
+                    valid = addCalEvent(username, curCal);
                 calIter.next();
             }
+
         } catch (Exception e) {
             System.err.println( "DatabaseSaveSchedule:" + e.getClass().getName() + ": " + e.getMessage() );
             valid = 0;

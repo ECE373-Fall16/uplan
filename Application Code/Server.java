@@ -293,14 +293,8 @@ public class Server {
                 iter2.next();
             }
 
-            assignList = orderAssignmentList(assignList);
             freeblocks = findFreeTime(calendarList, username);
 
-            ListIterator iter1 = freeblocks.listIterator();
-            while (iter1.hasNext()){
-                iter1.next();
-            }
-            
             //At this point we have the event list converted into the CalendarEvent list.
             //Also we have calculated the total free time for each day based off this list
             //and have saved it in a freetime list. Lastly we have an ordered assignment
@@ -336,6 +330,8 @@ public class Server {
                     java.util.Date assignEnd = end.getTime();
                     tempAssign.get(assignIter.nextIndex()).setCompletionTime(Integer.toString(hoursToComp - workHours));  //modify assignment with reduced completiontime
                     
+                    System.out.println("Start = " + assignStart + " End: " + assignEnd);
+
                     curCalEvent = assignmentToCal(curAssign, assignStart, assignEnd);   //create cal event
                     addToCalList(curCalEvent, calendarList);        //add to cal list
                     
@@ -359,22 +355,15 @@ public class Server {
             
             }
 
-
-            
-            ListIterator iter = calendarList.listIterator();
-            while (iter.hasNext()){
-                System.out.println(calendarList.get(iter.nextIndex()).toString());
-                iter.next();
-            }
-
             for(int k = 0; k < calendarList.size(); k++){
-                //System.out.println("[" + k + "]" + calendarList.get(k).toString());
                 returnValues.add(calendarList.get(k).getName());
                 returnValues.add(df.format(calendarList.get(k).getStartTime()));
                 returnValues.add(df.format(calendarList.get(k).getEndTime()));
                 returnValues.add(calendarList.get(k).getLocation());
                 returnValues.add(String.valueOf(calendarList.get(k).getDisplay()));
             }
+
+            data.saveSchedule(username, calendarList);
 
         } catch (Exception e){
             System.err.println( "Serverschedule algo:" + e.getClass().getName() + ": " + e.getMessage() );
@@ -398,13 +387,16 @@ public class Server {
         while (counter < size){
             tempDays[0] = days[counter++];
             tempDays[1] = days[counter++];
+            
             String dayOfWeek = new String(tempDays);
+            
             int dayNum;
             int weekOfYear;
             int eventStartTimeHour;
             int eventStartTimeMin;
             int eventEndTimeHour;
             int eventEndTimeMin;
+            
             java.util.Date startTime;
             java.util.Date endTime;
             
@@ -641,6 +633,7 @@ public class Server {
         
         ListIterator calListIter = curList.listIterator();
         Boolean added = false;
+        boolean exists = false;
         int correctIndex = 0;
         int index;
         
@@ -651,10 +644,12 @@ public class Server {
                 correctIndex = index;
                 added = true;
             }
+            if(calToAdd == curCalendar)
+                exists = true;
             calListIter.next();
         }
 
-        if(added){
+        if(added && exists == false){
             curList.add(correctIndex, curCal);
         }
 
@@ -663,7 +658,7 @@ public class Server {
             added = true;
         }
 
-        if(!added){
+        if(!added && exists == false){
             curList.addLast(curCal);
             added = true;
         }
@@ -820,7 +815,7 @@ public class Server {
                 startOfFree = priorEndTime.getTime();
                 
                 
-                priorEndTime.set(Calendar.HOUR_OF_DAY, bedTime[0]+12);      //Bedtime always in PM
+                priorEndTime.set(Calendar.HOUR_OF_DAY, bedTime[0]);      //Bedtime always in PM
                 priorEndTime.set(Calendar.MINUTE, bedTime[1]);
                 
                 
