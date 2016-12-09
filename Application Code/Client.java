@@ -5,9 +5,7 @@ import org.apache.xmlrpc.*;
 public class Client {
     
     private String username;
-
-    private static String SERVER_ADDR = "104.154.192.22:8080";
-
+    private static String SERVER_ADDR = "http://localhost:8085/RPC2";
     private DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
 
     

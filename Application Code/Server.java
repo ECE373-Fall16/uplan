@@ -8,7 +8,7 @@ public class Server {
     private int alCounter = 0;
     private int elCounter = 0;
     private DataBase data = new DataBase();
-    private static int PORT = 8080;
+    private static int PORT = 8085;
     private DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
     private TimeZone timezone = TimeZone.getTimeZone("EST");
     private static long hourInMS = 3600000;
