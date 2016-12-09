@@ -16,7 +16,7 @@ public class Server {
    public static void main (String [] args){
    
       try {
-         WebServer server = new WebServer(8089, InetAddress.getLocalHost());
+         WebServer server = new WebServer(8089, InetAddress.getByName("10.128.0.2"));
          server.addHandler("sample", new Server());
          server.start();
       } catch (Exception exception){
