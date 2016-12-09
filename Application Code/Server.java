@@ -27,6 +27,7 @@ public class Server {
                 values.add(df.format(calendarList.get(k).getEndTime()));
                 values.add(calendarList.get(k).getLocation());
                 values.add(String.valueOf(calendarList.get(k).getDisplay()));
+                values.add(Integer.toString(calendarList.get(k).getID()));
             }
             return values;
 
@@ -279,6 +280,7 @@ public class Server {
         
         try{
             LinkedList<CalendarEvent> calendarList = data.getSchedule(username, "schedule");
+
             LinkedList<FreeTime> freeblocks = new LinkedList<FreeTime>();
             LinkedList<Assignment> assignList = data.getAssignmentList(username);
             LinkedList<Event> tempEventList = new LinkedList<Event>();
@@ -363,6 +365,12 @@ public class Server {
                 returnValues.add(calendarList.get(k).getLocation());
                 returnValues.add(String.valueOf(calendarList.get(k).getDisplay()));
                 returnValues.add(calendarList.get(k).getID());
+            }
+
+            ListIterator iter4 = calendarList.listIterator();
+            while(iter4.hasNext()){
+                System.out.println(calendarList.get(iter4.nextIndex()).toString());
+                iter4.next();
             }
 
             data.saveSchedule(username, calendarList);
