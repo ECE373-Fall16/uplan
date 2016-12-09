@@ -1,5 +1,6 @@
 import org.apache.xmlrpc.*;
 import java.util.*;
+import java.net.InetAddress;
 
 public class Server { 
 
@@ -15,7 +16,7 @@ public class Server {
    public static void main (String [] args){
    
       try {
-         WebServer server = new WebServer(8089, "10.128.0.2");
+         WebServer server = new WebServer(8089, InetAddress.getLocalHost());
          server.addHandler("sample", new Server());
          server.start();
       } catch (Exception exception){
