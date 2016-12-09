@@ -2,6 +2,7 @@ import java.util.*;
 
 public class CalendarEvent{
     
+    private int id;
     private String name;
     private Date starttime;
     private Date endtime;
@@ -9,11 +10,12 @@ public class CalendarEvent{
     private boolean display;
     
 
-    public CalendarEvent(String name1, Date start, Date end, String loc, boolean dis){
+    public CalendarEvent(String name1, Date start, Date end, String loc, boolean dis, int x){
         name = name1;
         starttime = start;
         endtime = end;
         location = loc;
+        id = x;
     }
     
 
@@ -69,6 +71,16 @@ public class CalendarEvent{
 
     public void setDisplay(boolean dis){
         display = dis;
+    }
+
+
+    public int getID(){
+        return id;
+    }
+
+
+    public void setID(int x){
+        id = x;
     }
 
 }

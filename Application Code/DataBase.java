@@ -13,7 +13,7 @@ public class DataBase{
     
 
     public DataBase(){
-        
+         
     }
     
     
@@ -81,7 +81,8 @@ public class DataBase{
             }
             if(type.equals("SCHEDULE")){
                 sql = "CREATE TABLE " + username + "SCHEDULE(" +
-                "NAME TEXT PRIMARY KEY NOT NULL," +
+                "ID INT PRIMARY KEY NOT NULL," +
+                "NAME TEXT NOT NULL," +
                 "START_TIME TEXT NOT NULL," +
                 "END_TIME TEXT NOT NULL," +
                 "LOCATION TEXT NOT NULL," +
@@ -401,16 +402,16 @@ public class DataBase{
             rs = stmt.executeQuery( "SELECT * FROM " + username + "SCHEDULE;" );
 
             while(rs.next()){
-                String name = rs.getString("NAME");
+                int id = rs.getInt("ID");
                 String end = rs.getString("END_TIME");
                 java.util.Date endTime = df.parse(end);
                 tempCal.setTime(endTime);
                 int tempDay = tempCal.get(Calendar.DAY_OF_YEAR);
                 if(tempDay >= curDay){
-                    sql = "DELETE FROM " + username + "SCHEDULE WHERE NAME = ?";
+                    sql = "DELETE FROM " + username + "SCHEDULE WHERE ID = ?";
                     pstmt = c.prepareStatement(sql); 
                     // set the corresponding param
-                    pstmt.setString(1, name);
+                    pstmt.setInt(1, id);
                     // execute the delete statement
                     pstmt.executeUpdate();
                     pstmt.close();
@@ -445,17 +446,18 @@ public class DataBase{
         try{
             c = connect();
 
-            sql = "INSERT INTO " + username + "SCHEDULE VALUES(?,?,?,?,?)";
+            sql = "INSERT INTO " + username + "SCHEDULE VALUES(?,?,?,?,?,?)";
             pstmt = c.prepareStatement(sql);
             
-            pstmt.setString(1,curCal.getName());
+            pstmt.setInt(1, curCal.getID());
+            pstmt.setString(2,curCal.getName());
             String startDate = df.format(curCal.getStartTime());
-            pstmt.setString(2,startDate);
+            pstmt.setString(3,startDate);
             String endDate = df.format(curCal.getEndTime());
-            pstmt.setString(3,endDate);
-            pstmt.setString(4,curCal.getLocation());
+            pstmt.setString(4,endDate);
+            pstmt.setString(5,curCal.getLocation());
             String dis = String.valueOf(curCal.getDisplay());
-            pstmt.setString(5,dis);
+            pstmt.setString(6,dis);
             pstmt.executeUpdate();
             pstmt.close();
             
@@ -500,6 +502,7 @@ public class DataBase{
 
             if(method.equals("display")){
                 while(rs.next()){
+                    int id = rs.getInt("ID");
                     String name = rs.getString("NAME");
                     String start = rs.getString("START_TIME");
                     String end = rs.getString("END_TIME");
@@ -512,7 +515,7 @@ public class DataBase{
                     calEventCal.setTime(startTime);
                     int calEventDayOfYear = calEventCal.get(Calendar.DAY_OF_YEAR);
 
-                    CalendarEvent curCalEve = new CalendarEvent(name, startTime, endTime, location, display);
+                    CalendarEvent curCalEve = new CalendarEvent(name, startTime, endTime, location, display, id);
 
                     if(calEventDayOfYear >= pastDayOfYear && calEventDayOfYear <= futureDayOfYear)
                         calList.add(curCalEve);
@@ -521,6 +524,7 @@ public class DataBase{
 
             else if(method.equals("schedule")){
                 while(rs.next()){
+                    int id = rs.getInt("ID");
                     String name = rs.getString("NAME");
                     String start = rs.getString("START_TIME");
                     String end = rs.getString("END_TIME");
@@ -533,7 +537,7 @@ public class DataBase{
                     
                     int calEventDayOfYear = calEventCal.get(Calendar.DAY_OF_YEAR);
 
-                    CalendarEvent curCaleve = new CalendarEvent(name, startTime, endTime, location, display);
+                    CalendarEvent curCaleve = new CalendarEvent(name, startTime, endTime, location, display, id);
 
                     if(calEventDayOfYear >= pastDayOfYear && calEventDayOfYear <= curDayOfYear)
                         calList.add(curCaleve);

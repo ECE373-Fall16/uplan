@@ -6,6 +6,8 @@ public class Client {
     
     private String username;
     private static String SERVER_ADDR = "http://localhost:8095/RPC2";
+    private DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
+
     
     
     public Client(){
@@ -56,7 +58,7 @@ public class Client {
 
     public int createAccount(String user, String name, String email, String password, String bedtime){
 
-        bedtime = formatTime(bedtime);
+        bedtime = formatBedTime(bedtime);
 
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
@@ -124,6 +126,8 @@ public class Client {
     
     public int addEvent(String name, String day, String startTime, String endTime, String location){
         try {
+
+
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
             params.addElement(name); 
@@ -146,15 +150,17 @@ public class Client {
     }
     
     
-    public int addAssignment(String name, String classname, String dueDate, String hours, String priority, String appPriority){
+    public int addAssignment(String name, String classname, String dueDate, String dueHour, String hours, String priority, String appPriority){
         try {
             
+            String finalDue = formatDate(dueDate, dueHour);
+
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
             params.addElement(name);
             params.addElement(username);
             params.addElement(classname);
-            params.addElement(dueDate);
+            params.addElement(finalDue);
             params.addElement(hours);
             params.addElement(priority);
             params.addElement(appPriority);
@@ -273,7 +279,7 @@ public class Client {
     public int updateProfile(String type, String newName){
         
         if(type.equals("BEDTIME"))
-            newName = formatTime(newName);
+            newName = formatBedTime(newName);
 
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
@@ -385,6 +391,7 @@ public class Client {
             Date end;
             String loc;
             boolean dis;
+            int id;
             int counter = 0;
             while(iter.hasNext()){
                 name = iter.next().toString();
@@ -392,7 +399,8 @@ public class Client {
                 end = df.parse(iter.next().toString());
                 loc = iter.next().toString();
                 dis = Boolean.parseBoolean(iter.next().toString());
-                temp = new CalendarEvent(name, start, end, loc, dis);
+                id = Integer.parseInt(iter.next().toString());
+                temp = new CalendarEvent(name, start, end, loc, dis, id);
                 calList.add(temp);
                 calCount++;
             }
@@ -473,7 +481,7 @@ public class Client {
     }
 
 
-    public String formatTime(String time){
+    public String formatBedTime(String time){
         char[] bed = time.toCharArray();
         char[] temp = new char[2];
 
@@ -534,6 +542,104 @@ public class Client {
         String finalTime = hour + min;
 
         return finalTime;
+    }
+
+
+    public String formatDate(String dueDay, String dueHour){
+        Calendar temp = Calendar.getInstance();
+            char[] dueChar = dueDay.toCharArray();
+            char[] hourChar = dueHour.toCharArray();
+            char[] tempChar = new char[2];
+
+            int counter = 0;
+            int dueSize = dueChar.length;
+            int hourSize = hourChar.length;
+
+            String m = "";
+            String d = "";
+            String y = "";
+            String h = "";
+            String min = "";
+            String offset = "";
+
+            if(dueSize == 8){
+                tempChar[0] = dueChar[0];
+                tempChar[1] = dueChar[1];
+                m = new String(tempChar);
+
+                tempChar[0] = dueChar[3];
+                tempChar[1] = dueChar[4];
+                d = new String(tempChar);    
+
+                tempChar[0] = dueChar[6];
+                tempChar[1] = dueChar[7];
+                y = new String(tempChar);
+            }
+
+            else if(dueSize == 7){
+                tempChar[0] = dueChar[0];
+                tempChar[1] = dueChar[1];
+                m = new String(tempChar);
+
+                tempChar[0] = 0;
+                tempChar[1] = dueChar[3];
+                d = new String(tempChar);    
+
+                tempChar[0] = dueChar[5];
+                tempChar[1] = dueChar[6];
+                y = new String(tempChar);
+            }
+
+            if(hourSize == 7){
+                tempChar[0] = hourChar[0];
+                tempChar[1] = hourChar[1];
+                h = new String(tempChar);
+
+                tempChar[0] = hourChar[3];
+                tempChar[1] = hourChar[4];
+                min = new String(tempChar);
+
+                tempChar[0] = hourChar[5];
+                tempChar[1] = hourChar[6];
+                offset = new String(tempChar);
+            }
+
+            else if(hourSize == 6){
+                tempChar[0] = 0;
+                tempChar[1] = hourChar[0];
+                h = new String(tempChar);
+
+                tempChar[0] = hourChar[2];
+                tempChar[1] = hourChar[3];
+                min = new String(tempChar);
+
+                tempChar[0] = hourChar[4];
+                tempChar[1] = hourChar[5];
+                offset = new String(tempChar);
+            }
+
+            int month = Integer.parseInt(m);
+            int day = Integer.parseInt(d);
+            int year = Integer.parseInt(y) + 2000;
+            int hour = 0;
+            if(offset.equals("pm"))
+                hour = Integer.parseInt(h) + 12;
+            else
+                hour = Integer.parseInt(h);
+            int minute = Integer.parseInt(min);
+
+            temp.set(Calendar.MONTH, month);
+            temp.set(Calendar.DAY_OF_MONTH, day);
+            temp.set(Calendar.YEAR, year);
+            temp.set(Calendar.HOUR_OF_DAY, hour);
+            temp.set(Calendar.MINUTE, minute);
+
+
+            Date tempDue = temp.getTime();
+
+            String finalDue = df.format(tempDue);
+
+            return finalDue;
     }
     
 }

@@ -12,6 +12,7 @@ public class Server {
     private DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
     private TimeZone timezone = TimeZone.getTimeZone("EST");
     private static long hourInMS = 3600000;
+    private int calEveID = 0;
 
 
     public Vector display(String user){
@@ -361,6 +362,7 @@ public class Server {
                 returnValues.add(df.format(calendarList.get(k).getEndTime()));
                 returnValues.add(calendarList.get(k).getLocation());
                 returnValues.add(String.valueOf(calendarList.get(k).getDisplay()));
+                returnValues.add(calendarList.get(k).getID());
             }
 
             data.saveSchedule(username, calendarList);
@@ -604,7 +606,7 @@ public class Server {
         java.util.Date end = eve.getEnd();
         String loc = eve.getLocation();
         boolean display = true;                         //need to modify
-        CalendarEvent c = new CalendarEvent(name, start, end, loc, display);
+        CalendarEvent c = new CalendarEvent(name, start, end, loc, display, calEveID++);
         
         return c; 
     }
@@ -616,7 +618,7 @@ public class Server {
             String name = assign.getAssignName();
             String loc = "ASSIGNMENT";
             boolean display = true;                     //need to modify
-            c = new CalendarEvent(name,startTime,endTime,loc, display);
+            c = new CalendarEvent(name,startTime,endTime,loc, display, calEveID++);
 
         } catch (Exception e){
             System.err.println( "ServerAssignToCal:" + e.getClass().getName() + ": " + e.getMessage() );
