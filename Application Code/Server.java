@@ -791,7 +791,7 @@ public class Server {
         return hoursTillDue;
     }
     
-    
+    /*
     private LinkedList<FreeTime> findFreeTime(LinkedList<CalendarEvent> calList, String user) throws SQLException{
         LinkedList<FreeTime> freeTimeList = new LinkedList<FreeTime>();
         int[] bedTime = data.getBedTime(user);
@@ -885,9 +885,9 @@ public class Server {
             
         }
         
-    }
+    }//*/
 
-    /*
+    //*
     public LinkedList<FreeTime> findFreeTime(LinkedList<CalendarEvent> calList, String user) throws SQLException{
         LinkedList<FreeTime> freeTimeList = new LinkedList<FreeTime>();
         int[] bedTime = data.getBedTime(user);

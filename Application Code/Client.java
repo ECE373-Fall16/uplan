@@ -368,7 +368,12 @@ public class Client {
             Vector params = new Vector();
             params.addElement(username);
             
+            System.out.println("before server call");
+            
             Vector returnValue = (Vector)server.execute("sample.scheduleAlgo", params);
+            
+            System.out.println("after server call");
+            
             calList = vectorToCalList(returnValue);
 
             ListIterator calIter = calList.listIterator();
