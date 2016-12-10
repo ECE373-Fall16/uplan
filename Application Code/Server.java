@@ -827,21 +827,21 @@ public class Server {
                 passedCurrentTime = true;
             }
             
+            if(justStarted){
+                priorDayOfWeek = currentTime.get(Calendar.DAY_OF_WEEK);         //initialize prior day of week in loop
+            }
+            
             if(passedCurrentTime){                      
                 
                 dayOfWeek = endTime.get(Calendar.DAY_OF_WEEK);    //used to know when switching days
-                if(priorDayOfWeek == 0){
-                    priorDayOfWeek = dayOfWeek;                     //initialize prior day of week in loop
-                }
             
 
-                if(dayOfWeek != priorDayOfWeek){            //just passed last event of the day
+                if(dayOfWeek != priorDayOfWeek && !justStarted){            //just passed last event of the day
                 
                     //adds 30 minute buffer to start time
                     priorEndTime.add(Calendar.MINUTE, 30);
                     startOfFree = priorEndTime.getTime();
-                
-                
+                    
                     priorEndTime.set(Calendar.HOUR_OF_DAY, bedTime[0]);      //Bedtime always in PM
                     priorEndTime.set(Calendar.MINUTE, bedTime[1]);
                 
@@ -880,6 +880,9 @@ public class Server {
                 
                     priorDayOfWeek++;
                 }   
+                if(justStarted){
+                    justStarted = false;
+                }
             
                 priorEndTime = dateToCalendar(endTime.getTime());           //used as end of day if last event
             }
