@@ -5,7 +5,7 @@ public class Client {
    public static void main (String [] args) {
    
       try {
-         XmlRpcClient server = new XmlRpcClient("104.154.192.22:8086"); 
+         XmlRpcClient server = new XmlRpcClient("http://104.154.192.22:8000/RPC2");
          Vector params = new Vector();
          
          params.addElement(new Integer(5));
