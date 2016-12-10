@@ -811,19 +811,120 @@ public class Server {
 
         return hoursTillDue;
     }
+    
+    /*
+    private LinkedList<FreeTime> findFreeTime(LinkedList<CalendarEvent> calList, String user) throws SQLException{
+        LinkedList<FreeTime> freeTimeList = new LinkedList<FreeTime>();
+        int[] bedTime = data.getBedTime(user);
+        Calendar currentTime = Calendar.getInstance();
+        Calendar endOf2Weeks = Calendar.getInstance();
+        endOf2Weeks.set(DAY_OF_WEEK, Calendar.SATURDAY);
+        endOf2Weeks.add(WEEK_OF_YEAR, 1);
+        
+        int dayOfYearIter = currentTime.get(DAY_OF_YEAR);
+        int dayOfYearStop = endOf2Weeks.get(DAY_OF_YEAR);
+        
+        Calendar startSecondEvent = Calendar.getInstance();
+        Calendar endFirstEvent = Calendar.getInstance();
+        
+        java.util.Date endOfFirst = null;
+        java.util.Date startOfSecond = null;
+        
+        ListIterator<CalendarEvent> calListIter = new listIterator(calList);
+        
+        FreeTime newFreeTime;
+        
+        int index = 0;        
+        int dayOfYearFirst = 0;
+        int dayOfYearSecond = 0;
+        
+        boolean toCurrentDate = false;
+            
+        while(!toCurrentDate){
+            //find calendar objects for time not between events
+            endOfFirst = calList.getEndTime(index);
+            startOfSecond = calList.getStartTime(index+1);
+            endFirstEvent = dateToCalendar(endOfFirst);
+            startSecondEvent = dateToCalendar(startOfSecond);
+            
+            dayOfYearFirst = endFirstEvent.get(Calendar.DAY_OF_YEAR);
+            
+            if(dayOfYearFirst = dayOfYearIter){
+                toCurrentDate = true;
+            }
+            else if(dayOfYearFirst > dayOfYearIter){
+                while(dayOfYearFirst != dayOfYearIter){
+                    Calendar tempCal = Calendar.getInstance();
+                    tempCal.set(Calendar.DAY_OF_YEAR, dayOfYearIter);
+                    tempCal.set(Calendar.MINUTE, 0);
+                    int tempDayOfWeek = tempCal.get(Calendar.DAY_OF_WEEK);
+                    if(tempDayOfWeek == Calendar.SUNDAY){
+                        tempCal.set(Calendar.HOUR_OF_DAY, 12);
+                        java.util.Date startDate = tempCal.getTime();
+                        tempCal.set(Calendar.HOUR_OF_DAY, 21);
+                        java.util.Date endDate = tempCal.getTime();
+                        newFreeTime = new FreeTime(startDate, endDate);
+                    }
+                    else if(tempDayOfWeek == Calendar.SATURDAY){
+                        tempCal.set(Calendar.HOUR_OF_DAY, 12);
+                        java.util.Date startDate = tempCal.getTime();
+                        tempCal.set(Calendar.HOUR_OF_DAY, 17);
+                        java.util.Date endDate = tempCal.getTime();
+                        newFreeTime = new FreeTime(startDate, endDate);
+                    }
+                    else if(tempDayOfWeek == Calendar.FRIDAY){
+                        tempCal.set(Calendar.HOUR_OF_DAY, 12);
+                        java.util.Date startDate = tempCal.getTime();
+                        tempCal.set(Calendar.HOUR_OF_DAY, 19);
+                        java.util.Date endDate = tempCal.getTime();
+                        newFreeTime = new FreeTime(startDate, endDate);
+                    }
+                    else{
+                        tempCal.set(Calendar.HOUR_OF_DAY, 12);
+                        java.util.Date startDate = tempCal.getTime();
+                        tempCal.set(Calendar.HOUR_OF_DAY, bedTime[0]);
+                        tempCal.set(Calendar.MINUTE, bedTime[1]);
+                        java.util.Date endDate = tempCal.getTime();
+                        newFreeTime = new FreeTime(startDate, endDate);
+                    }
+                    
+                    toCurrentDate = true;
+                    dayOfYearIter++;
+                }
+                else{
+                    calListIter.next();
+                }
+            }
 
 
+        }
+
+        
+        while(dayOfYearIter <= dayOfYearStop){                  //runs through days of week
+            
+
+            
+        }
+        
+    }//*/
+
+    //*
     public LinkedList<FreeTime> findFreeTime(LinkedList<CalendarEvent> calList, String user) throws SQLException{
         LinkedList<FreeTime> freeTimeList = new LinkedList<FreeTime>();
         int[] bedTime = data.getBedTime(user);
+        Calendar currentTime = Calendar.getInstance();
         Calendar endTime = Calendar.getInstance();
         Calendar priorEndTime = Calendar.getInstance();
         Calendar startTime = Calendar.getInstance();
         ListIterator<CalendarEvent> calListIter = calList.listIterator();
 
         int dayOfWeek;
+        int dayOfYear;
         int priorDayOfWeek = 0;
+        int priorDayOfYear = -1;
         int calListIndex;
+        boolean justStarted = true;
+        boolean passedCurrentTime = false;
         java.util.Date startOfEvent;
         java.util.Date endOfEvent;
         java.util.Date startOfFree;
@@ -841,64 +942,91 @@ public class Server {
             endOfEvent = calList.get(calListIndex).getEndTime();    //get date
             endTime = dateToCalendar(endOfEvent);                   //translate to EST calendar
             
+            if(endTime.compareTo(currentTime) >= 0){                //passed current time
+                passedCurrentTime = true;
+            }
             
-            dayOfWeek = endTime.get(Calendar.DAY_OF_WEEK);    //used to know when switching days
-            if(priorDayOfWeek == 0){
-                priorDayOfWeek = dayOfWeek;                     //initialize prior day of week in loop
+            if(justStarted){
+                priorDayOfWeek = currentTime.get(Calendar.DAY_OF_WEEK);         //initialize prior day of week in loop
+                priorDayOfYear = currentTime.get(Calendar.DAY_OF_YEAR);
+            }
+            
+            if(passedCurrentTime){                      
+                
+                dayOfWeek = endTime.get(Calendar.DAY_OF_WEEK);    //used to know when switching days
+                dayOfYear = endTime.get(Calendar.DAY_OF_YEAR);
+            
+
+                if(dayOfYear >= priorDayOfYear && !justStarted){            //just passed last event of the day
+                
+                    //adds 30 minute buffer to start time
+                    priorEndTime.add(Calendar.MINUTE, 30);
+                    startOfFree = priorEndTime.getTime();
+                    
+                    priorEndTime.set(Calendar.HOUR_OF_DAY, bedTime[0]);      //Bedtime always in PM
+                    priorEndTime.set(Calendar.MINUTE, bedTime[1]);
+                
+                
+                    endOfFree = priorEndTime.getTime();
+                    newFreeTime = new FreeTime(startOfFree, endOfFree);
+                    freeTimeList.add(newFreeTime);
+                
+                    if(priorDayOfWeek == Calendar.SATURDAY){
+                        priorDayOfWeek = Calendar.SUNDAY;
+                        priorDayOfYear++;
+                    } 
+                    else{
+                        priorDayOfWeek++;
+                        priorDayOfYear++;
+                    }
+                }
+            
+                while(dayOfYear > priorDayOfYear || (dayOfYear == priorDayOfYear && !justStarted)){                 //no events that day
+                    startTime.set(Calendar.DAY_OF_WEEK, priorDayOfWeek);        //keeps incrementing
+                    endTime.set(Calendar.DAY_OF_WEEK, priorDayOfWeek);        //keeps incrementing
+                    startTime.set(Calendar.HOUR_OF_DAY, 12);
+                    startTime.set(Calendar.MINUTE, 0);
+                    endTime.set(Calendar.MINUTE, 0);
+                    if(priorDayOfWeek == Calendar.SATURDAY){                    //Earlier end on Saturday
+                        endTime.set(Calendar.HOUR_OF_DAY, 17);
+                    }
+                    else if(priorDayOfWeek == Calendar.SUNDAY){               //Early bedtime on sunday
+                        endTime.set(Calendar.HOUR_OF_DAY, 21);
+                    }
+                    else if(priorDayOfWeek == Calendar.FRIDAY){
+                        endTime.set(Calendar.HOUR_OF_DAY, 19);
+                    }
+                    else{
+                        endTime.set(Calendar.HOUR_OF_DAY, bedTime[0]);
+                        endTime.set(Calendar.MINUTE, bedTime[1]);
+                    }
+                
+                    startOfFree = startTime.getTime();
+                    endOfFree = endTime.getTime();
+                    newFreeTime = new FreeTime(startOfFree, endOfFree);
+                    freeTimeList.add(newFreeTime);
+                
+                    if(priorDayOfWeek == Calendar.SATURDAY){
+                        priorDayOfWeek = Calendar.SUNDAY;
+                        priorDayOfYear++;
+                    } 
+                    else{
+                        priorDayOfWeek++;
+                        priorDayOfYear++;
+                    }
+                }   
+                if(justStarted){
+                    justStarted = false;
+                }
+            
+                priorEndTime = dateToCalendar(endTime.getTime());           //used as end of day if last event
             }
 
-            if(dayOfWeek != priorDayOfWeek){            //just passed last event of the day
-                
-                //adds 30 minute buffer to start time
-                priorEndTime.add(Calendar.MINUTE, 30);
-                startOfFree = priorEndTime.getTime();
-                
-                
-                priorEndTime.set(Calendar.HOUR_OF_DAY, bedTime[0]);      //Bedtime always in PM
-                priorEndTime.set(Calendar.MINUTE, bedTime[1]);
-                
-                
-                endOfFree = priorEndTime.getTime();
-                newFreeTime = new FreeTime(startOfFree, endOfFree);
-                freeTimeList.add(newFreeTime);
-                
-                priorDayOfWeek++;
-                if(priorDayOfWeek == 8){
-                    priorDayOfWeek = 1;
-                }
-            }
-            
-            while(dayOfWeek != priorDayOfWeek){                 //no events that day
-                startTime.set(Calendar.DAY_OF_WEEK, priorDayOfWeek);        //keeps incrementing
-                endTime.set(Calendar.DAY_OF_WEEK, priorDayOfWeek);        //keeps incrementing
-                startTime.set(Calendar.HOUR_OF_DAY, 12);
-                startTime.set(Calendar.MINUTE, 0);
-                endTime.set(Calendar.MINUTE, 0);
-                if(priorDayOfWeek == 6){                    //Earlier end on Saturday
-                    endTime.set(Calendar.HOUR_OF_DAY, 5);
-                }
-                else if(priorDayOfWeek == 1){               //Early bedtime on sunday
-                    endTime.set(Calendar.HOUR_OF_DAY, 9);
-                }
-                else{
-                    endTime.set(Calendar.HOUR_OF_DAY, bedTime[0]);
-                    endTime.set(Calendar.MINUTE, bedTime[1]);
-                }
-                
-                startOfFree = startTime.getTime();
-                endOfFree = endTime.getTime();
-                newFreeTime = new FreeTime(startOfFree, endOfFree);
-                freeTimeList.add(newFreeTime);
-                
-                priorDayOfWeek++;
-            }
-            
-            priorEndTime = dateToCalendar(endTime.getTime());           //used as end of day if last event
-            
             calListIter.next();
+
         }
         return freeTimeList;
-    }
+    }//*/
 
 
     public int getFreeTimeHours(FreeTime curDay){

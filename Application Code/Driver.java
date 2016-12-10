@@ -19,6 +19,12 @@ public class Driver{
         r.addAssignment("Hw5","math", "12/24/16", "06:00am", "5", "1", "");
         r.addAssignment("Hw6","english", "12/22/16", "10:00pm", "10", "1", "");
         r.addAssignment("Hw7","dsds", "12/30/16", "12:00pm", "40", "3", "");
+
+        r.getAssignmentList();
+
+        r.deleteAssignment("Hw4");
+
+        r.getAssignmentList();
         
         r.addEvent("Electronics","MoWe","12/05/16", "10:00am", "12/05/16", "11:00am","Elab 202");
         r.addEvent("Circuits","MoWeFr","12/05/16", "12:00pm", "12/05/16", "01:00pm","LRC 301");
