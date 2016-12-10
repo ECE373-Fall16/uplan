@@ -882,9 +882,9 @@ public class Server {
                 }   
             
                 priorEndTime = dateToCalendar(endTime.getTime());           //used as end of day if last event
-            
-                calListIter.next();
             }
+
+            calListIter.next();
 
         }
         return freeTimeList;
