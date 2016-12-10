@@ -311,50 +311,65 @@ public class Server {
             while(index < freeblocks.size()){                         //goes day by day through freetime
                 
                 FreeTime curBlock = freeblocks.get(index);
-                assignList = orderAssignmentList(assignList);
+
+                Calendar schedCal = Calendar.getInstance();
+                schedCal = dateToCalendar(curBlock.getStartTime());
+                java.util.Date schedDate = schedCal.getTime();
+
+                assignList = orderAssignmentList(assignList, schedDate);
                 LinkedList<Assignment> tempAssign = assignList;
                 ListIterator assignIter = assignList.listIterator();
                 int curBlockFreeTime = getFreeTimeHours(curBlock);
                 CalendarEvent curCalEvent;
+
+                ListIterator iter5 = assignList.listIterator();
+                while(iter5.hasNext()){
+                    System.out.println("Name: " + assignList.get(iter5.nextIndex()).getAssignName() + " AppPriority: " + assignList.get(iter5.nextIndex()).getAppPriority());
+                    iter5.next();
+                }
                 
                 while(assignIter.hasNext() && curBlockFreeTime > 0){      //goes assignment by assignment per day
                     
                     Assignment curAssign = tempAssign.get(assignIter.nextIndex());
-                    int hoursToComp = Integer.parseInt(curAssign.getCompletionTime());
-                    int daysTillDue = getDaysTillDue(curAssign);
-                    int workHours = hoursToComp/daysTillDue + 1;        //hours should be worked on that day
-                    
-                    if(workHours > curBlockFreeTime)
-                        workHours = curBlockFreeTime;
 
-                    java.util.Date assignStart = curBlock.getStartTime();           //starttime = starttime of freetime
-                    Calendar end = dateToCalendar(assignStart);  
-                    int hourOfDay = end.get(Calendar.HOUR_OF_DAY);
-                    end.set(Calendar.HOUR_OF_DAY, hourOfDay + workHours);   //endtime = starttime + workhours
+                    if(Integer.parseInt(curAssign.getAppPriority()) > 20){
+                        int hoursToComp = Integer.parseInt(curAssign.getCompletionTime());
+                        int daysTillDue = getDaysTillDue(curAssign, schedDate);
+                        int workHours = (int)(hoursToComp/daysTillDue + 1);        //hours should be worked on that day
                     
-                    java.util.Date assignEnd = end.getTime();
-                    tempAssign.get(assignIter.nextIndex()).setCompletionTime(Integer.toString(hoursToComp - workHours));  //modify assignment with reduced completiontime
-                    
-                    System.out.println("Start = " + assignStart + " End: " + assignEnd);
+                        if(workHours > curBlockFreeTime)
+                            workHours = curBlockFreeTime;
 
-                    curCalEvent = assignmentToCal(curAssign, assignStart, assignEnd);   //create cal event
-                    addToCalList(curCalEvent, calendarList);        //add to cal list
+                        java.util.Date assignStart = curBlock.getStartTime();           //starttime = starttime of freetime
+                        Calendar end = dateToCalendar(assignStart);  
+                        int hourOfDay = end.get(Calendar.HOUR_OF_DAY);
+                        end.set(Calendar.HOUR_OF_DAY, hourOfDay + workHours);   //endtime = starttime + workhours
                     
-                    FreeTime temp = useFreeTime(curCalEvent, freeblocks.get(index));
-
-                    Calendar tempCal = dateToCalendar(temp.getStartTime());
-                    int hour = tempCal.get(Calendar.HOUR_OF_DAY);
-
-                    if(hour != 0)
-                        freeblocks.set(index, temp);           //modify freetime for next assignment
-                    else
-                        freeblocks.remove(index);
+                        java.util.Date assignEnd = end.getTime();
+                        tempAssign.get(assignIter.nextIndex()).setCompletionTime(Integer.toString(hoursToComp - workHours));  //modify assignment with reduced completiontime
                     
-                    curBlockFreeTime = getFreeTimeHours(freeblocks.get(index));
+                        curCalEvent = assignmentToCal(curAssign, assignStart, assignEnd);   //create cal event
+                        addToCalList(curCalEvent, calendarList);        //add to cal list
+                    
+                        FreeTime temp = useFreeTime(curCalEvent, freeblocks.get(index));
+
+                        Calendar tempCal = dateToCalendar(temp.getStartTime());
+                        int hour = tempCal.get(Calendar.HOUR_OF_DAY);
+
+                        if(hour != 0)
+                            freeblocks.set(index, temp);           //modify freetime for next assignment
+                        else
+                            freeblocks.remove(index);
+                    
+                        curBlockFreeTime = getFreeTimeHours(freeblocks.get(index));
+                    }
 
                     assignIter.next();
                 
                 }
+
+                System.out.println("");
+                assignList = tempAssign;
 
                 index++;
             
@@ -369,11 +384,11 @@ public class Server {
                 returnValues.add(calendarList.get(k).getID());
             }
 
-            ListIterator iter4 = calendarList.listIterator();
+            /*ListIterator iter4 = calendarList.listIterator();
             while(iter4.hasNext()){
                 System.out.println(calendarList.get(iter4.nextIndex()).toString());
                 iter4.next();
-            }
+            }*/
 
             data.saveSchedule(username, calendarList);
 
@@ -708,7 +723,7 @@ public class Server {
     }
 
 
-    public LinkedList<Assignment> orderAssignmentList(LinkedList<Assignment> assignList){
+    public LinkedList<Assignment> orderAssignmentList(LinkedList<Assignment> assignList, java.util.Date curDate){
         LinkedList<Assignment> tempList = new LinkedList<Assignment>();
         ListIterator assignIter = assignList.listIterator();
 
@@ -720,8 +735,13 @@ public class Server {
             curAssign = assignList.get(index);
             double hoursToComp = (double)Integer.parseInt(curAssign.getCompletionTime());
             double userPriority = (double)Integer.parseInt(curAssign.getPriority());
-            double hoursLeft = (double)findHoursTillDue(curAssign);
+            double hoursLeft = (double)findHoursTillDue(curAssign, curDate);
             appPriority = (int)(hoursToComp*userPriority/hoursLeft*1000);
+            if(assignList.get(assignIter.nextIndex()).getAssignName().equals("Hw3")){
+                System.out.println("Priority: " + assignList.get(assignIter.nextIndex()).getAppPriority());
+                System.out.println("Hourstocomp: " + hoursToComp + " userPri: " + userPriority + " hoursleft: " + hoursLeft);
+            }
+
             if(appPriority > 0){
                 curAssign.setAppPriority(Integer.toString(appPriority));
                 tempList = addToAssignList(tempList, curAssign);
@@ -766,9 +786,11 @@ public class Server {
     }
 
 
-    public int findHoursTillDue(Assignment assign){
+    public int findHoursTillDue(Assignment assign, java.util.Date curDate){
         Calendar curCal = Calendar.getInstance();
         Calendar dueCal = Calendar.getInstance();
+
+        curCal = dateToCalendar(curDate);
 
         java.util.Date dueDate = assign.getDueDate();
         dueCal = dateToCalendar(dueDate);
@@ -897,8 +919,8 @@ public class Server {
     }
 
 
-    public int getDaysTillDue(Assignment assign){
-        Calendar curCal = Calendar.getInstance(timezone);
+    public int getDaysTillDue(Assignment assign, java.util.Date curDate){
+        Calendar curCal = dateToCalendar(curDate);
         Calendar dueCal = dateToCalendar(assign.getDueDate());
 
         int curDayOfYear = curCal.get(Calendar.DAY_OF_YEAR);
