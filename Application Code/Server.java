@@ -855,7 +855,7 @@ public class Server {
                     } else{priorDayOfWeek++;}
                 }
             
-                while(dayOfWeek != priorDayOfWeek){                 //no events that day
+                while(dayOfWeek > priorDayOfWeek){                 //no events that day
                     System.out.println("Does the program enter into the no events loop? Yes.");
                     startTime.set(Calendar.DAY_OF_WEEK, priorDayOfWeek);        //keeps incrementing
                     endTime.set(Calendar.DAY_OF_WEEK, priorDayOfWeek);        //keeps incrementing
