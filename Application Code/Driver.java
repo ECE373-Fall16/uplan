@@ -16,9 +16,9 @@ public class Driver{
         r.addAssignment("Hw3","Hardware", "12/15/16", "11:00pm", "1", "1", "");
         r.addAssignment("Hw4","Har", "12/18/16", "06:00am", "3", "3", "");
 
-        /*r.addAssignment("Hw5","math", "12/24/16", "06:00am", "5", "1", "");
+        r.addAssignment("Hw5","math", "12/24/16", "06:00am", "5", "1", "");
         r.addAssignment("Hw6","english", "12/22/16", "10:00pm", "10", "1", "");
-        r.addAssignment("Hw7","dsds", "12/30/16", "12:00pm", "40", "3", "");*/
+        r.addAssignment("Hw7","dsds", "12/30/16", "12:00pm", "40", "3", "");
 
         r.getAssignmentList();
 

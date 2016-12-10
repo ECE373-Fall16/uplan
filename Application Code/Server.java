@@ -865,7 +865,7 @@ public class Server {
                 }
             
                 while(dayOfYear > priorDayOfYear || (dayOfYear == priorDayOfYear && !justStarted)){                 //no events that day
-                    System.out.println("Does the program enter into the no events loop? Yes.");
+                    System.out.println("Does the program enter into the no events loop? Yes. :" + priorDayOfWeek + "\nSunday is " + Calendar.SUNDAY);
                     startTime.set(Calendar.DAY_OF_WEEK, priorDayOfWeek);        //keeps incrementing
                     endTime.set(Calendar.DAY_OF_WEEK, priorDayOfWeek);        //keeps incrementing
                     startTime.set(Calendar.HOUR_OF_DAY, 12);
