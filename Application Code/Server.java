@@ -850,10 +850,9 @@ public class Server {
                     newFreeTime = new FreeTime(startOfFree, endOfFree);
                     freeTimeList.add(newFreeTime);
                 
-                    priorDayOfWeek++;
-                    if(priorDayOfWeek == 8){
-                        priorDayOfWeek = 1;
-                    }
+                    if(priorDayOfWeek == Calendar.SATURDAY){
+                        priorDayOfWeek = Calendar.SUNDAY;
+                    } else{priorDayOfWeek++;}
                 }
             
                 while(dayOfWeek != priorDayOfWeek){                 //no events that day
