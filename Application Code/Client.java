@@ -6,6 +6,7 @@ public class Client {
     
     private String username;
     private static String SERVER_ADDR = "http://104.154.192.22:8000/RPC2";
+
     private DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
     
     
@@ -116,6 +117,12 @@ public class Client {
 
             Vector returnValue = (Vector)server.execute("sample.display", params);
             calList = vectorToCalList(returnValue);
+
+            ListIterator iter = calList.listIterator();
+            while(iter.hasNext()){
+                System.out.println(calList.get(iter.nextIndex()).toString());
+                iter.next();
+            }
         } catch (Exception exception) {
             System.err.println("ClientDisplay " + exception);
         } 
@@ -123,9 +130,11 @@ public class Client {
     }
     
     
-    public int addEvent(String name, String day, String startTime, String endTime, String location){
+    public int addEvent(String name, String day, String startDay, String startHour, String endDay, String endHour, String location){
         try {
 
+            String startTime = formatDate(startDay, startHour);
+            String endTime = formatDate(endDay, endHour);
 
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
@@ -426,6 +435,7 @@ public class Client {
             String hours;
             String pri;
             String appPri;
+            int id;
 
             while(iter.hasNext()){
                 assignName = iter.next().toString();
@@ -434,8 +444,9 @@ public class Client {
                 hours = iter.next().toString();
                 pri = iter.next().toString();
                 appPri = iter.next().toString();
+                id = Integer.parseInt(iter.next().toString());
 
-                Assignment temp = new Assignment(assignName, className, dueDate, hours, pri, appPri);
+                Assignment temp = new Assignment(assignName, className, dueDate, hours, pri, appPri, id);
                 assignList.add(temp);
             }
 
@@ -617,14 +628,15 @@ public class Client {
                 offset = new String(tempChar);
             }
 
-            int month = Integer.parseInt(m);
+            int month = Integer.parseInt(m) - 1;
             int day = Integer.parseInt(d);
             int year = Integer.parseInt(y) + 2000;
-            int hour = 0;
-            if(offset.equals("pm"))
-                hour = Integer.parseInt(h) + 12;
-            else
-                hour = Integer.parseInt(h);
+            int hour = hour = Integer.parseInt(h);
+            
+
+            if(offset.equals("pm") && hour != 12)
+                hour = hour + 12;
+
             int minute = Integer.parseInt(min);
 
             temp.set(Calendar.MONTH, month);

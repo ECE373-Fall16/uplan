@@ -72,7 +72,8 @@ public class DataBase{
             }
             if(type.equals("ASSIGNMENT")){
                 sql = "CREATE TABLE " + username + "ASSIGNMENT(" +
-                "ASSIGNMENTNAME TEXT PRIMARY KEY NOT NULL," +
+                "ID INT PRIMARY KEY NOT NULL," +
+                "ASSIGNMENTNAME TEXT NOT NULL," + 
                 "CLASSNAME TEXT NOT NULL," + 
                 "DUE TEXT NOT NULL," +
                 "HOURSTOCOMPLETION TEXT NOT NULL," +
@@ -129,19 +130,20 @@ public class DataBase{
     }
     
 
-    public int createAssignment(String name, String user, String className, String dueDate, String toCompletion, String priority, String appPriority) throws SQLException {
+    public int createAssignment(String name, String user, String className, String dueDate, String toCompletion, String priority, String appPriority, int id) throws SQLException {
         int valid = 1;
         try{
             c = connect();
-            sql = "INSERT INTO " + user + "ASSIGNMENT VALUES(?,?,?,?,?,?)";
+            sql = "INSERT INTO " + user + "ASSIGNMENT VALUES(?,?,?,?,?,?,?)";
             pstmt = c.prepareStatement(sql);
             
-            pstmt.setString(1,name);
-            pstmt.setString(2,className);
-            pstmt.setString(3,dueDate);
-            pstmt.setString(4,toCompletion);
-            pstmt.setString(5,priority);
-            pstmt.setString(6,appPriority);
+            pstmt.setInt(1,id);
+            pstmt.setString(2,name);
+            pstmt.setString(3,className);
+            pstmt.setString(4,dueDate);
+            pstmt.setString(5,toCompletion);
+            pstmt.setString(6,priority);
+            pstmt.setString(7,appPriority);
             pstmt.executeUpdate();
             pstmt.close();
             
@@ -282,13 +284,26 @@ public class DataBase{
         int valid = 1;
         try{
             c = connect();
-            sql = "DELETE FROM " + username + "ASSIGNMENT WHERE ASSIGNMENTNAME = ?";
-            pstmt = c.prepareStatement(sql); 
-            // set the corresponding param
-            pstmt.setString(1, name1);
-            // execute the delete statement
-            pstmt.executeUpdate();
-            pstmt.close();
+            stmt = c.createStatement();
+            
+            rs = stmt.executeQuery( "SELECT * FROM " + username + "ASSIGNMENT;" );
+
+            while(rs.next()){
+                int id = rs.getInt("ID");
+                String name = rs.getString("ASSIGNMENTNAME");
+                if(name1.equals(name)){
+                    sql = "DELETE FROM " + username + "ASSIGNMENT WHERE ID = ?";
+                    pstmt = c.prepareStatement(sql); 
+                    // set the corresponding param
+                    pstmt.setInt(1, id);
+                    // execute the delete statement
+                    pstmt.executeUpdate();
+                    pstmt.close();
+                }
+            }
+
+            rs.close();
+            stmt.close();
  
         } catch (SQLException e) {
             System.out.println("DatabaseRemoveAssignment: " + e.getMessage());
@@ -305,13 +320,33 @@ public class DataBase{
         int valid = 1;
         try{
             System.out.println("Updating " + assignmentName + " assignment to " + newData + " for " + user);
+            
             c = connect();
-            sql = "UPDATE " + user + "ASSIGNMENT " + "SET " + type+ " = ? where ASSIGNMENTNAME=?;";
-            pstmt = c.prepareStatement(sql); 
-            pstmt.setString(1, newData);
-            pstmt.setString(2, assignmentName);
-            pstmt.executeUpdate();
-            pstmt.close();
+            stmt = c.createStatement();
+            
+            rs = stmt.executeQuery( "SELECT * FROM " + user + "ASSIGNMENT;" );
+
+            System.out.println(assignmentName);
+            System.out.println("");
+
+            while(rs.next()){
+                int id = rs.getInt("ID");
+                String name = rs.getString("ASSIGNMENTNAME");
+                //System.out.println(name);
+                if(assignmentName.equals(name)){
+                    sql = "UPDATE " + user + "ASSIGNMENT " + "SET " + type+ " = ? where ID=?;";
+                    pstmt = c.prepareStatement(sql); 
+                    // set the corresponding param
+                    pstmt.setString(1, newData);
+                    pstmt.setInt(2, id);
+                    // execute the delete statement
+                    pstmt.executeUpdate();
+                    pstmt.close();
+                }
+            }
+
+            rs.close();
+            stmt.close();
             
         } catch (SQLException e) {
             System.out.println("DatabaseUpdateAssignment: " + e.getMessage());
@@ -611,12 +646,14 @@ public class DataBase{
                 String hours = rs.getString("hourstocompletion");
                 String pri = rs.getString("priority");
                 String appPri = rs.getString("apppriority");
+                int id = rs.getInt("ID");
                 System.out.println(name);
                 System.out.println(className);
                 System.out.println(dueDate);
                 System.out.println(hours);
                 System.out.println(pri);
                 System.out.println(appPri);
+                System.out.println(id);
                 System.out.println();
             }
             System.out.println("------------------------end");
@@ -690,11 +727,12 @@ public class DataBase{
                 String hours = rs.getString("hourstocompletion");
                 String pri = rs.getString("priority");
                 String appPri = rs.getString("apppriority");
+                int id = rs.getInt("ID");
                 java.util.Date due = df.parse(dueDate);
                 int curDay = curCal.get(Calendar.DAY_OF_YEAR);
                 assignCal.setTime(due);
                 int assignDay = assignCal.get(Calendar.DAY_OF_YEAR);
-                Assignment assign = new Assignment(name, className, due, hours, pri, appPri);
+                Assignment assign = new Assignment(name, className, due, hours, pri, appPri, id);
                 if(curDay <= assignDay)
                     assignList.add(assign);
                 else
