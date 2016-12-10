@@ -73,6 +73,9 @@ cleandriver:
 clean:
 	rm *.class
 
+rmdb:
+	rm *.db
+
 update:
 	sudo apt-get update
 
