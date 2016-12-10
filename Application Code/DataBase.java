@@ -123,6 +123,7 @@ public class DataBase{
             System.err.println( "DatabaseValidateUser:" + e.getClass().getName() + ": " + e.getMessage() );
             valid = 0;
         }
+        valid = 0;
         rs.close();
         stmt.close();
         c.close();

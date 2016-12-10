@@ -9,7 +9,7 @@ public class Driver{
 
         boolean validateLogin = r.login("rhartnett1233", "UMASS");
         if(validateLogin == false)
-            r.login("rhartnett1233", "UMASS");
+            r.login("rhartnett1233", "UMAS");
 
         r.addAssignment("Hw1","Circuits", "12/12/16", "09:00pm", "10", "2", "");
         r.addAssignment("Hw2","Comp Sys", "12/13/16", "07:00pm", "4", "3", "");

@@ -13,6 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
+import java.text.DateFormat;
 
 
 class HomePage1{
@@ -48,13 +49,12 @@ class HomePage1{
 
     
     public HomePage1(){
-    	c = new Client();
     	btnAssignments = new LinkedList<JButton>();
     	
     }
     
 
-    public void DisplayHomePage(){
+    public void DisplayHomePage(String usernameInput){
 
     	try {UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());}
 
@@ -62,7 +62,7 @@ class HomePage1{
       catch (InstantiationException e) {}
       catch (IllegalAccessException e) {}
       catch (UnsupportedLookAndFeelException e) {}
-		
+      c = new Client(usernameInput);
     	setupFrame();
       declareButtons();
       declareLabels();
@@ -794,6 +794,8 @@ class HomePage1{
         btnCancel.setBounds(frmwidth/((int)(1.15)),frmheight-((int)(frmheight/8)),(int)(width/11.38), (int)(height/24.6));
         String name3, classname3, timeto3,priority3;
         Date dueDate3;
+                pane1.setBackground(Color.gray);
+
         for(int mm = 0; mm<size;mm++){
             Assignment h = assignList.get(mm);
             name3 = h.getAssignName();
@@ -804,7 +806,8 @@ class HomePage1{
             lblAssignments[mm] = new JLabel("Name: "+ name3+"Classname: "+classname3+"Due Date: "+dueDate3+"Time to Complete:  "+timeto3+"Priority:  "+priority3);
             pane1.add(lblAssignments[mm]);
             lblAssignments[mm].setBounds((int)(frmwidth/5),intercept+(int)(gap2*mm),(int)(width/11.38), (int)(height/24.6));
-        }}});
+        }frmAssignmentList.setVisible(true);
+      }});
 
 
     btnEventList.addActionListener(new ActionListener(){
@@ -818,6 +821,7 @@ class HomePage1{
             pane1.setLayout(null); //Apply null layout
             pane1.add(btnCancel);
             frmEventList.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
             LinkedList<Event> assignList = c.getEventList();
             int size = assignList.size();
             JLabel[] lblEvents = new JLabel[size];
@@ -825,6 +829,8 @@ class HomePage1{
             int gap2 = frmwidth/15;
             String name3, days3, timeto3,location3;
             Date start3,end3;
+            pane1.setBackground(Color.gray);
+
             btnCancel.setBounds(frmwidth/((int)(1.15)),frmheight-((int)(frmheight/8)),(int)(width/11.38), (int)(height/24.6));
             for(int nn = 0; nn<size;nn++){
                 Event h = assignList.get(nn);
@@ -837,6 +843,7 @@ class HomePage1{
                 pane1.add(lblEvents[nn]);
                 lblEvents[nn].setBounds((int)(frmwidth/5),intercept+(int)(gap2*nn),(int)(width/11.38), (int)(height/24.6));
             }
+            frmEventList.setVisible(true);
     	}});
     
     
@@ -844,11 +851,11 @@ class HomePage1{
   //LABEL DECLARATION
     public void declareLabels(){
 
-      /*Profile curUser = c.getAccountInfo();
+      Profile curUser = c.getAccountInfo();
       String disUsername = "Username: " + curUser.getUsername();
       String disName = "Name: " + curUser.getName();
       String disEmail = "User Email: " + curUser.getEmail();
-      String disBed = "Current BedTime: " + curUser.getBedtime();*/
+      String disBed = "Current BedTime: " + curUser.getBedtime();
 
         lblLogo = new JLabel("Label");
         lblName = new JLabel("Name");
@@ -948,7 +955,7 @@ class HomePage1{
         btnDelete.setFont(new Font("Arial",Font.PLAIN,10));
     }
     
-	//FRAME SETUP
+	   //FRAME SETUP
     public void setupFrame(){
     	frmMain = new JFrame ("UPlan"); //Create frame
     	frmMain.setExtendedState(JFrame.MAXIMIZED_BOTH);//Set screen to full
@@ -1037,7 +1044,7 @@ class HomePage1{
 	public void DisplayCalendarEvents(){
         LinkedList<CalendarEvent> calList = null;
 		try {
-			//calList = c.display();
+			calList = c.display();
       int size = calList.size();
       JButton[] list1 = new JButton[size];
       int date1,dayof,starthour,endhour,startmin,endmin, spot,place1,place2;
@@ -1046,25 +1053,39 @@ class HomePage1{
           String name = a.getName();
           Date starttime = a.getStartTime();
           Date endtime = a.getEndTime();
+          Calendar startCalTime = dateToCalendar(starttime);
+          Calendar endCalTime = dateToCalendar(endtime);
           String location = a.getLocation();
-          date1 = starttime.getDate();
-          dayof = starttime.getDay();
-          starthour = starttime.getHours();
-          endhour = endtime.getHours(); 
-          startmin = starttime.getMinutes();
-          endmin = endtime.getMinutes();
-          list1[ii] = new JButton(name+"   "+starthour%12+":"+startmin+"0-"+endhour%12+":"+endmin);
-          pnlCalendar.add(list1[ii],new Integer(2));
-          spot = findHorizontialPosition(dayof);
-          place1 = findVerticalStart(starthour-6, startmin);
-          place2 = findVerticalEnd(endhour-6,endmin);
-          //System.out.println(place1 + "   "+ place2 + "     " + calendarheight+ "   "+starthour+"  "+endhour);
-          list1[ii].setBounds((spot),place1,calendarwidth/7-(int)(width/136.6),place2-place1);
+          boolean display = a.getDisplay();
+          if(true){//eventually change to display
+            date1 = starttime.getDate();
+            dayof = starttime.getDay();
+            starthour = starttime.getHours();
+            endhour = endtime.getHours(); 
+            startmin = starttime.getMinutes();
+            endmin = endtime.getMinutes();
+            list1[ii] = new JButton(name+"   "+starthour%12+":"+startmin+"0-"+endhour%12+":"+endmin);
+            pnlCalendar.add(list1[ii],new Integer(2));
+            spot = findHorizontialPosition(dayof);
+            place1 = findVerticalStart(starthour-6, startmin);
+            place2 = findVerticalEnd(endhour-6,endmin);
+            //System.out.println(place1 + "   "+ place2 + "     " + calendarheight+ "   "+starthour+"  "+endhour);
+            list1[ii].setBounds((spot),place1,calendarwidth/7-(int)(width/136.6),place2-place1);
+          }
         }
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+  }
+  private Calendar dateToCalendar(Date date){
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(date);
+    DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
+    df.setCalendar(cal);
+    df.setTimeZone(TimeZone.getTimeZone("EST"));
+    cal = df.getCalendar();
+    return cal;
   }    
 }
 

@@ -20,6 +20,10 @@ public class Client {
     public Client(String user){
         username = user;
     }
+
+    public void print(String toPrint){
+        System.out.println(toPrint);
+    }
     
     
     public String getUserName(){

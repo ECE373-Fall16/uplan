@@ -147,21 +147,23 @@ class LoginPage{
       btnLogin.addActionListener(new ActionListener() { 
       	  public void actionPerformed(ActionEvent e) { 
       		  
-      		  //a.DisplayCalendarEvents();
       		  userinput = user.getText();
       		  passwordinput = String.valueOf(password.getPassword());
       		  String userTry = userinput;
       		  String passwordTry = passwordinput;
       		  result = c.login(userTry, passwordTry);
-      		  if(result = true){
-      	      	username = userTry;
-                a.DisplayHomePage();
+            boolean atleastOneAlpha = userTry.matches(".*[a-zA-Z]+.*");
+            c.print(result+ " "+atleastOneAlpha);
+            if(atleastOneAlpha == false){
+                  result = false;
+            }
+      		  else if(result = true){
+                a.DisplayHomePage(userTry);
                 frmLogin.setVisible(false);
       	      	//System.out.println(userTry+"  "+passwordTry);
       		  }
             else if(result = false){
-      	      username = null;
-      	      done = false;
+      	      userTry = null;
             }
       	  }});
       btnCreate.addActionListener(new ActionListener() { 
@@ -304,6 +306,9 @@ class LoginPage{
         	Events[ee] = "Event "+(ee+1);
         }
 	}
+  public String getUsername(){
+    return username;
+  }
 	
 	
 }
