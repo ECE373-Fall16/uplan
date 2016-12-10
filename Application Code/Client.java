@@ -419,12 +419,6 @@ public class Client {
             System.err.println("ClientVectorToCalList: " + e);
         }
 
-        /*ListIterator iter1 = calList.listIterator();
-        while(iter1.hasNext()){
-            System.out.println(calList.get(iter1.nextIndex()).toString());
-            iter1.next();
-        }*/
-
         return calList;
     }
 
@@ -443,6 +437,7 @@ public class Client {
             String hours;
             String pri;
             String appPri;
+            int id;
 
             while(iter.hasNext()){
                 assignName = iter.next().toString();
@@ -451,8 +446,9 @@ public class Client {
                 hours = iter.next().toString();
                 pri = iter.next().toString();
                 appPri = iter.next().toString();
+                id = Integer.parseInt(iter.next().toString());
 
-                Assignment temp = new Assignment(assignName, className, dueDate, hours, pri, appPri);
+                Assignment temp = new Assignment(assignName, className, dueDate, hours, pri, appPri, id);
                 assignList.add(temp);
             }
 
