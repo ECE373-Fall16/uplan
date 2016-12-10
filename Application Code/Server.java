@@ -13,6 +13,7 @@ public class Server {
     private TimeZone timezone = TimeZone.getTimeZone("EST");
     private static long hourInMS = 3600000;
     private int calEveID = 0;
+    private int assignID = 0;
 
 
     public Vector display(String user){
@@ -27,6 +28,7 @@ public class Server {
                 values.add(df.format(calendarList.get(k).getEndTime()));
                 values.add(calendarList.get(k).getLocation());
                 values.add(String.valueOf(calendarList.get(k).getDisplay()));
+                values.add(Integer.toString(calendarList.get(k).getID()));
             }
             return values;
 
@@ -55,7 +57,7 @@ public class Server {
     public Vector addAssignment(String name, String username, String className, String date, String comp, String pri, String appPri){
         int valid = 1;
         try{
-            valid = data.createAssignment(name, username, className, date, comp, pri, appPri);
+            valid = data.createAssignment(name, username, className, date, comp, pri, appPri, assignID++);
 
         }catch( Exception e ){
             System.err.println( "ServerAddAssign: " + e.getClass().getName() + ": " + e.getMessage() );
@@ -239,6 +241,7 @@ public class Server {
                 values.add(assignList.get(k).getCompletionTime());
                 values.add(assignList.get(k).getPriority());
                 values.add(assignList.get(k).getAppPriority());
+                values.add(Integer.toString(assignList.get(k).getID()));
             }
 
         } catch (Exception e){
@@ -279,6 +282,7 @@ public class Server {
         
         try{
             LinkedList<CalendarEvent> calendarList = data.getSchedule(username, "schedule");
+
             LinkedList<FreeTime> freeblocks = new LinkedList<FreeTime>();
             LinkedList<Assignment> assignList = data.getAssignmentList(username);
             LinkedList<Event> tempEventList = new LinkedList<Event>();
@@ -363,6 +367,12 @@ public class Server {
                 returnValues.add(calendarList.get(k).getLocation());
                 returnValues.add(String.valueOf(calendarList.get(k).getDisplay()));
                 returnValues.add(calendarList.get(k).getID());
+            }
+
+            ListIterator iter4 = calendarList.listIterator();
+            while(iter4.hasNext()){
+                System.out.println(calendarList.get(iter4.nextIndex()).toString());
+                iter4.next();
             }
 
             data.saveSchedule(username, calendarList);
