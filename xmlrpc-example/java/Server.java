@@ -16,7 +16,7 @@ public class Server {
    public static void main (String [] args){
    
       try {
-         WebServer server = new WebServer(8086);
+         WebServer server = new WebServer(8000);
          server.addHandler("sample", new Server());
          server.start();
       } catch (Exception exception){
