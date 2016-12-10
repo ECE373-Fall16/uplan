@@ -790,8 +790,104 @@ public class Server {
 
         return hoursTillDue;
     }
+    
+    
+    private LinkedList<FreeTime> findFreeTime(LinkedList<CalendarEvent> calList, String user) throws SQLException{
+        LinkedList<FreeTime> freeTimeList = new LinkedList<FreeTime>();
+        int[] bedTime = data.getBedTime(user);
+        Calendar currentTime = Calendar.getInstance();
+        Calendar endOf2Weeks = Calendar.getInstance();
+        endOf2Weeks.set(DAY_OF_WEEK, Calendar.SATURDAY);
+        endOf2Weeks.add(WEEK_OF_YEAR, 1);
+        
+        int dayOfYearIter = currentTime.get(DAY_OF_YEAR);
+        int dayOfYearStop = endOf2Weeks.get(DAY_OF_YEAR);
+        
+        Calendar startSecondEvent = Calendar.getInstance();
+        Calendar endFirstEvent = Calendar.getInstance();
+        
+        java.util.Date endOfFirst = null;
+        java.util.Date startOfSecond = null;
+        
+        ListIterator<CalendarEvent> calListIter = new listIterator(calList);
+        
+        FreeTime newFreeTime;
+        
+        int index = 0;        
+        int dayOfYearFirst = 0;
+        int dayOfYearSecond = 0;
+        
+        boolean toCurrentDate = false;
+            
+        while(!toCurrentDate){
+            //find calendar objects for time not between events
+            endOfFirst = calList.getEndTime(index);
+            startOfSecond = calList.getStartTime(index+1);
+            endFirstEvent = dateToCalendar(endOfFirst);
+            startSecondEvent = dateToCalendar(startOfSecond);
+            
+            dayOfYearFirst = endFirstEvent.get(Calendar.DAY_OF_YEAR);
+            
+            if(dayOfYearFirst = dayOfYearIter){
+                toCurrentDate = true;
+            }
+            else if(dayOfYearFirst > dayOfYearIter){
+                while(dayOfYearFirst != dayOfYearIter){
+                    Calendar tempCal = Calendar.getInstance();
+                    tempCal.set(Calendar.DAY_OF_YEAR, dayOfYearIter);
+                    tempCal.set(Calendar.MINUTE, 0);
+                    int tempDayOfWeek = tempCal.get(Calendar.DAY_OF_WEEK);
+                    if(tempDayOfWeek == Calendar.SUNDAY){
+                        tempCal.set(Calendar.HOUR_OF_DAY, 12);
+                        java.util.Date startDate = tempCal.getTime();
+                        tempCal.set(Calendar.HOUR_OF_DAY, 21);
+                        java.util.Date endDate = tempCal.getTime();
+                        newFreeTime = new FreeTime(startDate, endDate);
+                    }
+                    else if(tempDayOfWeek == Calendar.SATURDAY){
+                        tempCal.set(Calendar.HOUR_OF_DAY, 12);
+                        java.util.Date startDate = tempCal.getTime();
+                        tempCal.set(Calendar.HOUR_OF_DAY, 17);
+                        java.util.Date endDate = tempCal.getTime();
+                        newFreeTime = new FreeTime(startDate, endDate);
+                    }
+                    else if(tempDayOfWeek == Calendar.FRIDAY){
+                        tempCal.set(Calendar.HOUR_OF_DAY, 12);
+                        java.util.Date startDate = tempCal.getTime();
+                        tempCal.set(Calendar.HOUR_OF_DAY, 19);
+                        java.util.Date endDate = tempCal.getTime();
+                        newFreeTime = new FreeTime(startDate, endDate);
+                    }
+                    else{
+                        tempCal.set(Calendar.HOUR_OF_DAY, 12);
+                        java.util.Date startDate = tempCal.getTime();
+                        tempCal.set(Calendar.HOUR_OF_DAY, bedTime[0]);
+                        tempCal.set(Calendar.MINUTE, bedTime[1]);
+                        java.util.Date endDate = tempCal.getTime();
+                        newFreeTime = new FreeTime(startDate, endDate);
+                    }
+                    
+                    toCurrentDate = true;
+                    dayOfYearIter++;
+                }
+                else{
+                    calListIter.next();
+                }
+            }
 
 
+        }
+
+        
+        while(dayOfYearIter <= dayOfYearStop){                  //runs through days of week
+            
+
+            
+        }
+        
+    }
+
+    /*
     public LinkedList<FreeTime> findFreeTime(LinkedList<CalendarEvent> calList, String user) throws SQLException{
         LinkedList<FreeTime> freeTimeList = new LinkedList<FreeTime>();
         int[] bedTime = data.getBedTime(user);
@@ -909,7 +1005,7 @@ public class Server {
 
         }
         return freeTimeList;
-    }
+    }//*/
 
 
     public int getFreeTimeHours(FreeTime curDay){
