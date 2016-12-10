@@ -802,7 +802,9 @@ public class Server {
         ListIterator<CalendarEvent> calListIter = calList.listIterator();
 
         int dayOfWeek;
+        int dayOfYear;
         int priorDayOfWeek = 0;
+        int priorDayOfYear = -1;
         int calListIndex;
         boolean justStarted = true;
         boolean passedCurrentTime = false;
@@ -829,14 +831,16 @@ public class Server {
             
             if(justStarted){
                 priorDayOfWeek = currentTime.get(Calendar.DAY_OF_WEEK);         //initialize prior day of week in loop
+                priorDayOfYear = currentTime.get(Calendar.DAY_OF_YEAR);
             }
             
             if(passedCurrentTime){                      
                 
                 dayOfWeek = endTime.get(Calendar.DAY_OF_WEEK);    //used to know when switching days
+                dayOfYear = endTime.get(Calendar.DAY_OF_YEAR);
             
 
-                if(dayOfWeek != priorDayOfWeek && !justStarted){            //just passed last event of the day
+                if(dayOfYear >= priorDayOfYear && !justStarted){            //just passed last event of the day
                 
                     //adds 30 minute buffer to start time
                     priorEndTime.add(Calendar.MINUTE, 30);
@@ -852,10 +856,15 @@ public class Server {
                 
                     if(priorDayOfWeek == Calendar.SATURDAY){
                         priorDayOfWeek = Calendar.SUNDAY;
-                    } else{priorDayOfWeek++;}
+                        priorDayOfYear++;
+                    } 
+                    else{
+                        priorDayOfWeek++;
+                        priorDayOfYear++;
+                    }
                 }
             
-                while(dayOfWeek > priorDayOfWeek){                 //no events that day
+                while(dayOfYear > priorDayOfYear || (dayOfYear == priorDayOfYear && !justStarted)){                 //no events that day
                     System.out.println("Does the program enter into the no events loop? Yes.");
                     startTime.set(Calendar.DAY_OF_WEEK, priorDayOfWeek);        //keeps incrementing
                     endTime.set(Calendar.DAY_OF_WEEK, priorDayOfWeek);        //keeps incrementing
@@ -881,7 +890,14 @@ public class Server {
                     newFreeTime = new FreeTime(startOfFree, endOfFree);
                     freeTimeList.add(newFreeTime);
                 
-                    priorDayOfWeek++;
+                    if(priorDayOfWeek == Calendar.SATURDAY){
+                        priorDayOfWeek = Calendar.SUNDAY;
+                        priorDayOfYear++;
+                    } 
+                    else{
+                        priorDayOfWeek++;
+                        priorDayOfYear++;
+                    }
                 }   
                 if(justStarted){
                     justStarted = false;
