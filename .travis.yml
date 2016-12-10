@@ -1,0 +1,15 @@
+
+language: java
+
+os:
+
+- linux
+
+
+
+complier:
+-javac
+
+script:
+
+- make && make testscript
