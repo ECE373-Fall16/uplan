@@ -857,16 +857,20 @@ public class Server {
                 }
             
                 while(dayOfWeek != priorDayOfWeek){                 //no events that day
+                    System.out.println("Does the program enter into the no events loop? Yes.");
                     startTime.set(Calendar.DAY_OF_WEEK, priorDayOfWeek);        //keeps incrementing
                     endTime.set(Calendar.DAY_OF_WEEK, priorDayOfWeek);        //keeps incrementing
                     startTime.set(Calendar.HOUR_OF_DAY, 12);
                     startTime.set(Calendar.MINUTE, 0);
                     endTime.set(Calendar.MINUTE, 0);
-                    if(priorDayOfWeek == 6){                    //Earlier end on Saturday
+                    if(priorDayOfWeek == Calendar.SATURDAY){                    //Earlier end on Saturday
                         endTime.set(Calendar.HOUR_OF_DAY, 5);
                     }
-                    else if(priorDayOfWeek == 1){               //Early bedtime on sunday
+                    else if(priorDayOfWeek == Calendar.SUNDAY){               //Early bedtime on sunday
                         endTime.set(Calendar.HOUR_OF_DAY, 9);
+                    }
+                    else if(priorDayOfWeek == Calendar.FRIDAY){
+                        endTime.set(Calendar.HOUR_OF_DAY, 7);
                     }
                     else{
                         endTime.set(Calendar.HOUR_OF_DAY, bedTime[0]);
