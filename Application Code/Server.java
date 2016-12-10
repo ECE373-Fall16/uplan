@@ -367,8 +367,7 @@ public class Server {
                     assignIter.next();
                 
                 }
-
-                System.out.println("");
+                
                 assignList = tempAssign;
 
                 index++;
