@@ -300,21 +300,11 @@ public class Server {
             
             //*
             ListIterator<CalendarEvent> calListIter = calendarList.listIterator();
-            System.out.println("Printing Calendar List:");
-            while(calListIter.hasNext()){
-                System.out.println(calListIter.next().toStringEST());
-            }
-            System.out.println();
             //*/
             
             freeblocks = findFreeTime(calendarList, username);
             //*
             ListIterator<FreeTime> freeTimeIter = freeblocks.listIterator();
-            System.out.println("Printing Free Time:");
-            while(freeTimeIter.hasNext()){
-                System.out.println(freeTimeIter.next().toString());
-            }   
-            System.out.println();
             //*/
 
             //At this point we have the event list converted into the CalendarEvent list.
@@ -372,7 +362,6 @@ public class Server {
                             Calendar tempCal = Calendar.getInstance();
                             tempCal.setTime(temp.getStartTime());
                             tempCal.setTimeZone(timezone);
-                            System.out.println(temp.toString());
                             int hour = tempCal.get(Calendar.HOUR_OF_DAY);
     
                             freeblocks.set(index, temp);           //modify freetime for next assignment
@@ -380,10 +369,10 @@ public class Server {
 
                             curBlockFreeTime = getFreeTimeHours(freeblocks.get(index));
                         }
-
-                        assignIter.next();
                 
                     }
+
+                    assignIter.next();
                 
                     assignList = tempAssign;
 
@@ -882,9 +871,7 @@ public class Server {
             startSecondEvent.setTimeZone(timezone);
             
             dayOfYearFirstEvent = endFirstEvent.get(Calendar.DAY_OF_YEAR);
-            
-            System.out.println("first: " + dayOfYearFirstEvent + " iter: " + dayOfYearIter);
-            
+                        
             if(dayOfYearFirstEvent == dayOfYearIter){         //finds an event on current day
                 toCurrentDate = true;
             }
