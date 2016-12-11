@@ -298,12 +298,6 @@ public class Server {
                 calendarList = addToCalList(calTemp, calendarList);
                 iter2.next();
             }
-
-            /*ListIterator calIter = calendarList.listIterator();
-            while(calIter.hasNext()){
-                System.out.println(calendarList.get(calIter.nextIndex()).toStringEST());
-                calIter.next();
-            }*/
             
             freeblocks = findFreeTime(calendarList, username);
 
@@ -318,7 +312,7 @@ public class Server {
             while(index < freeblocks.size()){                         //goes day by day through freetime
                 
                 FreeTime curBlock = freeblocks.get(index);
-                java.util.Date schedDate = curBlock.getEndTime();
+                java.util.Date schedDate = curBlock.getStartTime();
                 assignList = orderAssignmentList(assignList, schedDate);
                 LinkedList<Assignment> tempAssign = assignList;
                 ListIterator assignIter = assignList.listIterator();
@@ -357,6 +351,7 @@ public class Server {
                         if(temp == null){
                             freeblocks.remove(index);
                             curBlockFreeTime = 0;
+                            index--;
                         }
                         else{
                             Calendar tempCal = Calendar.getInstance();
@@ -391,11 +386,11 @@ public class Server {
                 returnValues.add(calendarList.get(k).getID());
             }
 
-            ListIterator iter4 = calendarList.listIterator();
+            /*ListIterator iter4 = calendarList.listIterator();
             while(iter4.hasNext()){
                 System.out.println(calendarList.get(iter4.nextIndex()).toStringEST());
                 iter4.next();
-            }
+            }*/
 
             data.saveSchedule(username, calendarList);
 
