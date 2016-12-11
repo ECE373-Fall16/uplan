@@ -375,8 +375,9 @@ public class Server {
                 
                     assignList = tempAssign;
 
-                    index++;
                 }
+
+                index++;
                 
             }
 
@@ -446,7 +447,7 @@ public class Server {
             endCal.setTimeZone(timezone);
             currentCal.setTimeZone(timezone);
             
-            weekOfYear = startCal.get(Calendar.WEEK_OF_YEAR);
+            weekOfYear = currentCal.get(Calendar.WEEK_OF_YEAR);
 
             eventStartTimeHour = startCal.get(Calendar.HOUR_OF_DAY);
             eventStartTimeMin = startCal.get(Calendar.MINUTE);
@@ -630,6 +631,12 @@ public class Server {
             }
         
         }
+
+        /*ListIterator eveIter = sepEvents.listIterator();
+        while(eveIter.hasNext()){
+            System.out.println(sepEvents.get(eveIter.nextIndex()).toString());
+            eveIter.next();
+        }*/
         return sepEvents;
     }
     
