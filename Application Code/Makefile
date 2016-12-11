@@ -1,3 +1,5 @@
+CLASSPATH=./lib/commons-codec-1.3.jar:./lib/xmlrpc-2.0.1.jar:./lib/sqlite-jdbc-3.14.2.1.jar:./lib/rt.jar:.
+
 all:
 	javac -g *.java
 
