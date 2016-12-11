@@ -560,6 +560,7 @@ public class Client {
 
     public String formatDate(String dueDay, String dueHour){
         Calendar temp = Calendar.getInstance();
+        temp.setTimeZone(TimeZone.getTimeZone("EST"));
             char[] dueChar = dueDay.toCharArray();
             char[] hourChar = dueHour.toCharArray();
             char[] tempChar = new char[2];

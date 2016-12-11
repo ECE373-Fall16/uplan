@@ -302,7 +302,7 @@ public class Server {
             ListIterator<CalendarEvent> calListIter = calendarList.listIterator();
             System.out.println("Printing Calendar List:");
             while(calListIter.hasNext()){
-                System.out.println(calListIter.next().toString());
+                System.out.println(calListIter.next().toStringEST());
             }
             System.out.println();
             //*/
@@ -345,7 +345,9 @@ public class Server {
                         workHours = curBlockFreeTime;
 
                     java.util.Date assignStart = curBlock.getStartTime();           //starttime = starttime of freetime
-                    Calendar end = dateToCalendar(assignStart);  
+                    Calendar end = Calendar.getInstance();
+                    end.setTime(assignStart); 
+                    end.setTimeZone(timezone);
                     int hourOfDay = end.get(Calendar.HOUR_OF_DAY);
                     end.set(Calendar.HOUR_OF_DAY, hourOfDay + workHours);   //endtime = starttime + workhours
                     
@@ -364,7 +366,9 @@ public class Server {
                         curBlockFreeTime = 0;
                     }
                     else{
-                        Calendar tempCal = dateToCalendar(temp.getStartTime());
+                        Calendar tempCal = Calendar.getInstance();
+                        tempCal.setTime(temp.getStartTime());
+                        tempCal.setTimeZone(timezone);
                         System.out.println(temp.toString());
                         int hour = tempCal.get(Calendar.HOUR_OF_DAY);
     
@@ -392,7 +396,7 @@ public class Server {
 
             ListIterator iter4 = calendarList.listIterator();
             while(iter4.hasNext()){
-                System.out.println(calendarList.get(iter4.nextIndex()).toString());
+                System.out.println(calendarList.get(iter4.nextIndex()).toStringEST());
                 iter4.next();
             }
 
@@ -435,15 +439,17 @@ public class Server {
             
             //create calendar objects based on current date, start date, end date
             Calendar currentCal = Calendar.getInstance();
+            currentCal.setTimeZone(timezone);
             java.util.Date currentDate = currentCal.getTime();
-            String tempDate = df.format(currentDate);
-            currentDate = df.parse(tempDate);
             
             Calendar startCal = Calendar.getInstance();
             Calendar endCal = Calendar.getInstance();
-            currentCal = dateToCalendar(currentDate);
-            startCal = dateToCalendar(eve.getStart());
-            endCal = dateToCalendar(eve.getEnd());
+            currentCal.setTime(currentDate);
+            startCal.setTime(eve.getStart());
+            endCal.setTime(eve.getEnd());
+            startCal.setTimeZone(timezone);
+            endCal.setTimeZone(timezone);
+            currentCal.setTimeZone(timezone);
             
             weekOfYear = startCal.get(Calendar.WEEK_OF_YEAR);
 
@@ -454,6 +460,8 @@ public class Server {
             
             Calendar tempStart = Calendar.getInstance(timezone);
             Calendar tempEnd = Calendar.getInstance(timezone);
+            tempStart.setTimeZone(timezone);
+            tempEnd.setTimeZone(timezone);
             
             if(dayOfWeek.equals("Su")){
                 
@@ -662,7 +670,8 @@ public class Server {
     public LinkedList<CalendarEvent> addToCalList(CalendarEvent curCal, LinkedList<CalendarEvent> curList){
         Calendar calToAdd = Calendar.getInstance();
         Calendar curCalendar = Calendar.getInstance();
-        calToAdd = dateToCalendar(curCal.getStartTime());
+        calToAdd.setTime(curCal.getStartTime());
+        calToAdd.setTimeZone(timezone);
         
         ListIterator calListIter = curList.listIterator();
         Boolean added = false;
@@ -672,7 +681,8 @@ public class Server {
         
         while(calListIter.hasNext() && !added){
             index = calListIter.nextIndex();
-            curCalendar = dateToCalendar(curList.get(index).getStartTime());
+            curCalendar.setTime(curList.get(index).getStartTime());
+            curCalendar.setTimeZone(timezone);
             if(calToAdd.compareTo(curCalendar) < 0){          //after curList object
                 correctIndex = index;
                 added = true;
@@ -792,7 +802,8 @@ public class Server {
         Calendar dueCal = Calendar.getInstance();
 
         java.util.Date dueDate = assign.getDueDate();
-        dueCal = dateToCalendar(dueDate);
+        dueCal.setTime(dueDate);
+        dueCal.setTimeZone(timezone);
 
         int hoursTillDue;
         int x = curCal.get(Calendar.DAY_OF_YEAR) + 1;
@@ -850,8 +861,10 @@ public class Server {
             //find calendar objects for time not between events
             endOfFirst = calList.get(index).getEndTime();
             startOfSecond = calList.get(index+1).getStartTime();
-            endFirstEvent = dateToCalendar(endOfFirst);
-            startSecondEvent = dateToCalendar(startOfSecond);
+            endFirstEvent.setTime(endOfFirst);
+            startSecondEvent.setTime(startOfSecond);
+            endFirstEvent.setTimeZone(timezone);
+            startSecondEvent.setTimeZone(timezone);
             
             dayOfYearFirstEvent = endFirstEvent.get(Calendar.DAY_OF_YEAR);
             
@@ -934,15 +947,18 @@ public class Server {
             while(sameDay && moreEvents){
                 System.out.println("index: " + index);
                 endOfFirst = calList.get(index).getEndTime();
-                endFirstEvent = dateToCalendar(endOfFirst);
+                endFirstEvent.setTime(endOfFirst);
+                endFirstEvent.setTimeZone(timezone);
                 
                 if(calListIter.hasNext()){      //second event may be on next day or not exist
                     startOfSecond = calList.get(index+1).getStartTime();
-                    startSecondEvent = dateToCalendar(startOfSecond);
+                    startSecondEvent.setTime(startOfSecond);
+                    startSecondEvent.setTimeZone(timezone);
                 }
                 else{       //sets to next day when no events left
                     startOfSecond = endOfFirst;
-                    startSecondEvent = dateToCalendar(startOfSecond);
+                    startSecondEvent.setTime(startOfSecond);
+                    startSecondEvent.setTimeZone(timezone);
                     startSecondEvent.add(Calendar.DAY_OF_YEAR, 1);
                 }
     
@@ -974,6 +990,30 @@ public class Server {
                         newFreeTime = new FreeTime(startFree, endFree);
                         freeTimeList.add(newFreeTime);
                     }
+                }
+                else{           //make freetime until bedtime
+                    startFree = endFirstEvent.getTime();
+                    endFirstEvent.set(Calendar.MINUTE, 0);//unless otherwise specified by bedtime
+                    if(dayOfWeek == Calendar.SUNDAY){
+                        endFirstEvent.set(Calendar.HOUR_OF_DAY, 21);
+                        endFree = endFirstEvent.getTime();
+                    }
+                    else if(dayOfWeek == Calendar.SATURDAY){
+                        endFirstEvent.set(Calendar.HOUR_OF_DAY, 17);
+                        endFree = endFirstEvent.getTime();
+                    }
+                    else if(dayOfWeek == Calendar.FRIDAY){
+                        endFirstEvent.set(Calendar.HOUR_OF_DAY, 18);
+                        endFree = endFirstEvent.getTime();
+                    }
+                    else{
+                        endFirstEvent.set(Calendar.HOUR_OF_DAY, bedTime[0]);
+                        endFirstEvent.set(Calendar.MINUTE, bedTime[1]);
+                        endFree = endFirstEvent.getTime();
+                    }
+                    
+                    newFreeTime = new FreeTime(startFree, endFree);
+                    freeTimeList.add(newFreeTime);
                 }
                 
                 if(calListIter.hasNext()){
@@ -1021,10 +1061,12 @@ public class Server {
             calListIndex = calListIter.nextIndex();
             
             startOfEvent = calList.get(calListIndex).getStartTime();
-            startTime = dateToCalendar(startOfEvent);
+            startTime.setTime(startOfEvent);
+            startTime.setTimeZone(timezone);
             
             endOfEvent = calList.get(calListIndex).getEndTime();    //get date
-            endTime = dateToCalendar(endOfEvent);                   //translate to EST calendar
+            endTime.setTime(endOfEvent);                   //translate to EST calendar
+            endTime.setTimeZone(timezone);
             
             if(endTime.compareTo(currentTime) >= 0){                //passed current time
                 passedCurrentTime = true;
@@ -1103,7 +1145,8 @@ public class Server {
                     justStarted = false;
                 }
             
-                priorEndTime = dateToCalendar(endTime.getTime());           //used as end of day if last event
+                priorEndTime.setTime(endTime.getTime());           //used as end of day if last event
+                priorEndTime.setTimeZone(timezone);
             }
 
             calListIter.next();
@@ -1114,8 +1157,12 @@ public class Server {
 
 
     public int getFreeTimeHours(FreeTime curDay){
-        Calendar start = dateToCalendar(curDay.getStartTime());
-        Calendar end = dateToCalendar(curDay.getEndTime());
+        Calendar start = Calendar.getInstance();
+        start.setTime(curDay.getStartTime());
+        Calendar end = Calendar.getInstance();
+        end.setTime(curDay.getEndTime());
+        start.setTimeZone(timezone);
+        end.setTimeZone(timezone);
 
         int startHour = start.get(Calendar.HOUR_OF_DAY);
         int endHour = end.get(Calendar.HOUR_OF_DAY);
@@ -1131,8 +1178,11 @@ public class Server {
 
 
     public int getDaysTillDue(Assignment assign){
-        Calendar curCal = Calendar.getInstance(timezone);
-        Calendar dueCal = dateToCalendar(assign.getDueDate());
+        Calendar curCal = Calendar.getInstance();
+        Calendar dueCal = Calendar.getInstance();
+        dueCal.setTime(assign.getDueDate());
+        curCal.setTimeZone(timezone);
+        dueCal.setTimeZone(timezone);
 
         int curDayOfYear = curCal.get(Calendar.DAY_OF_YEAR);
         int dueDayOfYear = dueCal.get(Calendar.DAY_OF_YEAR);
@@ -1146,8 +1196,12 @@ public class Server {
     //shorten free time block or delete it(if deleted return null)
     private FreeTime useFreeTime(CalendarEvent workTime, FreeTime block){
         
-        Calendar cal = dateToCalendar(workTime.getEndTime());       //calendar objects for end times of calEvent and freeTime
-        Calendar free = dateToCalendar(block.getEndTime());
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(workTime.getEndTime());       //calendar objects for end times of calEvent and freeTime
+        Calendar free = Calendar.getInstance();
+        free.setTime(block.getEndTime());
+        cal.setTimeZone(timezone);
+        free.setTimeZone(timezone);
         
         
         boolean delete = false;              
@@ -1185,16 +1239,14 @@ public class Server {
         return block;
     }
 
-    
+    /*
     private Calendar dateToCalendar(java.util.Date date){          //converts to calendar of EST
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
-        df.setCalendar(cal);
-        df.setTimeZone(timezone);
-        cal = df.getCalendar();
+        cal.setTimeZone(timezone);
         
         return cal;
-    }
+    }//*/
     
 
     public static void main (String [] args){
