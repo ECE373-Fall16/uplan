@@ -829,6 +829,8 @@ public class Server {
         
         java.util.Date endOfFirst = null;
         java.util.Date startOfSecond = null;
+        java.util.Date startFree = null;
+        java.util.Date endFree = null;
         
         ListIterator<CalendarEvent> calListIter = calList.listIterator();
         
@@ -837,6 +839,8 @@ public class Server {
         int index = 0;        
         int dayOfYearFirstEvent = 0;
         int dayOfYearSecondEvent = 0;
+        
+        calListIter.next();    //initialize to first calendar event
         
         boolean toCurrentDate = false;
         
@@ -858,7 +862,6 @@ public class Server {
             }
             else if(dayOfYearFirstEvent > dayOfYearIter){        //event at later date than current time; add free time until iter catches up
                 while(dayOfYearFirstEvent != dayOfYearIter){
-                    System.out.println(4);
                     Calendar tempCal = Calendar.getInstance();
                     tempCal.set(Calendar.DAY_OF_YEAR, dayOfYearIter);
                     tempCal.set(Calendar.MINUTE, 0);
@@ -911,10 +914,76 @@ public class Server {
 
 
         }
-
+        
+        boolean sameDay = true;
+        boolean moreEvents = true;
+        int dayOfWeek;
+        int hourOfFirstEnd;
+        int hourOfSecondStart;
+        int minOfFirstEnd;
+        int minOfSecondStart;
+        //*
         //listIterator starts at first event past the current time
         //this loop runs through the days until next Saturday(2 week list)
         while(dayOfYearIter <= dayOfYearStop){
+            System.out.println(dayOfYearIter + " " + dayOfYearStop);
+            sameDay = true;         //always starting with first event of each day
+            
+            //runs until event is on next day
+            //stops running loop when no more events
+            while(sameDay && moreEvents){
+                System.out.println("index: " + index);
+                endOfFirst = calList.get(index).getEndTime();
+                endFirstEvent = dateToCalendar(endOfFirst);
+                
+                if(calListIter.hasNext()){      //second event may be on next day or not exist
+                    startOfSecond = calList.get(index+1).getStartTime();
+                    startSecondEvent = dateToCalendar(startOfSecond);
+                }
+                else{       //sets to next day when no events left
+                    startOfSecond = endOfFirst;
+                    startSecondEvent = dateToCalendar(startOfSecond);
+                    startSecondEvent.add(Calendar.DAY_OF_YEAR, 1);
+                }
+    
+                dayOfYearFirstEvent = endFirstEvent.get(Calendar.DAY_OF_YEAR);
+                dayOfYearSecondEvent = startSecondEvent.get(Calendar.DAY_OF_YEAR);
+                dayOfWeek = endFirstEvent.get(Calendar.DAY_OF_WEEK);
+                System.out.println("dayofweek = " + dayOfWeek);
+                
+                
+                if(dayOfYearFirstEvent != dayOfYearSecondEvent){
+                    sameDay = false;
+                }
+                
+                hourOfFirstEnd = endFirstEvent.get(Calendar.HOUR_OF_DAY);
+                minOfFirstEnd = endFirstEvent.get(Calendar.MINUTE);
+                hourOfSecondStart = startSecondEvent.get(Calendar.HOUR_OF_DAY);
+                minOfSecondStart = startSecondEvent.get(Calendar.MINUTE);
+                
+                //for adding freetime between two events same day
+                if(sameDay){
+                    
+                    int hourDiff = hourOfSecondStart - hourOfFirstEnd;
+                    int minDiff = minOfSecondStart - minOfFirstEnd;
+                    
+                    //add free time if at least an hour
+                    if(hourDiff > 1 || (hourDiff == 1 && minDiff >= 0)){ //at least an hour difference
+                        startFree = endFirstEvent.getTime();
+                        endFree = startSecondEvent.getTime();
+                        newFreeTime = new FreeTime(startFree, endFree);
+                        freeTimeList.add(newFreeTime);
+                    }
+                }
+                
+                if(calListIter.hasNext()){
+                    index = calListIter.nextIndex();
+                    calListIter.next();
+                } else{ moreEvents = false; }       //calList exhausted
+
+            }
+            
+            //if no more events, can schedule rest of time as free time
             
 
             dayOfYearIter++;
