@@ -297,13 +297,21 @@ public class Server {
                 calendarList = addToCalList(calTemp, calendarList);
                 iter2.next();
             }
-
+            
+            //*
+            ListIterator<CalendarEvent> calListIter = calendarList.listIterator();
+            System.out.println("Printing Calendar List:");
+            while(calListIter.hasNext()){
+                System.out.println(calListIter.next().toString());
+            }
+            //*/
+            
             freeblocks = findFreeTime(calendarList, username);
             //*
             ListIterator<FreeTime> freeTimeIter = freeblocks.listIterator();
             System.out.println("Printing Free Time:");
             while(freeTimeIter.hasNext()){
-                freeTimeIter.next().toString();
+                System.out.println(freeTimeIter.next().toString());
             }   
             //*/
 
@@ -837,11 +845,14 @@ public class Server {
             
             dayOfYearFirstEvent = endFirstEvent.get(Calendar.DAY_OF_YEAR);
             
+            System.out.println("first: " + dayOfYearFirstEvent + " iter: " + dayOfYearIter);
+            
             if(dayOfYearFirstEvent == dayOfYearIter){         //finds an event on current day
                 toCurrentDate = true;
             }
             else if(dayOfYearFirstEvent > dayOfYearIter){        //event at later date than current time; add free time until iter catches up
                 while(dayOfYearFirstEvent != dayOfYearIter){
+                    System.out.println(4);
                     Calendar tempCal = Calendar.getInstance();
                     tempCal.set(Calendar.DAY_OF_YEAR, dayOfYearIter);
                     tempCal.set(Calendar.MINUTE, 0);
@@ -886,6 +897,9 @@ public class Server {
 
             }
             else{       //only increments when event is before current time
+                //System.out.println("incrementing iter of calList from " + calList.get(calListIter.nextIndex()).toString() + " to ");
+                //System.out.println(calList.get(calListIter.nextIndex()+1).toString());
+                index = calListIter.nextIndex();
                 calListIter.next();
             }
 

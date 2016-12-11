@@ -4,7 +4,7 @@ all: Server.class UIDriver.class Driver.class
 
 start: update installJDK -y installJRE -y
 
-driver: cleandriver Driver.class rundriver
+driver: Driver.class rundriver
 
 gui: GUIDriver.class rungui
 

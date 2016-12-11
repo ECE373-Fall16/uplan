@@ -6,6 +6,8 @@ public class Client {
     
     private String username;
     private static String SERVER_ADDR = "http://104.154.192.22:8000/RPC2";
+    //local:  localhost
+    //public:  104.154.192.22
 
     private DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
     
