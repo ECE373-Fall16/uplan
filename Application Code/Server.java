@@ -299,6 +299,13 @@ public class Server {
             }
 
             freeblocks = findFreeTime(calendarList, username);
+            //*
+            ListIterator<FreeTime> freeTimeIter = freeblocks.listIterator();
+            System.out.println("Printing Free Time:");
+            while(freeTimeIter.hasNext()){
+                freeTimeIter.next().toString();
+            }   
+            //*/
 
             //At this point we have the event list converted into the CalendarEvent list.
             //Also we have calculated the total free time for each day based off this list
@@ -845,6 +852,7 @@ public class Server {
                         tempCal.set(Calendar.HOUR_OF_DAY, 21);
                         java.util.Date endDate = tempCal.getTime();
                         newFreeTime = new FreeTime(startDate, endDate);
+                        freeTimeList.add(newFreeTime);
                     }
                     else if(tempDayOfWeek == Calendar.SATURDAY){
                         tempCal.set(Calendar.HOUR_OF_DAY, 12);
@@ -852,6 +860,7 @@ public class Server {
                         tempCal.set(Calendar.HOUR_OF_DAY, 17);
                         java.util.Date endDate = tempCal.getTime();
                         newFreeTime = new FreeTime(startDate, endDate);
+                        freeTimeList.add(newFreeTime);
                     }
                     else if(tempDayOfWeek == Calendar.FRIDAY){
                         tempCal.set(Calendar.HOUR_OF_DAY, 12);
@@ -859,6 +868,7 @@ public class Server {
                         tempCal.set(Calendar.HOUR_OF_DAY, 19);
                         java.util.Date endDate = tempCal.getTime();
                         newFreeTime = new FreeTime(startDate, endDate);
+                        freeTimeList.add(newFreeTime);
                     }
                     else{
                         tempCal.set(Calendar.HOUR_OF_DAY, 12);
@@ -867,9 +877,9 @@ public class Server {
                         tempCal.set(Calendar.MINUTE, bedTime[1]);
                         java.util.Date endDate = tempCal.getTime();
                         newFreeTime = new FreeTime(startDate, endDate);
+                        freeTimeList.add(newFreeTime);
                     }
                     
-                    freeTimeList.add(newFreeTime);
                     toCurrentDate = true;
                     dayOfYearIter++;
                 }
