@@ -1,0 +1,13 @@
+language: java
+
+os:
+- linux
+
+complier:
+- javac
+
+sudo:
+- required
+
+script:
+- cd Application\ Code && make && make testscript
