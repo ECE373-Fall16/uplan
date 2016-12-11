@@ -899,6 +899,7 @@ public class Server {
                     tempCal.setTimeZone(timezone);
                     tempCal.set(Calendar.DAY_OF_YEAR, dayOfYearIter);
                     tempCal.set(Calendar.MINUTE, 0);
+                    tempCal.set(Calendar.SECOND, 0);
                     int tempDayOfWeek = tempCal.get(Calendar.DAY_OF_WEEK);
                     if(tempDayOfWeek == Calendar.SUNDAY){
                         tempCal.set(Calendar.HOUR_OF_DAY, 12);
@@ -906,7 +907,9 @@ public class Server {
                         tempCal.set(Calendar.HOUR_OF_DAY, 21);
                         java.util.Date endDate = tempCal.getTime();
                         newFreeTime = new FreeTime(startDate, endDate);
-                        freeTimeList.add(newFreeTime);
+                        if(startDate.compareTo(endDate) != 0){
+                            freeTimeList.add(newFreeTime);
+                        }
                     }
                     else if(tempDayOfWeek == Calendar.SATURDAY){
                         tempCal.set(Calendar.HOUR_OF_DAY, 12);
@@ -914,7 +917,9 @@ public class Server {
                         tempCal.set(Calendar.HOUR_OF_DAY, 17);
                         java.util.Date endDate = tempCal.getTime();
                         newFreeTime = new FreeTime(startDate, endDate);
-                        freeTimeList.add(newFreeTime);
+                        if(startDate.compareTo(endDate) != 0){
+                            freeTimeList.add(newFreeTime);
+                        }
                     }
                     else if(tempDayOfWeek == Calendar.FRIDAY){
                         tempCal.set(Calendar.HOUR_OF_DAY, 12);
@@ -922,7 +927,9 @@ public class Server {
                         tempCal.set(Calendar.HOUR_OF_DAY, 18);
                         java.util.Date endDate = tempCal.getTime();
                         newFreeTime = new FreeTime(startDate, endDate);
-                        freeTimeList.add(newFreeTime);
+                        if(startDate.compareTo(endDate) != 0){
+                            freeTimeList.add(newFreeTime);
+                        }
                     }
                     else{
                         tempCal.set(Calendar.HOUR_OF_DAY, 12);
@@ -931,7 +938,10 @@ public class Server {
                         tempCal.set(Calendar.MINUTE, bedTime[1]);
                         java.util.Date endDate = tempCal.getTime();
                         newFreeTime = new FreeTime(startDate, endDate);
-                        freeTimeList.add(newFreeTime);
+                        if(startDate.compareTo(endDate) != 0){
+                            freeTimeList.add(newFreeTime);
+                        }
+
                     }
                     
                     toCurrentDate = true;
@@ -1010,7 +1020,9 @@ public class Server {
                         freeTimeList.add(newFreeTime);
                     }
                 }
-                else{           //make freetime until bedtime
+                else{
+                    //make freetime until bedtime
+                    endFirstEvent.set(Calendar.SECOND, 0);
                     startFree = endFirstEvent.getTime();
                     endFirstEvent.set(Calendar.MINUTE, 0);//unless otherwise specified by bedtime
                     if(dayOfWeek == Calendar.SUNDAY){
@@ -1030,9 +1042,11 @@ public class Server {
                         endFirstEvent.set(Calendar.MINUTE, bedTime[1]);
                         endFree = endFirstEvent.getTime();
                     }
-                    
-                    newFreeTime = new FreeTime(startFree, endFree);
-                    freeTimeList.add(newFreeTime);
+                    if(startFree.compareTo(endFree) != 0){    //dont add free time if start of free is equal to end of free
+                        newFreeTime = new FreeTime(startFree, endFree);
+                        freeTimeList.add(newFreeTime);
+                    }
+
                     
                     dayOfYearFirstEvent++;      //only runs next loop if gap in days
                     
@@ -1043,8 +1057,8 @@ public class Server {
                         tempCal.setTimeZone(timezone);
                         tempCal.set(Calendar.DAY_OF_YEAR, dayOfYearFirstEvent);
                         tempCal.set(Calendar.MINUTE, 0);
+                        tempCal.set(Calendar.SECOND, 0);
                         dayOfWeek = tempCal.get(Calendar.DAY_OF_WEEK);
-                        System.out.println(dayOfWeek);
                         
                         if(dayOfWeek == Calendar.SUNDAY){
                             tempCal.set(Calendar.HOUR_OF_DAY, 12);
@@ -1076,8 +1090,10 @@ public class Server {
                             newFreeTime = new FreeTime(startFree,endFree);
                         }
                         
-                        freeTimeList.add(newFreeTime);
-                                
+                        if(startFree.compareTo(endFree) != 0){
+                            freeTimeList.add(newFreeTime);
+                        }    
+
                         dayOfYearFirstEvent++;
                     }
                     dayOfYearIter = dayOfYearSecondEvent - 1;
@@ -1102,8 +1118,8 @@ public class Server {
                 tempCal.setTimeZone(timezone);
                 tempCal.set(Calendar.DAY_OF_YEAR, dayOfYearIter);
                 tempCal.set(Calendar.MINUTE, 0);
+                tempCal.set(Calendar.SECOND, 0);
                 dayOfWeek = tempCal.get(Calendar.DAY_OF_WEEK);
-                System.out.println(dayOfWeek);
                 
                 if(dayOfWeek == Calendar.SUNDAY){
                     tempCal.set(Calendar.HOUR_OF_DAY, 12);
@@ -1134,8 +1150,10 @@ public class Server {
                     endFree = tempCal.getTime();
                     newFreeTime = new FreeTime(startFree,endFree);
                 }
-                
-                freeTimeList.add(newFreeTime);
+                if(startFree.compareTo(endFree) != 0){
+                    freeTimeList.add(newFreeTime);
+                }
+
             }//*/
 
             dayOfYearIter++;
