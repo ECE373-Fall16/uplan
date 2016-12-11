@@ -298,13 +298,26 @@ public class Server {
                 iter2.next();
             }
 
-            /*ListIterator calIter = calendarList.listIterator();
+            //* 
+            ListIterator calIter = calendarList.listIterator();
+            System.out.println("Calendar List Before Adding Assignments:");
             while(calIter.hasNext()){
                 System.out.println(calendarList.get(calIter.nextIndex()).toStringEST());
                 calIter.next();
-            }*/
+            }
+            System.out.println();
+            //*/
             
             freeblocks = findFreeTime(calendarList, username);
+            
+            //*
+            ListIterator<FreeTime> freeIter = freeblocks.listIterator();
+            System.out.println("Free Time List:");
+            while(freeIter.hasNext()){
+                System.out.println(freeIter.next().toStringEST());
+            }
+            System.out.println();
+            //*/
 
             //At this point we have the event list converted into the CalendarEvent list.
             //Also we have calculated the total free time for each day based off this list
@@ -880,6 +893,7 @@ public class Server {
             else if(dayOfYearFirstEvent > dayOfYearIter){        //event at later date than current time; add free time until iter catches up
                 while(dayOfYearFirstEvent != dayOfYearIter){
                     Calendar tempCal = Calendar.getInstance();
+                    tempCal.setTimeZone(timezone);
                     tempCal.set(Calendar.DAY_OF_YEAR, dayOfYearIter);
                     tempCal.set(Calendar.MINUTE, 0);
                     int tempDayOfWeek = tempCal.get(Calendar.DAY_OF_WEEK);
