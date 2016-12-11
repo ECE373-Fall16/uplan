@@ -5,7 +5,7 @@ public class Driver{
         Client r = new Client();
 
         r.deleteAccount("rhartnett1233");
-        r.createAccount("rhartnett1233", "Richie Hartnett", "rhartnett@umass.edu", "UMASS","10:00pm");
+        r.createAccount("rhartnett1233", "Richie Hartnett", "rhartnett@umass.edu", "UMASS","10:00pm", "10:00am");
 
         boolean validateLogin = r.login("rhartnett1233", "UMASS");
         if(validateLogin == false)
