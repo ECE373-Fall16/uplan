@@ -5,10 +5,10 @@ os:
 - linux
 
 complier:
-- javac
+- javac -classpath./Application\ Code
 
 sudo:
 - required
 
 script:
-- make && make testscript
+- TestLogin.java
