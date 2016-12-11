@@ -10,4 +10,4 @@ sudo:
 - required
 
 script:
-- make && make testscript
+- cd Application\ Code && make && make testscript
