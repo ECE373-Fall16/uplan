@@ -328,22 +328,12 @@ public class Server {
             while(index < freeblocks.size()){                         //goes day by day through freetime
                 
                 FreeTime curBlock = freeblocks.get(index);
-
-                Calendar schedCal = Calendar.getInstance();
-                schedCal = dateToCalendar(curBlock.getStartTime());
-                java.util.Date schedDate = schedCal.getTime();
-
+                java.util.Date schedDate = curBlock.getEndTime();
                 assignList = orderAssignmentList(assignList, schedDate);
                 LinkedList<Assignment> tempAssign = assignList;
                 ListIterator assignIter = assignList.listIterator();
                 int curBlockFreeTime = getFreeTimeHours(curBlock);
                 CalendarEvent curCalEvent;
-
-                ListIterator iter5 = assignList.listIterator();
-                while(iter5.hasNext()){
-                    System.out.println("Name: " + assignList.get(iter5.nextIndex()).getAssignName() + " AppPriority: " + assignList.get(iter5.nextIndex()).getAppPriority());
-                    iter5.next();
-                }
                 
                 while(assignIter.hasNext() && curBlockFreeTime > 0){      //goes assignment by assignment per day
                     
@@ -411,11 +401,11 @@ public class Server {
                 returnValues.add(calendarList.get(k).getID());
             }
 
-            /*ListIterator iter4 = calendarList.listIterator();
+            ListIterator iter4 = calendarList.listIterator();
             while(iter4.hasNext()){
                 System.out.println(calendarList.get(iter4.nextIndex()).toStringEST());
                 iter4.next();
-            }*/
+            }
 
             data.saveSchedule(username, calendarList);
 
@@ -823,7 +813,8 @@ public class Server {
         Calendar curCal = Calendar.getInstance();
         Calendar dueCal = Calendar.getInstance();
 
-        curCal = dateToCalendar(curDate);
+        curCal.setTime(curDate);
+        curCal.setTimeZone(timezone);
 
         java.util.Date dueDate = assign.getDueDate();
         dueCal.setTime(dueDate);
@@ -1201,10 +1192,11 @@ public class Server {
     }
 
 
-    public int getDaysTillDue(Assignment assign){
+    public int getDaysTillDue(Assignment assign, java.util.Date curDate){
         Calendar curCal = Calendar.getInstance();
         Calendar dueCal = Calendar.getInstance();
         dueCal.setTime(assign.getDueDate());
+        curCal.setTime(curDate);
         curCal.setTimeZone(timezone);
         dueCal.setTimeZone(timezone);
 

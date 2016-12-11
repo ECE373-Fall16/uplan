@@ -20,7 +20,7 @@ public class Driver{
         r.addAssignment("Hw6","english", "12/22/16", "10:00pm", "10", "1", "");
         r.addAssignment("Hw7","dsds", "12/30/16", "12:00pm", "40", "3", "");
 
-        r.getAssignmentList();
+        //r.getAssignmentList();
 
         //r.deleteAssignment("Hw4");
 
@@ -31,7 +31,7 @@ public class Driver{
         r.addEvent("EnginWrit","TuTh","12/06/16", "10:00am","12/06/16", "11:00am","Marcus 110");
         r.addEvent("Seminar", "", "12/16/16", "02:00pm", "12/16/16", "04:00pm", "Marston 5");
 
-        r.getEventList();
+        //r.getEventList();
 
         r.schedule();
 
