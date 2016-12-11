@@ -11,4 +11,4 @@ sudo:
 - required
 
 script:
-- cd Application\ Code && TestLogin.java
+- cd Application\ Code && 
