@@ -11,7 +11,7 @@ public class Driver{
         if(validateLogin == false)
             r.login("rhartnett1233", "UMASS");
 
-        r.addAssignment("Hw1","Circuits", "12/12/16", "09:00pm", "10", "2", "");
+        r.addAssignment("Hw1","Circuits", "12/12/16", "09:00pm", "5", "2", "");
         r.addAssignment("Hw2","Comp Sys", "12/13/16", "07:00pm", "4", "3", "");
         r.addAssignment("Hw3","Hardware", "12/15/16", "11:00pm", "1", "1", "");
         r.addAssignment("Hw4","Har", "12/18/16", "06:00am", "3", "3", "");
