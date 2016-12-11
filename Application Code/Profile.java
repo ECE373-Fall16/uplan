@@ -7,9 +7,10 @@ public class Profile{
 	private String name;
 	private String email;
 	private String bedtime;
+	private String waketime;
 	
 
-	public Profile(String user, String n, String em, String bed){
+	public Profile(String user, String n, String em, String bed, String wake){
 		username = user;
 		name = n;
 		email = em;
@@ -18,7 +19,7 @@ public class Profile{
 
 
 	public String toString(){
-		return "Profile: Username: " + username + " Name: " + name + " Email: " + email + " Bedtime: " + bedtime;
+		return "Profile: Username: " + username + " Name: " + name + " Email: " + email + " Bedtime: " + bedtime + " Waketime: " + waketime;
 	}
 
 
@@ -59,5 +60,15 @@ public class Profile{
 
 	public void setBedtime(String bed){
 		bedtime = bed;
+	}
+
+
+	public String getWaketime(){
+		return waketime;
+	}
+
+
+	public void setWaketime(String wake){
+		waketime = wake;
 	}
 }

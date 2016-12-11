@@ -90,10 +90,10 @@ public class Server {
     }
    
    
-    public Vector createAccount(String username, String name, String email, String password, String bedtime){
+    public Vector createAccount(String username, String name, String email, String password, String bedtime, String waketime){
         int valid = 1;
         try{
-            valid = data.createUser(username, name, email, password, bedtime);
+            valid = data.createUser(username, name, email, password, bedtime, waketime);
 
         } catch (Exception e){
             System.err.println( "ServerCreateAccount:" + e.getClass().getName() + ": " + e.getMessage() );
@@ -222,6 +222,7 @@ public class Server {
         returnValue.add(curUser.getName());
         returnValue.add(curUser.getEmail());
         returnValue.add(curUser.getBedtime());
+        returnValue.add(curUser.getWaketime());
 
         return returnValue;
 
@@ -833,6 +834,7 @@ public class Server {
     private LinkedList<FreeTime> findFreeTime(LinkedList<CalendarEvent> calList, String user) throws SQLException{
         LinkedList<FreeTime> freeTimeList = new LinkedList<FreeTime>();
         int[] bedTime = data.getBedTime(user);
+        int[] wakeTime = data.getWakeTime(user);
         Calendar currentTime = Calendar.getInstance();
         Calendar endOf2Weeks = Calendar.getInstance();
         endOf2Weeks.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);

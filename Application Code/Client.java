@@ -60,9 +60,10 @@ public class Client {
     }
     
 
-    public int createAccount(String user, String name, String email, String password, String bedtime){
+    public int createAccount(String user, String name, String email, String password, String bedtime, String waketime){
 
         bedtime = formatBedTime(bedtime);
+        waketime = formatBedTime(waketime);
 
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
@@ -73,6 +74,7 @@ public class Client {
             params.addElement(email);
             params.addElement(password);
             params.addElement(bedtime);
+            params.addElement(waketime);
   
             Vector returnValue = (Vector)server.execute("sample.createAccount", params);
 
@@ -101,8 +103,9 @@ public class Client {
             String name = returnValue.get(1).toString();
             String email = returnValue.get(2).toString();
             String bedtime = returnValue.get(3).toString();
+            String waketime = returnValue.get(4).toString();
 
-            curUser = new Profile(user, name, email, bedtime);
+            curUser = new Profile(user, name, email, bedtime, waketime);
 
         } catch (Exception e){
             System.err.println("ClientGetAccountInfo " + e);
@@ -291,6 +294,8 @@ public class Client {
     public int updateProfile(String type, String newName){
         
         if(type.equals("BEDTIME"))
+            newName = formatBedTime(newName);
+        if(type.equals("WAKETIME"))
             newName = formatBedTime(newName);
 
         try {
