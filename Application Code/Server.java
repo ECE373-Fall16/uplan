@@ -8,7 +8,7 @@ public class Server {
     private int alCounter = 0;
     private int elCounter = 0;
     private DataBase data = new DataBase();
-    private static int PORT = 8000;
+    private static int PORT = 8001;
     private DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
     private TimeZone timezone = TimeZone.getTimeZone("EST");
     private static long hourInMS = 3600000;
@@ -304,6 +304,7 @@ public class Server {
             while(calListIter.hasNext()){
                 System.out.println(calListIter.next().toString());
             }
+            System.out.println();
             //*/
             
             freeblocks = findFreeTime(calendarList, username);
@@ -313,6 +314,7 @@ public class Server {
             while(freeTimeIter.hasNext()){
                 System.out.println(freeTimeIter.next().toString());
             }   
+            System.out.println();
             //*/
 
             //At this point we have the event list converted into the CalendarEvent list.
@@ -356,16 +358,20 @@ public class Server {
                     addToCalList(curCalEvent, calendarList);        //add to cal list
                     
                     FreeTime temp = useFreeTime(curCalEvent, freeblocks.get(index));
-
-                    Calendar tempCal = dateToCalendar(temp.getStartTime());
-                    int hour = tempCal.get(Calendar.HOUR_OF_DAY);
-
-                    if(hour != 0)
-                        freeblocks.set(index, temp);           //modify freetime for next assignment
-                    else
-                        freeblocks.remove(index);
                     
-                    curBlockFreeTime = getFreeTimeHours(freeblocks.get(index));
+                    if(temp == null){
+                        freeblocks.remove(index);
+                        curBlockFreeTime = 0;
+                    }
+                    else{
+                        Calendar tempCal = dateToCalendar(temp.getStartTime());
+                        System.out.println(temp.toString());
+                        int hour = tempCal.get(Calendar.HOUR_OF_DAY);
+    
+                        freeblocks.set(index, temp);           //modify freetime for next assignment
+
+                        curBlockFreeTime = getFreeTimeHours(freeblocks.get(index));
+                    }
 
                     assignIter.next();
                 
@@ -1068,11 +1074,13 @@ public class Server {
 
     }
 
-
+    //shorten free time block or delete it(if deleted return null)
     private FreeTime useFreeTime(CalendarEvent workTime, FreeTime block){
         
         Calendar cal = dateToCalendar(workTime.getEndTime());       //calendar objects for end times of calEvent and freeTime
         Calendar free = dateToCalendar(block.getEndTime());
+        
+        
         boolean delete = false;              
         
         int calHour = cal.get(Calendar.HOUR_OF_DAY);
@@ -1080,19 +1088,19 @@ public class Server {
         int hour = freeHour - calHour;                      //difference in hours of day
 
         if(hour <= 0){
-            free.set(Calendar.HOUR_OF_DAY, 0);
-            block.setStartTime(free.getTime());
+            block.setStartTime(block.getEndTime());
             delete = true;
+            return null;
         }
         else if(hour == 1){
             int calMin = cal.get(Calendar.MINUTE);
             int freeMin = free.get(Calendar.MINUTE);
             int min = freeMin - calMin;
 
-            if(min < 0){
-                free.set(Calendar.HOUR_OF_DAY, 0);
-                block.setStartTime(free.getTime());
+            if(min < 0){            //less than hour difference
+                block.setStartTime(block.getStartTime());
                 delete = true;
+                return null;
             }
             else
                 delete = false;
