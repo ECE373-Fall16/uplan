@@ -5,7 +5,11 @@ import org.apache.xmlrpc.*;
 public class Client {
     
     private String username;
+<<<<<<< HEAD
     private static String SERVER_ADDR = "http://localhost:8000/RPC2";
+=======
+    private static String SERVER_ADDR = "http://localhost:8001/RPC2";
+>>>>>>> ServerTesting
     //local:  localhost
     //public:  104.154.192.22
 
@@ -369,12 +373,8 @@ public class Client {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
             params.addElement(username);
-            
-            System.out.println("before server call");
-            
+
             Vector returnValue = (Vector)server.execute("sample.scheduleAlgo", params);
-            
-            System.out.println("after server call");
             
             calList = vectorToCalList(returnValue);
 
@@ -564,6 +564,7 @@ public class Client {
 
     public String formatDate(String dueDay, String dueHour){
         Calendar temp = Calendar.getInstance();
+        temp.setTimeZone(TimeZone.getTimeZone("EST"));
             char[] dueChar = dueDay.toCharArray();
             char[] hourChar = dueHour.toCharArray();
             char[] tempChar = new char[2];
