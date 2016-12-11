@@ -791,17 +791,17 @@ public class Server {
         return hoursTillDue;
     }
     
-    /*
+    //*
     private LinkedList<FreeTime> findFreeTime(LinkedList<CalendarEvent> calList, String user) throws SQLException{
         LinkedList<FreeTime> freeTimeList = new LinkedList<FreeTime>();
         int[] bedTime = data.getBedTime(user);
         Calendar currentTime = Calendar.getInstance();
         Calendar endOf2Weeks = Calendar.getInstance();
-        endOf2Weeks.set(DAY_OF_WEEK, Calendar.SATURDAY);
-        endOf2Weeks.add(WEEK_OF_YEAR, 1);
+        endOf2Weeks.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+        endOf2Weeks.add(Calendar.WEEK_OF_YEAR, 1);
         
-        int dayOfYearIter = currentTime.get(DAY_OF_YEAR);
-        int dayOfYearStop = endOf2Weeks.get(DAY_OF_YEAR);
+        int dayOfYearIter = currentTime.get(Calendar.DAY_OF_YEAR);
+        int dayOfYearStop = endOf2Weeks.get(Calendar.DAY_OF_YEAR);
         
         Calendar startSecondEvent = Calendar.getInstance();
         Calendar endFirstEvent = Calendar.getInstance();
@@ -809,30 +809,32 @@ public class Server {
         java.util.Date endOfFirst = null;
         java.util.Date startOfSecond = null;
         
-        ListIterator<CalendarEvent> calListIter = new listIterator(calList);
+        ListIterator<CalendarEvent> calListIter = calList.listIterator();
         
-        FreeTime newFreeTime;
+        FreeTime newFreeTime = null;
         
         int index = 0;        
-        int dayOfYearFirst = 0;
-        int dayOfYearSecond = 0;
+        int dayOfYearFirstEvent = 0;
+        int dayOfYearSecondEvent = 0;
         
         boolean toCurrentDate = false;
-            
+        
+        //brings iter to first event past current time
+        //if there is valid free time before first event, adds it to list
         while(!toCurrentDate){
             //find calendar objects for time not between events
-            endOfFirst = calList.getEndTime(index);
-            startOfSecond = calList.getStartTime(index+1);
+            endOfFirst = calList.get(index).getEndTime();
+            startOfSecond = calList.get(index+1).getStartTime();
             endFirstEvent = dateToCalendar(endOfFirst);
             startSecondEvent = dateToCalendar(startOfSecond);
             
-            dayOfYearFirst = endFirstEvent.get(Calendar.DAY_OF_YEAR);
+            dayOfYearFirstEvent = endFirstEvent.get(Calendar.DAY_OF_YEAR);
             
-            if(dayOfYearFirst = dayOfYearIter){
+            if(dayOfYearFirstEvent == dayOfYearIter){         //finds an event on current day
                 toCurrentDate = true;
             }
-            else if(dayOfYearFirst > dayOfYearIter){
-                while(dayOfYearFirst != dayOfYearIter){
+            else if(dayOfYearFirstEvent > dayOfYearIter){        //event at later date than current time; add free time until iter catches up
+                while(dayOfYearFirstEvent != dayOfYearIter){
                     Calendar tempCal = Calendar.getInstance();
                     tempCal.set(Calendar.DAY_OF_YEAR, dayOfYearIter);
                     tempCal.set(Calendar.MINUTE, 0);
@@ -870,24 +872,27 @@ public class Server {
                     toCurrentDate = true;
                     dayOfYearIter++;
                 }
-                else{
-                    calListIter.next();
-                }
+
+            }
+            else{       //only increments when event is before current time
+                calListIter.next();
             }
 
 
         }
 
-        
-        while(dayOfYearIter <= dayOfYearStop){                  //runs through days of week
+        //listIterator starts at first event past the current time
+        //this loop runs through the days until next Saturday(2 week list)
+        while(dayOfYearIter <= dayOfYearStop){
             
 
-            
+            dayOfYearIter++;
         }
         
+        return freeTimeList;
     }//*/
 
-    //*
+    /*
     public LinkedList<FreeTime> findFreeTime(LinkedList<CalendarEvent> calList, String user) throws SQLException{
         LinkedList<FreeTime> freeTimeList = new LinkedList<FreeTime>();
         int[] bedTime = data.getBedTime(user);
