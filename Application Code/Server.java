@@ -398,8 +398,8 @@ public class Server {
                     assignList = tempAssign;
 
                     index++;
-            
                 }
+                
             }
 
             for(int k = 0; k < calendarList.size(); k++){
@@ -1201,18 +1201,12 @@ public class Server {
     }
 
 
-<<<<<<< HEAD
-    public int getDaysTillDue(Assignment assign, java.util.Date curDate){
-        Calendar curCal = dateToCalendar(curDate);
-        Calendar dueCal = dateToCalendar(assign.getDueDate());
-=======
     public int getDaysTillDue(Assignment assign){
         Calendar curCal = Calendar.getInstance();
         Calendar dueCal = Calendar.getInstance();
         dueCal.setTime(assign.getDueDate());
         curCal.setTimeZone(timezone);
         dueCal.setTimeZone(timezone);
->>>>>>> ServerTesting
 
         int curDayOfYear = curCal.get(Calendar.DAY_OF_YEAR);
         int dueDayOfYear = dueCal.get(Calendar.DAY_OF_YEAR);
