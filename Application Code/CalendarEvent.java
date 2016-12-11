@@ -32,8 +32,8 @@ public class CalendarEvent{
         end.setTime(endtime);
         start.setTimeZone(timezone);
         end.setTimeZone(timezone);
-        String startDate = start.get(Calendar.MONTH) + "/" + start.get(Calendar.DAY_OF_MONTH) + "/" + start.get(Calendar.YEAR);
-        String endDate = end.get(Calendar.MONTH) + "/" + end.get(Calendar.DAY_OF_MONTH) + "/" + end.get(Calendar.YEAR);
+        String startDate = (start.get(Calendar.MONTH)+1) + "/" + start.get(Calendar.DAY_OF_MONTH) + "/" + start.get(Calendar.YEAR);
+        String endDate = (end.get(Calendar.MONTH)+1) + "/" + end.get(Calendar.DAY_OF_MONTH) + "/" + end.get(Calendar.YEAR);
         String startTime = start.get(Calendar.HOUR_OF_DAY) + ":" + start.get(Calendar.MINUTE);
         String endTime = end.get(Calendar.HOUR_OF_DAY) + ":" + end.get(Calendar.MINUTE);
         return name + " | " + getDayOfWeek() + " " + startDate + " " + startTime + " | " + endDate + " " + endTime + " | " + location; 

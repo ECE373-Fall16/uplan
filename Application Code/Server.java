@@ -297,15 +297,14 @@ public class Server {
                 calendarList = addToCalList(calTemp, calendarList);
                 iter2.next();
             }
-            
-            //*
-            ListIterator<CalendarEvent> calListIter = calendarList.listIterator();
-            //*/
+
+            /*ListIterator calIter = calendarList.listIterator();
+            while(calIter.hasNext()){
+                System.out.println(calendarList.get(calIter.nextIndex()).toStringEST());
+                calIter.next();
+            }*/
             
             freeblocks = findFreeTime(calendarList, username);
-            //*
-            ListIterator<FreeTime> freeTimeIter = freeblocks.listIterator();
-            //*/
 
             //At this point we have the event list converted into the CalendarEvent list.
             //Also we have calculated the total free time for each day based off this list
@@ -749,10 +748,6 @@ public class Server {
             double userPriority = (double)Integer.parseInt(curAssign.getPriority());
             double hoursLeft = (double)findHoursTillDue(curAssign, curDate);
             appPriority = (int)(hoursToComp*userPriority/hoursLeft*1000);
-            if(assignList.get(assignIter.nextIndex()).getAssignName().equals("Hw3")){
-                System.out.println("Priority: " + assignList.get(assignIter.nextIndex()).getAppPriority());
-                System.out.println("Hourstocomp: " + hoursToComp + " userPri: " + userPriority + " hoursleft: " + hoursLeft);
-            }
 
             if(appPriority > 0){
                 curAssign.setAppPriority(Integer.toString(appPriority));
@@ -941,13 +936,11 @@ public class Server {
         //listIterator starts at first event past the current time
         //this loop runs through the days until next Saturday(2 week list)
         while(dayOfYearIter <= dayOfYearStop){
-            System.out.println(dayOfYearIter + " " + dayOfYearStop);
             sameDay = true;         //always starting with first event of each day
             
             //runs until event is on next day
             //stops running loop when no more events
             while(sameDay && moreEvents){
-                System.out.println("index: " + index);
                 endOfFirst = calList.get(index).getEndTime();
                 endFirstEvent.setTime(endOfFirst);
                 endFirstEvent.setTimeZone(timezone);
@@ -967,7 +960,6 @@ public class Server {
                 dayOfYearFirstEvent = endFirstEvent.get(Calendar.DAY_OF_YEAR);
                 dayOfYearSecondEvent = startSecondEvent.get(Calendar.DAY_OF_YEAR);
                 dayOfWeek = endFirstEvent.get(Calendar.DAY_OF_WEEK);
-                System.out.println("dayofweek = " + dayOfWeek);
                 
                 
                 if(dayOfYearFirstEvent != dayOfYearSecondEvent){
