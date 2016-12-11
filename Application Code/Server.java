@@ -869,6 +869,7 @@ public class Server {
                         newFreeTime = new FreeTime(startDate, endDate);
                     }
                     
+                    freeTimeList.add(newFreeTime);
                     toCurrentDate = true;
                     dayOfYearIter++;
                 }

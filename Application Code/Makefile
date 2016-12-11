@@ -2,7 +2,7 @@ CLASSPATH=./lib/commons-codec-1.3.jar:./lib/xmlrpc-2.0.1.jar:./lib/sqlite-jdbc-3
 
 all: Server.class UIDriver.class Driver.class
 
-start: update installJDK installJRE
+start: update installJDK -y installJRE -y
 
 driver: cleandriver Driver.class rundriver
 
@@ -10,7 +10,7 @@ gui: GUIDriver.class rungui
 
 uidriver: cleanui UIDriver.class runui
 
-server: cleanserver cleandb Server.class Client.class runserver
+server: Server.class Client.class runserver
 
 db: InitializeDB.class rundb
 
