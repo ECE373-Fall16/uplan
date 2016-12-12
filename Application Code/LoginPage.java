@@ -157,18 +157,16 @@ class LoginPage{
       		  String userTry = userinput;
       		  String passwordTry = passwordinput;
       		  result = c.login(userTry, passwordTry);
-            boolean atleastOneAlpha = userTry.matches(".*[a-zA-Z]+.*");
-            c.print(result+ " "+atleastOneAlpha);
-            if(atleastOneAlpha == false){
-                  result = false;
-            }
-      		  else if(result = true){
+            System.out.println(result);
+      		  if(result == true){
                 a.DisplayHomePage(userTry);
                 frmLogin.setVisible(false);
       	      	//System.out.println(userTry+"  "+passwordTry);
       		  }
-            else if(result = false){
+            else{
       	      userTry = null;
+              frmLogin.setVisible(true);
+              System.out.println("hello");
             }
       	  }});
       btnCreate.addActionListener(new ActionListener() { 
@@ -213,13 +211,13 @@ class LoginPage{
       		  	lblUsername.setBounds(col,gap*6,boxw*4,boxh);
       	   		lblEmail.setBounds(col,gap*5,boxw*4,boxh);
           		lblNameofUser.setBounds(col,gap*4,boxw*4,boxh);
-   	     		  lblCurrentBedtime.setBounds(col,gap*8,boxw*4,boxh);
-      	     	lblCurrentWakeuptime.setBounds(col,gap*9,boxw*4,boxh);
+   	     		  lblCurrentBedtime.setBounds(col,gap*9,boxw*4,boxh);
+      	     	lblCurrentWakeuptime.setBounds(col,gap*8,boxw*4,boxh);
       	     	lblPassword.setBounds(col,gap*7,boxw*4,boxh);
       	   		btnCreate1.setBounds(frmwidth2/12,(int)(frmheight2*7/10),(int)(frmwidth2/3), (int)(frmheight2/10));
       	   		btnCancel.setBounds(frmwidth2*7/12, (int)(frmheight2*7/10), (int)(frmwidth2/3),(int)(frmheight2/10));
-      	   		JComboStarttime.setBounds(col+boxw*2, gap*8, boxw, boxh);
-          		JComboEndtime.setBounds(col+boxw*2, gap*9, boxw,boxh);
+      	   		JComboStarttime.setBounds(col+boxw*2, gap*9, boxw, boxh);
+          		JComboEndtime.setBounds(col+boxw*2, gap*8, boxw,boxh);
           		JTextEmail.setBounds(col+boxw*2, gap*5, boxw,boxh);
           		JTextName.setBounds(col+boxw*2, gap*4, boxw,boxh);
           		JTextPassword.setBounds(col+boxw*2, gap*7,boxw,boxh);
@@ -266,29 +264,49 @@ class LoginPage{
         times = new String[34];
 	      int hh = 7;
 	      for(int aa = 0;aa<34;aa++){
-	    	  if(aa%2 == 0){
-	    			if(aa<10){
-	    				times[aa] = hh+":00am";
-	    			}
-	    			else if(aa == 10){
-	    				times[aa] = hh+":00pm";
-	    			}
-	    			else{
-	    				times[aa] = hh-12+":00pm";
-	    			}
-	    	  }
-	    	  else{
-	    		  if(aa<10){
-	    				times[aa] = hh+":30am";
-	    			}
-	    		  else if(aa == 11){
-	    			  times[aa] = hh+":30pm";
-	    		  }
-	    			else{
-	    				times[aa] = hh-12+":30pm";
-	    			}
-	    		  hh++;
-	    	  }	    	  
+          if(aa%2 == 0){
+            if(aa<10){
+              if(aa<6){
+                times[aa] = "0"+hh+":00am";
+              }
+              else{
+                times[aa] = hh+":00am";
+              }
+            }
+            else if(aa == 10){
+              times[aa] = hh+":00pm";
+            }
+            else{
+              if(hh-12<10){
+                times[aa] = "0"+(hh-12)+":00pm";
+              }
+              else{
+                times[aa] = ""+(hh-12)+":00pm";
+              }
+            }
+          }
+          else{
+            if(aa<10){
+              if(aa<6){
+                times[aa] = "0"+hh+":30am";
+              }
+              else{
+                times[aa] = hh+":30am";
+              }
+            }
+            else if(aa == 11){
+              times[aa] = hh+":30pm";
+            }
+            else{
+              if(hh-12<10){
+                times[aa] = "0"+(hh-12)+":30pm";
+              }
+              else{
+                times[aa] = ""+(hh-12)+":30pm";
+              };
+            }
+            hh++;
+          }  
 	      }
 	      
 	    dates = new String[31];

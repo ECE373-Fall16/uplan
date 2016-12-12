@@ -42,8 +42,7 @@ class HomePage1{
     private Client c;
     static JTextField JTextName,JTextClass, JTextLocation,JTextDays;
     static JComboBox JComboDueDate, JComboTimetoComplete, JComboPriority, JComboPickAssignment, JComboStarttime, JComboEndtime, JComboPickEvent, JComboStartDate, JComboEndDate, JComboDueHour;
-    static String[] times,dates,Assignments2,Events2;
-    static Integer[] timeneeded,priority;
+    static String[] times,dates,Assignments2,Events2,timeneeded,priority;
     static boolean wait;
     static BufferedImage img = null;
 
@@ -77,12 +76,10 @@ class HomePage1{
       createComboBoxes();
         
       JComboBox<String>JComboDueDate = new JComboBox<>(dates);
-      JComboBox<Integer>JComboTimetoComplete = new JComboBox<>(timeneeded);
-      JComboBox<Integer>JComboPriority = new JComboBox<>(priority);
-      JComboBox<String>JComboPickAssignment = new JComboBox<>(Assignments2);
+      JComboBox<String>JComboTimetoComplete = new JComboBox<>(timeneeded);
+      JComboBox<String>JComboPriority = new JComboBox<>(priority);
       JComboBox<String>JComboStarttime = new JComboBox<>(times);
       JComboBox<String>JComboEndtime = new JComboBox<>(times);
-      JComboBox<String>JComboPickEvent = new JComboBox<>(Events2);
       JComboBox<String>JComboStartDate= new JComboBox<>(dates);
       JComboBox<String>JComboEndDate = new JComboBox<>(dates);
       JComboBox<String>JComboDueHour = new JComboBox<>(times);
@@ -475,8 +472,9 @@ class HomePage1{
               String recievedwaketime = (String) JComboStarttime.getSelectedItem();
               String ww = c.formatBedTime(recievedbedtime);
               String ll = c.formatBedTime(recievedwaketime);
+              System.out.println("waketime " +ll);
               c.updateProfile("BEDTIME",ww);
-              c.updateProfile("WAKETIME",ll);
+              //c.updateProfile("WAKETIME",ll);
               frmEditEvent.setVisible(false);
   		  			frmMain.setVisible(true);
   		  		}});
@@ -497,6 +495,9 @@ class HomePage1{
    		  int frmheight = (int)(height/2);
    		  frmEditEvent.setSize(frmwidth,frmheight);//Set screen to full
    		  frmEditEvent.setLocation((width/4)+(width/10), height/8);
+        createComboBoxes();
+      JComboBox<String>JComboPickEvent = new JComboBox<>(Events2);
+
    		  pane1 = frmEditEvent.getContentPane(); //Get content pane
    		  pane1.setLayout(null); //Apply null layout
    		  frmEditEvent.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -631,8 +632,6 @@ class HomePage1{
                 String recDuedate = (String) JComboDueDate.getSelectedItem();
     	    	    String priority1 = (String) JComboPriority.getSelectedItem();
     	    	    String timeto =  (String) JComboTimetoComplete.getSelectedItem();
-    	    		  //System.out.println(name1+" "+classname+" "+ Duedate + " "+priority1+" "+timeto); 
-                 //USE DUEHOUR+DUEDATE = DUETIME
                 c.addAssignment(name1,classname,recDuedate,recDueHour,timeto, priority1,"");
 
     	    		  frmAddAssignment.setVisible(false);
@@ -654,6 +653,9 @@ class HomePage1{
     	    		  frmEditAssignment.setLocation((width/4)+(width/10), height/8);
     	    		  pane1 = frmEditAssignment.getContentPane(); //Get content pane
     	    		  pane1.setLayout(null); //Apply null layout
+                createComboBoxes();
+      JComboBox<String>JComboPickAssignment = new JComboBox<>(Assignments2);
+
     	    		  frmEditAssignment.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     	    		  pane1.add(lblClass);
     	    		  pane1.add(lblPriority);
@@ -769,18 +771,19 @@ class HomePage1{
  	      JComboStartDate.setBounds(5*col,gap*3,boxw,boxh);
   	      JComboEndDate.setBounds(5*col,gap*4,boxw,boxh);
   	      
- 	      frmAddEvent.setVisible(true);
- 		  pane1.setBackground(Color.gray);
- 		  wait = false;
- 		  //while(wait == false){
- 	      btnCreate.addActionListener(new ActionListener() { 
+ 	        frmAddEvent.setVisible(true);
+ 		      pane1.setBackground(Color.gray);
+ 	        btnCreate.addActionListener(new ActionListener() { 
  	    	  public void actionPerformed(ActionEvent e) { 
  	    		  String recName = JTextName.getText();
             String recDays = JTextDays.getText();
             String location2 = JTextLocation.getText();
             String recievedwaketime = (String)JComboStarttime.getSelectedItem();
             String recievedbedtime = (String) JComboEndtime.getSelectedItem();
+            String recstartDate = (String)JComboStartDate.getSelectedItem();
+            String recendDate = (String)JComboEndDate.getSelectedItem();
 
+            c.addEvent(recName,recDays,recstartDate,recievedwaketime, recendDate,recievedbedtime,location2);
  	    		  frmAddEvent.setVisible(false);
  	    		  frmMain.setVisible(true);
  	    	  }});
@@ -794,37 +797,38 @@ class HomePage1{
     btnAssignmentList.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e){
         frmAssignmentList = new JFrame ("Assignments"); //Create frame
-        int frmwidth = width/((int)(width/400));
+        int frmwidth = (int)(width/1.2);
         int frmheight = (int)(height/2);
         frmAssignmentList.setSize(frmwidth,frmheight);//Set screen to full
-        frmAssignmentList.setLocation((width/4)+(width/10), height/8);
+        frmAssignmentList.setLocation((int)((width/frmwidth)/2), height/8);
         pane1 = frmAssignmentList.getContentPane(); //Get content pane
         pane1.setLayout(null); //Apply null layout
         pane1.add(btnClose);
         frmAssignmentList.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        LinkedList<Assignment> assignList = c.getAssignmentList();
-        int size = assignList.size();
-        JLabel[] lblAssignments = new JLabel[size];
-        int intercept = frmwidth/10;
-        int gap2 = frmwidth/15;
         btnClose.setBounds(frmwidth/2-(int)(width/22.76),frmheight-((int)(frmheight/6)),(int)(width/11.38), (int)(height/24.6));
         String name3, classname3, timeto3,priority3;
         Date dueDate3;
-        pane1.setBackground(Color.gray);
 
-        /*for(int mm = 0; mm<size;mm++){
-            Assignment h = assignList.get(mm);
-            name3 = h.getAssignName();
-            classname3 = h.getClassName();
-            dueDate3 = h.getDueDate();
-            timeto3 = h.getCompletionTime();
-            priority3 = h.getPriority();
-            lblAssignments[mm] = new JLabel("Name: "+ name3+"Classname: "+classname3+"Due Date: "+dueDate3+"Time to Complete:  "+timeto3+"Priority:  "+priority3);
-            pane1.add(lblAssignments[mm]);
-            lblAssignments[mm].setBounds((int)(frmwidth/5),intercept+(int)(gap2*mm),(int)(width/11.38), (int)(height/24.6));
-        }*/frmAssignmentList.setVisible(true);
+        LinkedList<Assignment> assignList = null;
+            try{
+            assignList = c.getAssignmentList();
+            int size2 = assignList.size();
+            JLabel[] lblAssignments= new JLabel[size2];
+            for(int ii = 0; ii<size2;ii++){
+                  lblAssignments[ii] = new JLabel(assignList.get(ii).toString());
+                  pane1.add(lblAssignments[ii]);
+                  lblAssignments[ii].setBounds(frmwidth/12,(int)((ii+1)*frmheight/12),(int)(frmwidth), (int)(frmheight/12));
+                  lblAssignments[ii].setFont(new Font("Arial",Font.PLAIN,12));
+                  lblAssignments[ii].setForeground(Color.WHITE);
+                }
+            }
+            catch (Exception e1){}
+        
+        pane1.setBackground(Color.black);
 
-        btnChange.addActionListener(new ActionListener(){
+        frmAssignmentList.setVisible(true);
+
+        btnClose.addActionListener(new ActionListener(){
               public void actionPerformed(ActionEvent e){
                 frmAssignmentList.setVisible(false);
                 frmMain.setVisible(true);
@@ -835,15 +839,16 @@ class HomePage1{
     btnEventList.addActionListener(new ActionListener(){
     	public void actionPerformed(ActionEvent e){
     		    frmEventList = new JFrame ("Events"); //Create frame
-            int frmwidth = width/((int)(width/400));
+            int frmwidth = (int)(width/1.2);
             int frmheight = (int)(height/2);
             frmEventList.setSize(frmwidth,frmheight);//Set screen to full
-            frmEventList.setLocation((width/4)+(width/10), height/8);
+            frmEventList.setLocation((int)((width/frmwidth)/2), height/8);
+            
             pane1 = frmEventList.getContentPane(); //Get content pane
             pane1.setLayout(null); //Apply null layout
             pane1.add(btnClose);
             frmEventList.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            pane1.setBackground(Color.gray);
+            pane1.setBackground(Color.BLACK);
             int intercept = frmwidth/10;
             int gap2 = frmwidth/15;
             String name3, days3, timeto3,location3;
@@ -858,7 +863,10 @@ class HomePage1{
             for(int ii = 0; ii<size2;ii++){
                   lblEvents[ii] = new JLabel(eventList.get(ii).toString());
                   pane1.add(lblEvents[ii]);
-                  lblEvents[ii].setBounds(frmwidth/6,(int)((ii+1)*frmheight/12),(int)(frmwidth/3), (int)(frmheight/12));
+                  lblEvents[ii].setBounds(frmwidth/12,(int)((ii+1)*frmheight/12),(int)(frmwidth), (int)(frmheight/12));
+                  lblEvents[ii].setForeground(Color.WHITE);
+                  lblEvents[ii].setFont(new Font("Arial",Font.PLAIN,12));
+
               }
             }
             catch (Exception e1){}
@@ -1030,53 +1038,80 @@ class HomePage1{
         times = new String[34];
 	      int hh = 7;
 	      for(int aa = 0;aa<34;aa++){
-	    	  if(aa%2 == 0){
-	    			if(aa<10){
-	    				times[aa] = hh+":00am";
-	    			}
-	    			else if(aa == 10){
-	    				times[aa] = hh+":00pm";
-	    			}
-	    			else{
-	    				times[aa] = hh-12+":00pm";
-	    			}
-	    	  }
-	    	  else{
-	    		  if(aa<10){
-	    				times[aa] = hh+":30am";
-	    			}
-	    		  else if(aa == 11){
-	    			  times[aa] = hh+":30pm";
-	    		  }
-	    			else{
-	    				times[aa] = hh-12+":30pm";
-	    			}
-	    		  hh++;
-	    	  }	    	  
+          if(aa%2 == 0){
+            if(aa<10){
+              if(aa<6){
+                times[aa] = "0"+hh+":00am";
+              }
+              else{
+                times[aa] = hh+":00am";
+              }
+            }
+            else if(aa == 10){
+              times[aa] = hh+":00pm";
+            }
+            else{
+              if(hh-12<10){
+                times[aa] = "0"+(hh-12)+":00pm";
+              }
+              else{
+                times[aa] = ""+(hh-12)+":00pm";
+              }
+            }
+          }
+          else{
+            if(aa<10){
+              if(aa<6){
+                times[aa] = "0"+hh+":30am";
+              }
+              else{
+                times[aa] = hh+":30am";
+              }
+            }
+            else if(aa == 11){
+              times[aa] = hh+":30pm";
+            }
+            else{
+              if(hh-12<10){
+                times[aa] = "0"+(hh-12)+":30pm";
+              }
+              else{
+                times[aa] = ""+(hh-12)+":30pm";
+              };
+            }
+            hh++;
+          }       
 	      }
 	      
 	     dates = new String[31];
 	     for(int bb = 1; bb<32;bb++){
 	    	  dates[bb-1] = "12/"+bb+"/16";
 	     }
-        timeneeded = new Integer[20];
+        timeneeded = new String[20];
         for(int cc = 1;cc<21;cc++){
-        	timeneeded[cc-1] = cc;
+        	timeneeded[cc-1] = Integer.toString(cc);
         }
-        priority = new Integer[3];
+        priority = new String[3];
         for(int dd = 1;dd<4;dd++){
-        	priority[dd-1] = dd;
+        	priority[dd-1] = Integer.toString(dd);
         }
-        Assignments2 = new String[4];
+        
+        LinkedList<Assignment> temp1 = c.getAssignmentList();
+        Assignments2 = new String[temp1.size()];
+        for(int yy = 0; yy<temp1.size();yy++){
+          Assignments2[yy] = temp1.get(yy).getAssignName();
+          System.out.println(Assignments2[yy]);
+        }
         //NEED ASSIGNMENT LIST
-        for(int ee = 0;ee<4;ee++){
-        	Assignments2[ee] = "HW"+(ee+1);
-        }
+        
         //NEED EVENTS
-        Events2 = new String[4];
-        for(int ee = 0;ee<4;ee++){
-        	Events2[ee] = "Event "+(ee+1);
+        LinkedList<Event> temp2 = c.getEventList();
+        Events2 = new String[temp2.size()];
+        for(int yy = 0; yy<temp2.size();yy++){
+          Events2[yy] = temp2.get(yy).getEventName();
+          System.out.println(Events2[yy]);
         }
+        
     }
 
 	

@@ -153,7 +153,7 @@ public class Client {
 
             String startTime = formatDate(startDay, startHour);
             String endTime = formatDate(endDay, endHour);
-
+            System.out.println(startTime+"    "+endTime);
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
             params.addElement(name); 
@@ -303,11 +303,6 @@ public class Client {
     
     
     public int updateProfile(String type, String newName){
-        
-        if(type.equals("BEDTIME"))
-            newName = formatBedTime(newName);
-        if(type.equals("WAKETIME"))
-            newName = formatBedTime(newName);
 
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
@@ -523,8 +518,6 @@ public class Client {
         String min = "";
         String offset = "";
 
-        System.out.println(time + " " + size);
-
         while(index < size){
             if(size == 7){
                 if(index == 0){
@@ -564,8 +557,6 @@ public class Client {
             }
 
         }
-
-        System.out.println(hour);
 
         int tempHour = Integer.parseInt(hour);
 
