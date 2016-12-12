@@ -71,6 +71,18 @@ cleandb:
 cleandriver:
 	rm Driver.class
 
+rmdb:
+	rm *.db
+
+update:
+	sudo apt-get update
+
+installJRE:
+	sudo apt-get install default-jdk
+
+installJDK:
+	sudo apt-get install default-jre
+
 testscript:
 	rm -f test/*.out
 	./testscript.sh
