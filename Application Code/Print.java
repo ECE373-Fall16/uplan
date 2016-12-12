@@ -1,5 +1,5 @@
 public class Print { 
-	/*String Username;
+	String Username;
     String Password;
     String Email;
     String Fullname;
@@ -12,12 +12,14 @@ public class Print {
     String endDay;
     String endHour;
     String Location;
+    String Assignment;
     String classname;
-    String dueHour;
+    String dueDate;
+    String dueTime;
     String Hours;
     String Priority;
     Client r = new Client();
-   
+
        
         public void setUsername(String value) {
 		Username = value;
@@ -71,12 +73,20 @@ public class Print {
         Location = value;
     }
         
+        public void setAssignment(String value) {
+        Assignment = value;
+    }
+        
         public void setClassname(String value) {
         classname = value;
     }
         
-        public void setDueHour(String value) {
-        dueHour = value;
+        public void setDueDate(String value) {
+        dueDate = value;
+    }
+        
+        public void setDueTime(String value) {
+        dueTime = value;
     }
         
         public void setHours(String value) {
@@ -96,11 +106,12 @@ public class Print {
         public void printAccount() {
         	 r.createAccount(Username,Fullname,Email,Password,Bedtime,Waketime);
         	 r.login(Username,Password);
-        	 System.out.print(r.getuserName());
-        	 System.out.print(r.getName());
-        	 System.out.print(r.getEmail());
-        	 System.out.print(r.getBedtime());
-        	 System.out.print(r.getWaketime());
+        	 Profile p = new Profile(Username,Fullname,Email,Bedtime,Waketime);
+        	 System.out.print(p.getuserName());
+        	 System.out.print(p.getName());
+        	 System.out.print(p.getEmail());
+        	 System.out.print(p.getBedtime());
+        	 System.out.print(p.getWaketime());
     }
  /*       
        public void printAddEvent() {
