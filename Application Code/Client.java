@@ -523,6 +523,8 @@ public class Client {
         String min = "";
         String offset = "";
 
+        System.out.println(time + " " + size);
+
         while(index < size){
             if(size == 7){
                 if(index == 0){
@@ -562,6 +564,8 @@ public class Client {
             }
 
         }
+
+        System.out.println(hour);
 
         int tempHour = Integer.parseInt(hour);
 
