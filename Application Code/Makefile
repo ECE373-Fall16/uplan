@@ -84,8 +84,8 @@ installJDK:
 	sudo apt-get install default-jre
 
 testscript:
-	rm -f test/*.out
+	rm -f Application\ Code/*.out
 	./testscript.sh
 
 clean:
-	rm -f *.class test/*.out test/*.txt
+	rm -f *.class Application\ Code/*.out Application\ Code/*.txt
