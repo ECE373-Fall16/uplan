@@ -81,6 +81,10 @@ class LoginPage{
         btnCreate = new JButton ("Create Account");
         btnCancel = new JButton("Cancel");
         btnCreate1 = new JButton("Create");
+        btnCreate.setFont(new Font("Arial", Font.PLAIN, 12));
+        btnLogin.setFont(new Font("Arial", Font.PLAIN, 12));
+
+
         
         JTextField user = new JTextField();
         JPasswordField password = new JPasswordField(40);
@@ -103,12 +107,13 @@ class LoginPage{
         lblNameofUser = new JLabel("Enter Name(First_Last):");
         lblCurrentBedtime = new JLabel("Choose Bedtime:");
         lblCurrentWakeuptime = new JLabel("Choose Wake Up Time:");
-        lblWrongInformation = new JLabel("You Got Something Wrong Bitch");
+        lblWrongInformation = new JLabel("Incorrect Username or Password");
         lblUsername.setForeground(Color.WHITE);
         lblEmail.setForeground(Color.WHITE);
         lblNameofUser.setForeground(Color.WHITE);
         lblCurrentBedtime.setForeground(Color.WHITE);
         lblCurrentWakeuptime.setForeground(Color.WHITE);
+        
         
         
         pane.add(pnlLogin);
@@ -208,26 +213,27 @@ class LoginPage{
       		  	lblUsername.setBounds(col,gap*6,boxw*4,boxh);
       	   		lblEmail.setBounds(col,gap*5,boxw*4,boxh);
           		lblNameofUser.setBounds(col,gap*4,boxw*4,boxh);
-   	     		lblCurrentBedtime.setBounds(col,gap*7,boxw*4,boxh);
-      	     	lblCurrentWakeuptime.setBounds(col,gap*8,boxw*4,boxh);
-      	     	lblPassword.setBounds(col,gap*9,boxw*4,boxh);
+   	     		  lblCurrentBedtime.setBounds(col,gap*8,boxw*4,boxh);
+      	     	lblCurrentWakeuptime.setBounds(col,gap*9,boxw*4,boxh);
+      	     	lblPassword.setBounds(col,gap*7,boxw*4,boxh);
       	   		btnCreate1.setBounds(frmwidth2/12,(int)(frmheight2*7/10),(int)(frmwidth2/3), (int)(frmheight2/10));
       	   		btnCancel.setBounds(frmwidth2*7/12, (int)(frmheight2*7/10), (int)(frmwidth2/3),(int)(frmheight2/10));
-      	   		JComboStarttime.setBounds(col+boxw*2, gap*7, boxw, boxh);
-          		JComboEndtime.setBounds(col+boxw*2, gap*8, boxw,boxh);
+      	   		JComboStarttime.setBounds(col+boxw*2, gap*8, boxw, boxh);
+          		JComboEndtime.setBounds(col+boxw*2, gap*9, boxw,boxh);
           		JTextEmail.setBounds(col+boxw*2, gap*5, boxw,boxh);
           		JTextName.setBounds(col+boxw*2, gap*4, boxw,boxh);
-          		JTextPassword.setBounds(col+boxw*2, gap*9,boxw,boxh);
+          		JTextPassword.setBounds(col+boxw*2, gap*7,boxw,boxh);
           		JTextUsername.setBounds(col+boxw*2, gap*6, boxw, boxh);
-          		
-          		lblPassword.setForeground(Color.WHITE);
-      	     	lblUsername.setFont(new Font("Calibri", Font.PLAIN, 18));
-      	     	lblEmail.setFont(new Font("Calibri", Font.PLAIN, 18));
-      	     	lblNameofUser.setFont(new Font("Calibri", Font.PLAIN, 18));
-      	     	lblCurrentBedtime.setFont(new Font("Calibri", Font.PLAIN, 18));
-      	     	lblCurrentWakeuptime.setFont(new Font("Calibri", Font.PLAIN, 18));
-      	     	lblPassword.setFont(new Font("Calibri", Font.PLAIN, 18));
-
+          		Font y2 = new Font("Arial",Font.PLAIN,14);
+              lblUsername.setFont(y2);
+              lblUser.setFont(y2);
+              lblPassword.setFont(y2);
+              lblEmail.setFont(y2);
+              lblNameofUser.setFont(y2);
+              lblCurrentWakeuptime.setFont(y2);
+              lblCurrentBedtime.setFont(y2);
+              lblWrongInformation.setFont(y2);
+              lblPassword.setForeground(Color.WHITE);
       	     	frmCreate.setVisible(true);
       	     	frmLogin.setVisible(false);
       	  btnCancel.addActionListener(new ActionListener(){public void actionPerformed(ActionEvent e){

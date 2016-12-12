@@ -18,7 +18,7 @@ import java.text.DateFormat;
 
 class HomePage1{
 
-    static JButton btnPrevWeek, btnNextWeek,btnAddAssignment, btnAddEvent, btnEditAssignment, btnEditEvent, btnRefresh, btnAccount,btnCreate,btnCancel,btnChange,btnAssignmentList,btnEventList, btnDelete;
+    static JButton btnPrevWeek, btnNextWeek,btnAddAssignment, btnAddEvent, btnEditAssignment, btnEditEvent, btnRefresh, btnAccount,btnCreate,btnCancel,btnChange,btnAssignmentList,btnEventList, btnDelete, btnClose;
     static JTable tblWeekCalendar;
     static JDesktopPane desktop;
     static JFrame frmMain;
@@ -223,11 +223,6 @@ class HomePage1{
         
       tblTime.setRowHeight(timeheight/17);
       timeTable.setRowCount(17);
-
-        
-        
-        
-        
         
       //CODING WEEKDAY FOR MONTH OF DECEMBER
         
@@ -393,7 +388,7 @@ class HomePage1{
     btnNextWeek.addActionListener(new ActionListener(){public void actionPerformed(ActionEvent e){}});
     btnAccount.addActionListener(new ActionListener(){
     	public void actionPerformed(ActionEvent e){
-    		frmAccount = new JFrame ("Account Information"); //Create frame
+    		  frmAccount = new JFrame ("Account Information"); //Create frame
   		  	int frmwidth = (int)(width/3);
   		  	int frmheight = (int)(height/1.25);
   		  	frmAccount.setSize(frmwidth,frmheight);//Set screen to full
@@ -408,6 +403,15 @@ class HomePage1{
   		  	Image scaled1 = img.getScaledInstance(imgwidth,imgheight, Image.SCALE_FAST);
   		  	ImageIcon icon = new ImageIcon(scaled1);
   		  	lblLogo = new JLabel(icon);
+          Profile dd = c.getAccountInfo();
+          JLabel lblusernamedd = new JLabel(dd.getUsername());
+          JLabel lblnamedd = new JLabel(dd.getName());
+          JLabel lblemaildd = new JLabel(dd.getEmail());
+          JLabel lblbeddd = new JLabel(dd.getBedtime());
+          pane1.add(lblusernamedd);
+          pane1.add(lblnamedd);
+          pane1.add(lblemaildd);
+          pane1.add(lblbeddd);
   		  	pane1.add(lblUsername);
   		  	pane1.add(lblEmail);
   		  	pane1.add(lblNameofUser);
@@ -431,20 +435,29 @@ class HomePage1{
      	    lblCurrentWakeuptime.setBounds(col,gap*8,boxw*4,boxh);
      	    lblChangeBedtime.setBounds(col,gap*9,boxw*2,boxh);
      	    lblChangeWakup.setBounds(col,gap*10,boxw*2,boxh);
-     		
+            lblusernamedd.setBounds(col*3,gap*4,boxw*4,boxh);
+            lblnamedd.setBounds(col*3,gap*6,boxw*4,boxh);
+            lblemaildd.setBounds(col*3,gap*5,boxw*4,boxh);
+            lblbeddd.setBounds(col*3,gap*7,boxw*4,boxh);
+            lblusernamedd.setForeground(Color.WHITE);
+            lblnamedd.setForeground(Color.WHITE);
+            lblemaildd.setForeground(Color.WHITE);
+            lblbeddd.setForeground(Color.WHITE);
+           
+
      	    btnChange.setBounds(col,frmheight-(int)(gap*2.5),(int)(width/11.38), (int)(height/24.6));
      	    btnCancel.setBounds((int)(4*col),frmheight-(int)(gap*2.5),(int)(width/11.38), (int)(height/24.6));
 
      	    JComboStarttime.setBounds(col+boxw*2, gap*9, boxw, boxh);
      	    JComboEndtime.setBounds(col+boxw*2, gap*10, boxw,boxh);
 
-     	    lblUsername.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-     	    lblEmail.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-     	    lblNameofUser.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-     	    lblCurrentBedtime.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-     	    lblCurrentWakeuptime.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-          lblChangeBedtime.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-     	    lblChangeWakup.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+     	    lblUsername.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+     	    lblEmail.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+     	    lblNameofUser.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+     	    lblCurrentBedtime.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+     	    lblCurrentWakeuptime.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+          lblChangeBedtime.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+     	    lblChangeWakup.setFont(new Font("Times New Roman", Font.PLAIN, 12));
      		
      	    lblLogo.setBounds(frmwidth/8,frmheight/30,imgwidth,imgheight);
   		  	
@@ -453,9 +466,10 @@ class HomePage1{
   		  		public void actionPerformed(ActionEvent e) { 
   		  			String recievedbedtime = (String) JComboEndtime.getSelectedItem();
               String recievedwaketime = (String) JComboStarttime.getSelectedItem();
-
-              //client.updateProfile("BEDTIME", recievedbedtime);
-
+              String ww = c.formatBedTime(recievedbedtime);
+              String ll = c.formatBedTime(recievedwaketime);
+              c.updateProfile("BEDTIME",ww);
+              //c.updateProfile("WAKETIME",ll);
               frmEditEvent.setVisible(false);
   		  			frmMain.setVisible(true);
   		  		}});
@@ -479,7 +493,6 @@ class HomePage1{
    		  pane1 = frmEditEvent.getContentPane(); //Get content pane
    		  pane1.setLayout(null); //Apply null layout
    		  frmEditEvent.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-   		  //pane1.add(lblName);
    		  pane1.add(lblPickEvent);
    		  pane1.add(lblStarttime);
    		  pane1.add(lblEndtime);
@@ -490,6 +503,7 @@ class HomePage1{
    		  pane1.add(JTextDays);
    		  pane1.add(btnChange);
    		  pane1.add(btnCancel);
+        pane1.add(btnDelete);
    		  pane1.add(JComboStarttime);
    		  pane1.add(JComboEndtime);
    		  pane1.add(JComboPickEvent);
@@ -505,11 +519,14 @@ class HomePage1{
    		  lblLocation.setBounds(col, gap*5, boxw, boxh);
    		  lblRepeatedDays.setBounds(col, gap*2, boxw, boxh);
    		  lblOther.setBounds(col,(int)(gap*2.4),(int)(boxw*1.5),boxh);
+        btnChange.setFont(new Font("Arial", Font.PLAIN,10));
    		  JComboPickEvent.setBounds(3*col,gap,boxw,boxh);
    		  JTextDays.setBounds(3*col,gap*2,boxw,boxh);
    		  JTextLocation.setBounds(3*col, gap*5, boxw, boxh);
-   		  btnChange.setBounds(col,frmheight-(int)(gap*2.5),(int)(width/11.38), (int)(height/24.6));
-   	    btnCancel.setBounds(4*col,frmheight-(int)(gap*2.5),(int)(width/11.38), (int)(height/24.6));
+   		  btnChange.setBounds(col,frmheight-(int)(gap*2.5),(int)(frmwidth/6), (int)(height/24.6));
+   	    btnCancel.setBounds(5*col,frmheight-(int)(gap*2.5),(int)(frmwidth/6), (int)(height/24.6));         
+        btnDelete.setBounds((int)(3*col),frmheight-(int)(gap*2.5),(int)(frmwidth/6), (int)(height/24.6));
+
    	    JComboStarttime.setBounds(3*col,gap*3,boxw,boxh);
    	    JComboEndtime.setBounds(3*col,gap*4,boxw,boxh);
    	    JComboStartDate.setBounds(5*col,gap*3,boxw,boxh);
@@ -529,8 +546,12 @@ class HomePage1{
             String startDay = (String) JComboStartDate.getSelectedItem();
             String endDay = (String) JComboEndDate.getSelectedItem();
             String recLocation = JTextLocation.getText();
-            //c.updateEvent(String eventName, String type, String newName){
-
+            c.updateEvent(pickedEvent,"DAYS", repeatedDays);
+            c.updateEvent(pickedEvent,"STARTHOUR",startHour);
+            c.updateEvent(pickedEvent ,"ENDHOUR", endHour);
+            c.updateEvent(pickedEvent, "STARTDAY", startDay);
+            c.updateEvent(pickedEvent,"ENDDAY", endDay);
+            c.updateEvent(pickedEvent,"LOCATION",recLocation);
             frmEditEvent.setVisible(false);
    	    		frmMain.setVisible(true);
    	    	}});
@@ -627,16 +648,12 @@ class HomePage1{
     	    		  pane1 = frmEditAssignment.getContentPane(); //Get content pane
     	    		  pane1.setLayout(null); //Apply null layout
     	    		  frmEditAssignment.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    	    		  //pane1.add(lblName);
-    	    		  //pane1.add(lblStarttime);
-    	    		  //pane1.add(lblEndtime);
     	    		  pane1.add(lblClass);
     	    		  pane1.add(lblPriority);
     	    		  pane1.add(lblDueDate);
     	    		  pane1.add(lblEstimatedTime);
-    	    		  //pane1.add(JTextName);
     	    		  pane1.add(JTextClass);
-    	    		  pane1.add(btnCreate);
+    	    		  pane1.add(btnDelete);
     	    		  pane1.add(btnCancel);
     	    		  pane1.add(btnChange);
     	    		  pane1.add(lblPickAssignment);
@@ -645,29 +662,27 @@ class HomePage1{
     	    		  pane1.add(JComboPriority);
     	    		  pane1.add(JComboPickAssignment);
     	    		  pane1.add(JComboDueHour);
-    	    		  
     	    		  int col = (int)(frmwidth/7);
     	    		  int boxw = (int)(width/13.6);
     	    		  System.out.println(boxw);
     	    		  int boxh = (int)(height/36.85);
     	    		  int gap = (int) (height/18.425);
     	    		  lblPickAssignment.setBounds(col,gap,boxw,boxh);
-    	    		  //lblStarttime.setBounds(col, 80, boxw, boxh);
-    	    		  //lblEndtime.setBounds(col,1boxh,boxw, boxh);
     	    		  lblClass.setBounds(col,gap*2, boxw, boxh);
     	    		  lblPriority.setBounds(col,gap*3, boxw, boxh);
     	    		  lblDueDate.setBounds(col,gap*4, boxw, boxh);
     	    		  lblEstimatedTime.setBounds(col,gap*5 ,(int)( boxw*1.25), boxh);
-    	    		  //JTextName.setBounds(3*col,40,boxw,boxh);
-    	    		  JTextClass.setBounds(3*col,gap*2,boxw,boxh);
-    	    		  btnChange.setBounds(col,frmheight-(int)(gap*2.5),(int)(width/11.38), (int)(height/24.6));
-    	    	      btnCancel.setBounds(4*col,frmheight-(int)(gap*2.5),(int)(width/11.38), (int)(height/24.6));
-    	    	      JComboDueDate.setBounds(5*col,gap*4,boxw,boxh);
-    	    	      JComboDueHour.setBounds(3*col,gap*4,boxw,boxh);
-    	    	      JComboPriority.setBounds(3*col,gap*3,boxw,boxh);
-    	    	      JComboTimetoComplete.setBounds(3*col,gap*5,boxw,boxh);
-    	    	      JComboPickAssignment.setBounds(3*col,gap*1,boxw,boxh);
-    	    	      frmEditAssignment.setVisible(true);
+    	    		  JTextClass.setBounds(3*col,gap*2,boxw,boxh);   
+                btnChange.setFont(new Font("Arial",Font.PLAIN,10));
+                btnChange.setBounds(col,frmheight-(int)(gap*2.5),(int)(frmwidth/6), (int)(height/24.6));
+                btnCancel.setBounds(5*col,frmheight-(int)(gap*2.5),(int)(frmwidth/6), (int)(height/24.6));         
+                btnDelete.setBounds((int)(3*col),frmheight-(int)(gap*2.5),(int)(frmwidth/6), (int)(height/24.6));
+    	    	    JComboDueDate.setBounds(5*col,gap*4,boxw,boxh);
+    	    	    JComboDueHour.setBounds(3*col,gap*4,boxw,boxh);
+    	    	    JComboPriority.setBounds(3*col,gap*3,boxw,boxh);
+    	    	    JComboTimetoComplete.setBounds(3*col,gap*5,boxw,boxh);
+    	          JComboPickAssignment.setBounds(3*col,gap*1,boxw,boxh);
+    	   	      frmEditAssignment.setVisible(true);
     	    		  pane1.setBackground(Color.gray);
     	    		  wait = false;
     	    		  //while(wait == false){
@@ -676,13 +691,14 @@ class HomePage1{
     	    	    		  String pickedassign = (String)JComboPickAssignment.getSelectedItem();
     	    	    		  String classname =  JTextClass.getText();
     	    	    		  String duedate =  (String) JComboDueDate.getSelectedItem();
-    	    	    	     String dueTime = (String) JComboDueHour.getSelectedItem();
-                       String priority1 = (String) JComboPriority.getSelectedItem();
-    	    	    	     String timeto = (String) JComboTimetoComplete.getSelectedItem();
-    	    	    		  //System.out.println(name1+" "+classname+" "+ Duedate + " "+priority1+" "+timeto); 
-                      //CHECK AND RUN AGAINST 
-                      //c.updateAssignment(String assignmentName,String type, String newName){
-
+    	    	    	    String dueTime = (String) JComboDueHour.getSelectedItem();
+                      String priority1 = (String) JComboPriority.getSelectedItem();
+    	    	    	    String timeto = (String) JComboTimetoComplete.getSelectedItem();
+    	    	    	    c.updateAssignment(pickedassign,"CLASSNAME", classname);
+                      c.updateAssignment(pickedassign,"DUEDATE",duedate);
+                      c.updateAssignment(pickedassign ,"DUETIME", dueTime);
+                      c.updateAssignment(pickedassign, "PRIORITY",priority1);
+                      c.updateAssignment(pickedassign,"TIMETOCOMPLETION",timeto);
     	    	    		  frmEditAssignment.setVisible(false);
     	    	    		  frmMain.setVisible(true);
     	    	    	  }});
@@ -758,13 +774,6 @@ class HomePage1{
             String recievedwaketime = (String)JComboStarttime.getSelectedItem();
             String recievedbedtime = (String) JComboEndtime.getSelectedItem();
 
-            //c.addEvent(recName, recDays, recievedwaketime, recievedbedtime, location2){
-
-            /*char[] bed = recievedbedtime.toCharArray();
-            char[] temp = new char[bed.length()-3]
-            int lengthbed = bed.length;*/
-            
-
  	    		  frmAddEvent.setVisible(false);
  	    		  frmMain.setVisible(true);
  	    	  }});
@@ -784,19 +793,19 @@ class HomePage1{
         frmAssignmentList.setLocation((width/4)+(width/10), height/8);
         pane1 = frmAssignmentList.getContentPane(); //Get content pane
         pane1.setLayout(null); //Apply null layout
-        pane1.add(btnCancel);
+        pane1.add(btnClose);
         frmAssignmentList.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         LinkedList<Assignment> assignList = c.getAssignmentList();
         int size = assignList.size();
         JLabel[] lblAssignments = new JLabel[size];
         int intercept = frmwidth/10;
         int gap2 = frmwidth/15;
-        btnCancel.setBounds(frmwidth/((int)(1.15)),frmheight-((int)(frmheight/8)),(int)(width/11.38), (int)(height/24.6));
+        btnClose.setBounds(frmwidth/2-(int)(width/22.76),frmheight-((int)(frmheight/6)),(int)(width/11.38), (int)(height/24.6));
         String name3, classname3, timeto3,priority3;
         Date dueDate3;
-                pane1.setBackground(Color.gray);
+        pane1.setBackground(Color.gray);
 
-        for(int mm = 0; mm<size;mm++){
+        /*for(int mm = 0; mm<size;mm++){
             Assignment h = assignList.get(mm);
             name3 = h.getAssignName();
             classname3 = h.getClassName();
@@ -806,32 +815,50 @@ class HomePage1{
             lblAssignments[mm] = new JLabel("Name: "+ name3+"Classname: "+classname3+"Due Date: "+dueDate3+"Time to Complete:  "+timeto3+"Priority:  "+priority3);
             pane1.add(lblAssignments[mm]);
             lblAssignments[mm].setBounds((int)(frmwidth/5),intercept+(int)(gap2*mm),(int)(width/11.38), (int)(height/24.6));
-        }frmAssignmentList.setVisible(true);
+        }*/frmAssignmentList.setVisible(true);
+
+        btnChange.addActionListener(new ActionListener(){
+              public void actionPerformed(ActionEvent e){
+                frmAssignmentList.setVisible(false);
+                frmMain.setVisible(true);
+              }});
       }});
 
 
     btnEventList.addActionListener(new ActionListener(){
     	public void actionPerformed(ActionEvent e){
-    		frmEventList = new JFrame ("Events"); //Create frame
+    		    frmEventList = new JFrame ("Events"); //Create frame
             int frmwidth = width/((int)(width/400));
             int frmheight = (int)(height/2);
             frmEventList.setSize(frmwidth,frmheight);//Set screen to full
             frmEventList.setLocation((width/4)+(width/10), height/8);
             pane1 = frmEventList.getContentPane(); //Get content pane
             pane1.setLayout(null); //Apply null layout
-            pane1.add(btnCancel);
+            pane1.add(btnClose);
             frmEventList.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-            LinkedList<Event> assignList = c.getEventList();
-            int size = assignList.size();
-            JLabel[] lblEvents = new JLabel[size];
+            pane1.setBackground(Color.gray);
             int intercept = frmwidth/10;
             int gap2 = frmwidth/15;
             String name3, days3, timeto3,location3;
             Date start3,end3;
-            pane1.setBackground(Color.gray);
+            btnClose.setBounds(frmwidth/2-(int)(width/22.76),frmheight-((int)(frmheight/6)),(int)(width/11.38), (int)(height/24.6));
+                       
+            LinkedList<Event> eventList = null;
+            try{
+            eventList = c.getEventList();
+            int size2 = eventList.size();
+            JLabel[] lblEvents = new JLabel[size2];
+            for(int ii = 0; ii<size2;ii++){
+                  lblEvents[ii] = new JLabel(eventList.get(ii).toString());
+                  pane1.add(lblEvents[ii]);
+                  lblEvents[ii].setBounds(frmwidth/6,(int)((ii+1)*frmheight/12),(int)(frmwidth/3), (int)(frmheight/12));
+              }
+            }
+            catch (Exception e1){}
+            
 
-            btnCancel.setBounds(frmwidth/((int)(1.15)),frmheight-((int)(frmheight/8)),(int)(width/11.38), (int)(height/24.6));
+            frmEventList.setVisible(true);
+            /*
             for(int nn = 0; nn<size;nn++){
                 Event h = assignList.get(nn);
                 name3 = h.getEventName();
@@ -842,8 +869,12 @@ class HomePage1{
                 lblEvents[nn] = new JLabel("Event Name: " + name3+"Days: "+days3+"Start: "+start3+"End: "+end3+"Location: "+location3);
                 pane1.add(lblEvents[nn]);
                 lblEvents[nn].setBounds((int)(frmwidth/5),intercept+(int)(gap2*nn),(int)(width/11.38), (int)(height/24.6));
-            }
-            frmEventList.setVisible(true);
+            }*/
+            btnClose.addActionListener(new ActionListener(){
+                  public void actionPerformed(ActionEvent e){
+            frmEventList.setVisible(false);
+            frmMain.setVisible(true);
+          }});
     	}});
     
     
@@ -870,11 +901,11 @@ class HomePage1{
         lblRepeatedDays = new JLabel("Repeated Days");
         lblOther = new JLabel("(One-Time Leave Blank)");
         lblPickEvent = new JLabel("Pick the Event");
-        lblUsername = new JLabel("curUsername");
-        lblEmail = new JLabel("curEmail");
-        lblNameofUser = new JLabel("curName");
-        lblCurrentBedtime = new JLabel("curBed");
-        lblCurrentWakeuptime = new JLabel("Current Wake Up Time: 8:00am");
+        lblUsername = new JLabel("Username");
+        lblEmail = new JLabel("Email");
+        lblNameofUser = new JLabel("Name");
+        lblCurrentBedtime = new JLabel("BedTime");
+        lblCurrentWakeuptime = new JLabel("Current Wake Up Time:");
         lblChangeBedtime = new JLabel("Change Bedtime:");
         lblChangeWakup = new JLabel("Change Wake Up Time:");
 
@@ -947,12 +978,15 @@ class HomePage1{
         btnCancel = new JButton("Cancel");
         btnCancel.setFont(new Font("Arial", Font.PLAIN, 10));
         btnChange = new JButton("Change");
+        btnChange.setFont(new Font("Arial",Font.PLAIN,10));
         btnAssignmentList = new JButton("Assignments");
         btnAssignmentList.setFont(new Font("Arial", Font.PLAIN, 10));
         btnEventList = new JButton("Events");
         btnEventList.setFont(new Font("Arial", Font.PLAIN, 10));
         btnDelete = new JButton("Delete");
         btnDelete.setFont(new Font("Arial",Font.PLAIN,10));
+        btnClose = new JButton("Close");
+        btnClose.setFont(new Font("Arial",Font.PLAIN,10));
     }
     
 	   //FRAME SETUP
