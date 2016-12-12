@@ -218,7 +218,6 @@ public class Server {
         }
 
         Vector returnValue = new Vector();
-        System.out.println(curUser.getUsername() + curUser.getName() + curUser.getEmail() + curUser.getBedtime() + curUser.getWaketime());
         returnValue.add(curUser.getUsername());
         returnValue.add(curUser.getName());
         returnValue.add(curUser.getEmail());
@@ -1069,7 +1068,6 @@ public class Server {
                         if(startFree.compareTo(endFree) != 0){
                             newFreeTime = new FreeTime(startFree, endFree);
                             freeTimeList.add(newFreeTime);
-                            System.out.println("FreeTime before first event of day: " + newFreeTime.toStringEST());
                         }
 
                     }
@@ -1132,7 +1130,6 @@ public class Server {
                     moreEvents = false;
                     dayOfYearIter++;        //increments once to start scheduling free time on next day
                 }       //calList exhausted
-                System.out.println(moreEvents);
                 
             }
             

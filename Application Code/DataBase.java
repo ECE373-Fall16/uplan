@@ -135,6 +135,7 @@ public class DataBase{
     public int createAssignment(String name, String user, String className, String dueDate, String toCompletion, String priority, String appPriority, int id) throws SQLException {
         int valid = 1;
         try{
+            System.out.println("Adding Assignment...");
             c = connect();
             sql = "INSERT INTO " + user + "ASSIGNMENT VALUES(?,?,?,?,?,?,?)";
             pstmt = c.prepareStatement(sql);
@@ -164,6 +165,7 @@ public class DataBase{
     public int createEvent(String name, String username, String repeatDays, String startTime, String endTime, String loc) throws SQLException {
         int valid = 1;
         try{
+            System.out.println("Adding Event...");
             c = connect();
 
             //String start = Integer.toString(startTime);
