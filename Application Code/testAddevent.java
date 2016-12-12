@@ -1,4 +1,4 @@
-public class testAddEvent{   
+public class testAddevent{   
 public static void main(String[] args) {
 	
     	String username = args[0];	
