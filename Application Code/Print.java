@@ -112,7 +112,7 @@ public class Print {
         	 r.createAccount(Username,Fullname,Email,Password,Bedtime,Waketime);
         	 r.login(Username,Password);
         	 Profile p = new Profile(Username,Fullname,Email,Bedtime,Waketime);
-        	 System.out.print(p.getuserName());
+        	 System.out.print(p.getUsername());
         	 System.out.print(p.getName());
         	 System.out.print(p.getEmail());
         	 System.out.print(p.getBedtime());
