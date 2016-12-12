@@ -50,12 +50,14 @@ class HomePage1{
     static Color back = new Color(125,10,10);
     private JButton list1[];
     int size33;
+    private LinkedList<CalendarEvent> calendarList;
 
     
     public HomePage1(){
     	btnAssignments = new LinkedList<JButton>();
       curCal.getInstance();
       panelOffset = 0;
+      calendarList = new LinkedList<CalendarEvent>();
     	
     }
     
@@ -350,8 +352,8 @@ class HomePage1{
     
     //FIND COORDINATES FOR ASSIGNMENTS/EVENTS
    
-        LinkedList<CalendarEvent> temp2 = c.display();
-        LinkedList<CalendarEvent> calWeek = splitCalendar(temp2);
+        calendarList = c.display();
+        LinkedList<CalendarEvent> calWeek = splitCalendar(calendarList);
         DisplayCalendarEvents(calWeek);
     
     
@@ -362,9 +364,8 @@ class HomePage1{
       public void actionPerformed(ActionEvent e){
           if(panelOffset != -1){
             panelOffset--;
-            clearCalendar();
-          LinkedList<CalendarEvent> temp2 = c.display();
-            LinkedList<CalendarEvent> hold = splitCalendar(temp2);
+            clearCalendar();  
+            LinkedList<CalendarEvent> hold = splitCalendar(calendarList);
             DisplayCalendarEvents(hold);
             removeHeaders();
             createHeaders();
@@ -375,8 +376,7 @@ class HomePage1{
           if(panelOffset != 1){
             panelOffset++;
             clearCalendar();
-            LinkedList<CalendarEvent> temp2 = c.display();
-            LinkedList<CalendarEvent> hold = splitCalendar(temp2);
+            LinkedList<CalendarEvent> hold = splitCalendar(calendarList);
             DisplayCalendarEvents(hold);
             removeHeaders();
             createHeaders();
@@ -405,11 +405,14 @@ class HomePage1{
           JLabel lblnamedd = new JLabel(dd.getName());
           JLabel lblemaildd = new JLabel(dd.getEmail());
           JLabel lblbeddd = new JLabel(dd.getBedtime());
+          JLabel lblwakedd = new JLabel(dd.getWaketime());
+          lblusernamedd.setFont(new Font("Arial", Font.PLAIN, 10));
+          lblnamedd.setFont(new Font("Arial", Font.PLAIN, 10));
+          lblemaildd.setFont(new Font("Arial", Font.PLAIN, 10));
+          lblbeddd.setFont(new Font("Arial", Font.PLAIN, 10));
+          lblwakedd.setFont(new Font("Arial", Font.PLAIN, 10));
+
           String h = "hellow";
-          /*JLabel lblusernamedd = new JLabel(h);
-          JLabel lblnamedd = new JLabel(h);
-          JLabel lblemaildd = new JLabel(h);
-          JLabel lblbeddd = new JLabel(h);*/
           pane1.add(lblusernamedd);
           pane1.add(lblnamedd);
           pane1.add(lblemaildd);
@@ -426,6 +429,7 @@ class HomePage1{
   		  	pane1.add(lblChangeWakup);
   		  	pane1.add(JComboStarttime);
   		  	pane1.add(JComboEndtime);
+          pane1.add(lblwakedd);
   		  	int col = (int)(frmwidth/7);
   		  	int boxw = (int)(width/13.6);
   		  	int gap = (int) (height/18.425);
@@ -437,15 +441,18 @@ class HomePage1{
      	    lblCurrentWakeuptime.setBounds(col,gap*8,boxw*4,boxh);
      	    lblChangeBedtime.setBounds(col,gap*9,boxw*2,boxh);
      	    lblChangeWakup.setBounds(col,gap*10,boxw*2,boxh);
-            lblusernamedd.setBounds(col*3,gap*4,boxw*4,boxh);
-            lblnamedd.setBounds(col*3,gap*6,boxw*4,boxh);
-            lblemaildd.setBounds(col*3,gap*5,boxw*4,boxh);
-            lblbeddd.setBounds(col*3,gap*7,boxw*4,boxh);
+            lblusernamedd.setBounds(col+boxw*2,gap*4,boxw*4,boxh);
+            lblnamedd.setBounds(col+boxw*2,gap*6,boxw*4,boxh);
+            lblemaildd.setBounds(col+boxw*2,gap*5,boxw*4,boxh);
+            lblbeddd.setBounds(col+boxw*2,gap*7,boxw*4,boxh);
+            lblwakedd.setBounds(col+boxw*2,gap*8,boxw*4,boxh);
+
+            
             lblusernamedd.setForeground(Color.WHITE);
             lblnamedd.setForeground(Color.WHITE);
             lblemaildd.setForeground(Color.WHITE);
             lblbeddd.setForeground(Color.WHITE);
-           
+           lblwakedd.setForeground(Color.WHITE);
 
      	    btnChange.setBounds(col,frmheight-(int)(gap*2.5),(int)(width/11.38), (int)(height/24.6));
      	    btnCancel.setBounds((int)(4*col),frmheight-(int)(gap*2.5),(int)(width/11.38), (int)(height/24.6));
@@ -453,13 +460,13 @@ class HomePage1{
      	    JComboStarttime.setBounds(col+boxw*2, gap*9, boxw, boxh);
      	    JComboEndtime.setBounds(col+boxw*2, gap*10, boxw,boxh);
 
-     	    lblUsername.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-     	    lblEmail.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-     	    lblNameofUser.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-     	    lblCurrentBedtime.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-     	    lblCurrentWakeuptime.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-          lblChangeBedtime.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-     	    lblChangeWakup.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+     	    lblUsername.setFont(new Font("Arial", Font.PLAIN, 10));
+     	    lblEmail.setFont(new Font("Arial", Font.PLAIN, 10));
+     	    lblNameofUser.setFont(new Font("Arial", Font.PLAIN, 10));
+     	    lblCurrentBedtime.setFont(new Font("Arial", Font.PLAIN, 10));
+     	    lblCurrentWakeuptime.setFont(new Font("Arial", Font.PLAIN, 10));
+          lblChangeBedtime.setFont(new Font("Arial", Font.PLAIN, 10));
+     	    lblChangeWakup.setFont(new Font("Arial", Font.PLAIN, 10));
      		
      	    lblLogo.setBounds(frmwidth/8,frmheight/30,imgwidth,imgheight);
   		  	
@@ -489,8 +496,8 @@ class HomePage1{
       public void actionPerformed(ActionEvent e){
         
         clearCalendar();
-        LinkedList<CalendarEvent> temp3 = c.schedule();
-        LinkedList<CalendarEvent> calWeek = splitCalendar(temp3);
+        calendarList = c.schedule();
+        LinkedList<CalendarEvent> calWeek = splitCalendar(calendarList);
         DisplayCalendarEvents(calWeek);
       
     }});
@@ -818,7 +825,9 @@ class HomePage1{
             int size2 = assignList.size();
             JLabel[] lblAssignments= new JLabel[size2];
             for(int ii = 0; ii<size2;ii++){
-                  lblAssignments[ii] = new JLabel(assignList.get(ii).toString());
+                  //lblAssignments[ii] = new JLabel(assignList.get(ii).toString());
+                  Assignment b = assignList.get(ii);
+                  lblAssignments[ii] = new JLabel(b.getAssignName()+" , Class:"+b.getClassName()+" , Due:"+ b.getDueDate()+ " , Hours Left:"+ b.getCompletionTime()+" , Priority:"+b.getPriority());
                   pane1.add(lblAssignments[ii]);
                   lblAssignments[ii].setBounds(frmwidth/12,(int)((ii+1)*frmheight/12),(int)(frmwidth), (int)(frmheight/12));
                   lblAssignments[ii].setFont(new Font("Arial",Font.PLAIN,12));
@@ -864,7 +873,9 @@ class HomePage1{
             int size2 = eventList.size();
             JLabel[] lblEvents = new JLabel[size2];
             for(int ii = 0; ii<size2;ii++){
-                  lblEvents[ii] = new JLabel(eventList.get(ii).toString());
+                  //lblEvents[ii] = new JLabel(eventList.get(ii).toString());
+                  Event a = eventList.get(ii);
+                  lblEvents[ii] = new JLabel(a.getEventName()+" , Repeated Days:"+a.getDays()+" , Starttime:"+a.getStart()+ " , Endtime:"+a.getEnd()+" , Location:"+a.getLocation());
                   pane1.add(lblEvents[ii]);
                   lblEvents[ii].setBounds(frmwidth/12,(int)((ii+1)*frmheight/12),(int)(frmwidth), (int)(frmheight/12));
                   lblEvents[ii].setForeground(Color.WHITE);
@@ -899,12 +910,6 @@ class HomePage1{
     }
   //LABEL DECLARATION
     public void declareLabels(){
-/*
-      Profile curUser = c.getAccountInfo();
-      String disUsername = "Username: " + c.getUsername();
-      String disName = "Name: " + curUser.getName();
-      String disEmail = "User Email: " + curUser.getEmail();
-      String disBed = "Current BedTime: " + curUser.getBedtime(); */
 
         lblLogo = new JLabel("Label");
         lblName = new JLabel("Name");
@@ -923,7 +928,7 @@ class HomePage1{
         lblEmail = new JLabel("Email");
         lblNameofUser = new JLabel("Name");
         lblCurrentBedtime = new JLabel("BedTime");
-        lblCurrentWakeuptime = new JLabel("Current Wake Up Time:");
+        lblCurrentWakeuptime = new JLabel("Wake Up Time:");
         lblChangeBedtime = new JLabel("Change Bedtime:");
         lblChangeWakup = new JLabel("Change Wake Up Time:");
 
@@ -1227,11 +1232,6 @@ class HomePage1{
 
     public void removeHeaders(){//FILLING OF HEADER ARRAY FOR CALENDAR
           //All headers
-        /*Calendar calCal = Calendar.getInstance();
-        int weekOfYear = calCal.get(Calendar.WEEK_OF_YEAR) + panelOffset;
-        String[] days = c.displayWeekTimes(weekOfYear);
-        for (int i = 0; i<7; i++){
-          mtblCalendar.removeColumn(days[i]);*/
           mtblCalendar.setColumnCount(0);
           
         

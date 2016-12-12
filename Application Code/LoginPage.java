@@ -94,6 +94,13 @@ class LoginPage{
         JTextField JTextUsername = new JTextField();
         JComboBox<String>JComboStarttime = new JComboBox<>(times);
         JComboBox<String>JComboEndtime = new JComboBox<>(times);
+
+        user.setFont(new Font("Arial",Font.PLAIN,10));
+        password.setFont(new Font("Arial",Font.PLAIN,10));
+        JTextName.setFont(new Font("Arial",Font.PLAIN,10));
+        JTextPassword.setFont(new Font("Arial",Font.PLAIN,10));
+        JTextUsername.setFont(new Font("Arial",Font.PLAIN,10));
+        JTextEmail.setFont(new Font("Arial",Font.PLAIN,10));
         
         //PANEL
 		pnlLogin = new JLayeredPane();
