@@ -6,6 +6,11 @@ os:
 complier:
 - javac
 
+jdk:
+- oraclejdk8
+
+install: true 
+
 sudo:
 - required
 
