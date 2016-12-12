@@ -96,26 +96,31 @@ public class Client {
 
 
     public Profile getAccountInfo(){
-        Profile curUser = null;
+        String user = "";
+        String name = "";
+        String email = "";
+        String bedtime = "";
+        String waketime = "";
         try{
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
 
             params.addElement(username);
+            System.out.println(username);
 
             Vector returnValue = (Vector)server.execute("sample.getAccountInfo", params);
 
-            String user = returnValue.get(0).toString();
-            String name = returnValue.get(1).toString();
-            String email = returnValue.get(2).toString();
-            String bedtime = returnValue.get(3).toString();
-            String waketime = returnValue.get(4).toString();
-
-            curUser = new Profile(user, name, email, bedtime, waketime);
-
+            user = returnValue.get(0).toString();
+            name = returnValue.get(1).toString();
+            email = returnValue.get(2).toString();
+            bedtime = returnValue.get(3).toString();
+            waketime = returnValue.get(4).toString();
+            
         } catch (Exception e){
             System.err.println("ClientGetAccountInfo " + e);
         }
+
+        Profile curUser = new Profile(user, name, email, bedtime, waketime);
 
         return curUser;
     }
@@ -566,6 +571,7 @@ public class Client {
         hour = Integer.toString(tempHour);
 
         String finalTime = hour + min;
+        System.out.println(finalTime);
 
         return finalTime;
     }

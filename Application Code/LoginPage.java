@@ -250,11 +250,12 @@ class LoginPage{
               String recievedWaketime = (String) JComboEndtime.getSelectedItem();
 
               int validate = c.createAccount(recievedUsername, recievedName, recievedEmail, recievedPassword, recievedBedtime, recievedWaketime);
-              /*if(validate != 0){
+              System.out.println(validate);
+              if(validate != 0){
                 frmCreate.setVisible(false);
-                a.DisplayHomePage();
+                a.DisplayHomePage(recievedUsername);
                 a.DisplayCalendarEvents();
-              }*/
+              }
               //Add else to have user re enter infor because it was invalid
       	  			
       	  		}});

@@ -15,6 +15,7 @@ public class Profile{
 		name = n;
 		email = em;
 		bedtime = bed;
+		waketime = wake;
 	}
 
 

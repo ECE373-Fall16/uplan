@@ -34,7 +34,7 @@ class HomePage1{
     static DefaultTableModel timeTable; //Table model
     static JLabel[] lblAssignments, lblEvents;
     int calendarwidth, width, height,calendarheight;
-
+    static Profile dd;
     static final String IMG_PATH = "src/Logo/Capture.jpg";
     static LinkedList<JButton> btnAssignments;
     static LinkedList<JLabel> lblAssignmentList,lblEventList;
@@ -63,6 +63,7 @@ class HomePage1{
       catch (IllegalAccessException e) {}
       catch (UnsupportedLookAndFeelException e) {}
       c = new Client(usernameInput);
+      dd = null;
     	setupFrame();
       declareButtons();
       declareLabels();
@@ -403,11 +404,17 @@ class HomePage1{
   		  	Image scaled1 = img.getScaledInstance(imgwidth,imgheight, Image.SCALE_FAST);
   		  	ImageIcon icon = new ImageIcon(scaled1);
   		  	lblLogo = new JLabel(icon);
-          Profile dd = c.getAccountInfo();
+          dd = c.getAccountInfo();
+          System.out.println(dd.toString());
           JLabel lblusernamedd = new JLabel(dd.getUsername());
           JLabel lblnamedd = new JLabel(dd.getName());
           JLabel lblemaildd = new JLabel(dd.getEmail());
           JLabel lblbeddd = new JLabel(dd.getBedtime());
+          String h = "hellow";
+          /*JLabel lblusernamedd = new JLabel(h);
+          JLabel lblnamedd = new JLabel(h);
+          JLabel lblemaildd = new JLabel(h);
+          JLabel lblbeddd = new JLabel(h);*/
           pane1.add(lblusernamedd);
           pane1.add(lblnamedd);
           pane1.add(lblemaildd);
@@ -881,12 +888,12 @@ class HomePage1{
     }
   //LABEL DECLARATION
     public void declareLabels(){
-
+/*
       Profile curUser = c.getAccountInfo();
-      String disUsername = "Username: " + curUser.getUsername();
+      String disUsername = "Username: " + c.getUsername();
       String disName = "Name: " + curUser.getName();
       String disEmail = "User Email: " + curUser.getEmail();
-      String disBed = "Current BedTime: " + curUser.getBedtime();
+      String disBed = "Current BedTime: " + curUser.getBedtime(); */
 
         lblLogo = new JLabel("Label");
         lblName = new JLabel("Name");
