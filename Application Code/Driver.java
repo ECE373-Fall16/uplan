@@ -11,18 +11,6 @@ public class Driver{
         if(validateLogin == false)
             r.login("rhartnett1233", "UMASS");
 
-
-        Profile c = r.getAccountInfo();
-
-        r.updateProfile("BEDTIME", "11:00pm");
-        r.updateProfile("WAKETIME", "10:00am");
-
-        Profile h = r.getAccountInfo();
-
-        //System.out.println(h.getBedtime());
-
-        /*r.addAssignment("Hw1","Circuits", "12/12/16", "09:00pm", "5", "2", "");
-
         
         //System.out.println(r.formatBedTime("5:00am"));
 //*
@@ -35,7 +23,7 @@ public class Driver{
         r.addAssignment("Hw5","math", "12/24/16", "06:00am", "5", "1", "");
         r.addAssignment("Hw6","english", "12/22/16", "10:00pm", "10", "1", "");
 
-        r.addAssignment("Hw7","dsds", "12/30/16", "12:00pm", "40", "3", "");*/
+        r.addAssignment("Hw7","dsds", "12/30/16", "12:00pm", "40", "3", "");
 
         //r.getAssignmentList();
 
@@ -43,7 +31,7 @@ public class Driver{
 
         //r.getAssignmentList();
         
-        /*r.addEvent("Electronics","MoWe","12/05/16", "10:00am", "12/05/16", "11:00am","Elab 202");
+        r.addEvent("Electronics","MoWe","12/05/16", "10:00am", "12/05/16", "11:00am","Elab 202");
 
         r.addEvent("Circuits","MoWeFr","12/05/16", "04:00pm", "12/05/16", "06:00pm","LRC 301");
         r.addEvent("EnginWrit","TuTh","12/06/16", "10:00am","12/06/16", "11:00am","Marcus 110");
@@ -53,10 +41,10 @@ public class Driver{
 
         r.schedule();
         
-        r.addCalendarEvent("newCalendarEvent","12/20/16","10:00am","12/20/16","12:00am","a place","true");
+        /*r.addCalendarEvent("newCalendarEvent","12/20/16","10:00am","12/20/16","12:00am","a place","true");
         r.addCalendarEvent("newCalendarEvent2","12/10/16","10:00am","12/20/16","12:00am","a place","true");
         
-        r.display();
+        r.display();*/
 
         System.out.println("Account \"" + r.getUserName()+ "\" made and initiated");
 

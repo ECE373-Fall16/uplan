@@ -45,10 +45,17 @@ class HomePage1{
     static String[] times,dates,Assignments2,Events2,timeneeded,priority;
     static boolean wait;
     static BufferedImage img = null;
+    private Calendar curCal;
+    private int panelOffset;
+    static Color back = new Color(125,10,10);
+    private JButton list1[];
+    int size33;
 
     
     public HomePage1(){
     	btnAssignments = new LinkedList<JButton>();
+      curCal.getInstance();
+      panelOffset = 0;
     	
     }
     
@@ -113,12 +120,11 @@ class HomePage1{
       pnlCalendar = new JLayeredPane();
       pnlButtons = new JLayeredPane();
       pnlTime = new JLayeredPane();
-      wait = false;
             
   
       //COLOR CREATION FOR ELEMENTS
       Color BabyBlue =  new Color(157,205,255);
-      Color back = new Color(125,10,10);
+     
         
       //ADD ELEMENTS TO PANELS
       pane.add(pnlCalendar);
@@ -376,14 +382,34 @@ class HomePage1{
     
     //FIND COORDINATES FOR ASSIGNMENTS/EVENTS
    
-    
+        LinkedList<CalendarEvent> temp2 = c.display();
+        LinkedList<CalendarEvent> calWeek = splitCalendar(temp2);
+        DisplayCalendarEvents(calWeek);
     
     
     
     //BUTTON ACITON METHODS
   //ACTION LISTENERS FOR BUTTONS
-    btnPrevWeek.addActionListener(new ActionListener(){public void actionPerformed(ActionEvent e){}});
-    btnNextWeek.addActionListener(new ActionListener(){public void actionPerformed(ActionEvent e){}});
+    btnPrevWeek.addActionListener(new ActionListener(){
+      public void actionPerformed(ActionEvent e){
+          if(panelOffset != -1){
+            panelOffset--;
+            clearCalendar();
+          LinkedList<CalendarEvent> temp2 = c.display();
+            LinkedList<CalendarEvent> hold = splitCalendar(temp2);
+            DisplayCalendarEvents(hold);
+          }
+      }});
+    btnNextWeek.addActionListener(new ActionListener(){
+      public void actionPerformed(ActionEvent e){
+          if(panelOffset != 1){
+            panelOffset++;
+            clearCalendar();
+            LinkedList<CalendarEvent> temp2 = c.display();
+            LinkedList<CalendarEvent> hold = splitCalendar(temp2);
+            DisplayCalendarEvents(hold);
+          }
+      }});
     btnAccount.addActionListener(new ActionListener(){
     	public void actionPerformed(ActionEvent e){
     		  frmAccount = new JFrame ("Account Information"); //Create frame
@@ -487,7 +513,15 @@ class HomePage1{
   
 
   //edit event
-    btnRefresh.addActionListener(new ActionListener(){public void actionPerformed(ActionEvent e){DisplayCalendarEvents();}});
+    btnRefresh.addActionListener(new ActionListener(){
+      public void actionPerformed(ActionEvent e){
+        
+        clearCalendar();
+        LinkedList<CalendarEvent> temp3 = c.schedule();
+        LinkedList<CalendarEvent> calWeek = splitCalendar(temp3);
+        DisplayCalendarEvents(calWeek);
+      
+    }});
     btnEditEvent.addActionListener(new ActionListener(){
     	public void actionPerformed(ActionEvent e){
     	  frmEditEvent = new JFrame ("Edit Event"); //Create frame
@@ -599,7 +633,6 @@ class HomePage1{
     		  pane1.add(JComboDueDate);
     		  pane1.add(JComboTimetoComplete);
     		  pane1.add(JComboPriority);
-    		  pane1.add(JComboPickAssignment);
     		  pane1.add(JComboDueHour);
     		  //pane1.add(lblPickAssignment);
     		  int col = (int)(frmwidth/7);
@@ -622,8 +655,6 @@ class HomePage1{
     	      
     	      frmAddAssignment.setVisible(true);
     		  pane1.setBackground(Color.gray);
-    		  wait = false;
-    		  //while(wait == false){
     	      btnCreate.addActionListener(new ActionListener() { 
     	    	  public void actionPerformed(ActionEvent e) { 
     	    		  String name1 = JTextName.getText();
@@ -1114,17 +1145,41 @@ class HomePage1{
         
     }
 
-	
+  public LinkedList<CalendarEvent> splitCalendar(LinkedList<CalendarEvent> calList){
+      Calendar curCal2 = Calendar.getInstance();
+      int curWeek = curCal2.get(Calendar.WEEK_OF_YEAR);
+      Calendar newCal = Calendar.getInstance();
+      newCal.set(Calendar.WEEK_OF_YEAR, curWeek + panelOffset);
+      int newWeek = newCal.get(Calendar.WEEK_OF_YEAR);
+
+      LinkedList<CalendarEvent> tempCal = new LinkedList<CalendarEvent>();
+      ListIterator iter = calList.listIterator();
+
+      while(iter.hasNext()){
+        CalendarEvent tempeve = calList.get(iter.nextIndex());
+        Calendar temp = dateToCalendar(tempeve.getStartTime());
+        int tempweek = temp.get(Calendar.WEEK_OF_YEAR);
+        if(tempweek == newWeek){
+          tempCal.add(tempeve);
+          System.out.println(tempeve.toString());
+        }
+        iter.next();
+
+      }
+
+
+      return tempCal;
+
+  }
+
     //DISPLAY ASSIGNMENTS ON CALENDAR	
 	@SuppressWarnings("deprecation")
-	public void DisplayCalendarEvents(){
-        LinkedList<CalendarEvent> calList = null;
+	public void DisplayCalendarEvents(LinkedList<CalendarEvent> calList){
 		try {
-			calList = c.display();
-      int size = calList.size();
-      JButton[] list1 = new JButton[size];
+      size33 = calList.size();
+      list1 = new JButton[size33];
       int date1,dayof,starthour,endhour,startmin,endmin, spot,place1,place2;
-        for(int ii = 0; ii<size;ii++){
+        for(int ii = 0; ii<size33;ii++){
           CalendarEvent a = calList.get(ii);
           String name = a.getName();
           Date starttime = a.getStartTime();
@@ -1138,9 +1193,27 @@ class HomePage1{
             dayof = starttime.getDay();
             starthour = starttime.getHours();
             endhour = endtime.getHours(); 
+            int starthour2 = starthour%12;
+            int endhour2 = endhour%12;
+            if(starthour2== 0){
+              starthour2 = 12;
+            }
+            if(endhour2 == 0){
+              endhour2 = 12;
+            }
+
             startmin = starttime.getMinutes();
             endmin = endtime.getMinutes();
-            list1[ii] = new JButton(name+"   "+starthour%12+":"+startmin+"0-"+endhour%12+":"+endmin);
+            list1[ii] = new JButton(name+"   "+starthour2+":"+startmin+"0-"+endhour2+":"+endmin+"0");
+            list1[ii].setFont(new Font("Arial",Font.PLAIN,10));
+            if(a.getLocation().equals("ASSIGNEMNT")){
+              list1[ii].setForeground(Color.BLACK);
+              list1[ii].setBackground(back);
+            }
+            else{
+              list1[ii].setForeground(Color.BLACK);
+              list1[ii].setBackground(Color.gray);
+            }
             pnlCalendar.add(list1[ii],new Integer(2));
             spot = findHorizontialPosition(dayof);
             place1 = findVerticalStart(starthour-6, startmin);
@@ -1153,6 +1226,11 @@ class HomePage1{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+  }
+  public void clearCalendar(){
+    for(int ff = 0;ff<size33;ff++){
+      list1[ff].setVisible(false);
+    }
   }
   private Calendar dateToCalendar(Date date){
     Calendar cal = Calendar.getInstance();

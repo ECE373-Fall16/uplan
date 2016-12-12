@@ -1,5 +1,5 @@
 public class Print { 
-	String Username;
+	/*String Username;
     String Password;
     String Email;
     String Fullname;

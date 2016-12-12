@@ -252,7 +252,7 @@ class LoginPage{
               if(validate != 0){
                 frmCreate.setVisible(false);
                 a.DisplayHomePage(recievedUsername);
-                a.DisplayCalendarEvents();
+                //a.DisplayCalendarEvents();
               }
               //Add else to have user re enter infor because it was invalid
       	  			
