@@ -9,7 +9,7 @@ public class Client {
     private static String SERVER_ADDR = "http://localhost:8001/RPC2";
 
     //local:  localhost
-    //public:  104.154.192.22
+    //public:  104.198.66.25
 
     private DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
     private TimeZone timezone = TimeZone.getTimeZone("EST");
