@@ -22,6 +22,10 @@ public class Client {
     public Client(String user){
         username = user;
     }
+
+    public void print(String toPrint){
+        System.out.println(toPrint);
+    }
     
     
     public String getUserName(){
@@ -78,8 +82,10 @@ public class Client {
   
             Vector returnValue = (Vector)server.execute("sample.createAccount", params);
 
-            if(Integer.parseInt(returnValue.get(0).toString()) == 1)
+            if(Integer.parseInt(returnValue.get(0).toString()) == 1){
+                username = user;
                 return 1;
+            }
         } 
         catch (Exception exception) {
             System.err.println("ClientCreateAccount " + exception);
@@ -90,26 +96,31 @@ public class Client {
 
 
     public Profile getAccountInfo(){
-        Profile curUser = null;
+        String user = "";
+        String name = "";
+        String email = "";
+        String bedtime = "";
+        String waketime = "";
         try{
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
 
             params.addElement(username);
+            System.out.println(username);
 
             Vector returnValue = (Vector)server.execute("sample.getAccountInfo", params);
 
-            String user = returnValue.get(0).toString();
-            String name = returnValue.get(1).toString();
-            String email = returnValue.get(2).toString();
-            String bedtime = returnValue.get(3).toString();
-            String waketime = returnValue.get(4).toString();
-
-            curUser = new Profile(user, name, email, bedtime, waketime);
-
+            user = returnValue.get(0).toString();
+            name = returnValue.get(1).toString();
+            email = returnValue.get(2).toString();
+            bedtime = returnValue.get(3).toString();
+            waketime = returnValue.get(4).toString();
+            
         } catch (Exception e){
             System.err.println("ClientGetAccountInfo " + e);
         }
+
+        Profile curUser = new Profile(user, name, email, bedtime, waketime);
 
         return curUser;
     }
@@ -560,6 +571,7 @@ public class Client {
         hour = Integer.toString(tempHour);
 
         String finalTime = hour + min;
+        System.out.println(finalTime);
 
         return finalTime;
     }

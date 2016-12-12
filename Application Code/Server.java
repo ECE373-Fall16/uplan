@@ -218,6 +218,7 @@ public class Server {
         }
 
         Vector returnValue = new Vector();
+        System.out.println(curUser.getUsername() + curUser.getName() + curUser.getEmail() + curUser.getBedtime() + curUser.getWaketime());
         returnValue.add(curUser.getUsername());
         returnValue.add(curUser.getName());
         returnValue.add(curUser.getEmail());

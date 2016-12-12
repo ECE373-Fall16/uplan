@@ -25,7 +25,7 @@ public class DataBase{
             int b = createTable(username,"EVENT"); 
             int c = createTable(username,"SCHEDULE");
 
-            if(a == 1 && b == 1 && c == 1)
+            if(a == 0 || b == 0 || c == 0)
                 valid = 0;
    
         } catch (Exception e){
@@ -124,6 +124,7 @@ public class DataBase{
             System.err.println( "DatabaseValidateUser:" + e.getClass().getName() + ": " + e.getMessage() );
             valid = 0;
         }
+        valid = 0;
         rs.close();
         stmt.close();
         c.close();
@@ -689,7 +690,7 @@ public class DataBase{
 
             while(rs.next() && !found){
                 if(rs.getString("USERNAME").equals(user)){
-                    username = user;
+                    username = rs.getString("USERNAME");
                     name = rs.getString("PROFILENAME");
                     email = rs.getString("EMAIL");
                     bedTime = rs.getString("BEDTIME");
