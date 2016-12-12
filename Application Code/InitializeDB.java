@@ -18,7 +18,8 @@ public class InitializeDB{
                 "PROFILENAME TEXT NOT NULL," +
                 "EMAIL TEXT NOT NULL," +
                 "PASSWORD TEXT NOT NULL," +
-                "BEDTIME TEXT NOT NULL);";
+                "BEDTIME TEXT NOT NULL," +
+                "WAKETIME TEXT NOT NULL);";
       
       stmt.executeUpdate(sql);
       stmt.close();

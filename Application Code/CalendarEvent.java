@@ -1,4 +1,5 @@
 import java.util.*;
+import java.text.*;
 
 public class CalendarEvent{
     
@@ -8,6 +9,7 @@ public class CalendarEvent{
     private Date endtime;
     private String location;
     private boolean display;
+    private TimeZone timezone = TimeZone.getTimeZone("EST");
     
 
     public CalendarEvent(String name1, Date start, Date end, String loc, boolean dis, int x){
@@ -21,6 +23,20 @@ public class CalendarEvent{
 
     public String toString(){
         return name + " | " + starttime + " | " + endtime + " | " + location;
+    }
+    
+    public String toStringEST(){
+        Calendar start = Calendar.getInstance();
+        start.setTime(starttime);
+        Calendar end = Calendar.getInstance();
+        end.setTime(endtime);
+        start.setTimeZone(timezone);
+        end.setTimeZone(timezone);
+        String startDate = (start.get(Calendar.MONTH)+1) + "/" + start.get(Calendar.DAY_OF_MONTH) + "/" + start.get(Calendar.YEAR);
+        String endDate = (end.get(Calendar.MONTH)+1) + "/" + end.get(Calendar.DAY_OF_MONTH) + "/" + end.get(Calendar.YEAR);
+        String startTime = start.get(Calendar.HOUR_OF_DAY) + ":" + start.get(Calendar.MINUTE);
+        String endTime = end.get(Calendar.HOUR_OF_DAY) + ":" + end.get(Calendar.MINUTE);
+        return name + " | " + getDayOfWeek() + " " + startDate + " " + startTime + " | " + endDate + " " + endTime + " | " + location; 
     }
     
 
@@ -81,6 +97,25 @@ public class CalendarEvent{
 
     public void setID(int x){
         id = x;
+    }
+    
+    public String getDayOfWeek(){
+        Calendar start = Calendar.getInstance();
+        start.setTime(starttime);
+        start.setTimeZone(timezone);
+        
+        int day = start.get(Calendar.DAY_OF_WEEK);
+        
+        switch (day){
+            case Calendar.SUNDAY:   return "Sunday";
+            case Calendar.MONDAY:   return "Monday";
+            case Calendar.TUESDAY:   return "Tuesday";
+            case Calendar.WEDNESDAY:   return "Wednesday";
+            case Calendar.THURSDAY:   return "Thursday";
+            case Calendar.FRIDAY:   return "Friday";
+            case Calendar.SATURDAY:   return "Saturday";
+            default:    return "Invalid Day";
+        }
     }
 
 }
