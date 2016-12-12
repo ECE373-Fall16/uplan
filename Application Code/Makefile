@@ -1,6 +1,7 @@
 CLASSPATH=./lib/commons-codec-1.3.jar:./lib/xmlrpc-2.0.1.jar:./lib/sqlite-jdbc-3.14.2.1.jar:./lib/rt.jar:.
 
-all: Server.class UIDriver.class Driver.class
+all:
+	javac -g -classpath $(CLASSPATH) *.java
 
 start: update installJDK installJRE
 
@@ -70,9 +71,6 @@ cleandb:
 cleandriver:
 	rm Driver.class
 
-clean:
-	rm *.class
-
 rmdb:
 	rm *.db
 
@@ -85,3 +83,9 @@ installJRE:
 installJDK:
 	sudo apt-get install default-jre
 
+testscript:
+	rm -f test/*.out
+	./testscript.sh
+
+clean:
+	rm -f *.class test/*.out test/*.txt

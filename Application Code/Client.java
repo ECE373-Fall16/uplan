@@ -22,10 +22,6 @@ public class Client {
     public Client(String user){
         username = user;
     }
-
-    public void print(String toPrint){
-        System.out.println(toPrint);
-    }
     
     
     public String getUserName(){
@@ -82,10 +78,8 @@ public class Client {
   
             Vector returnValue = (Vector)server.execute("sample.createAccount", params);
 
-            if(Integer.parseInt(returnValue.get(0).toString()) == 1){
-                username = user;
+            if(Integer.parseInt(returnValue.get(0).toString()) == 1)
                 return 1;
-            }
         } 
         catch (Exception exception) {
             System.err.println("ClientCreateAccount " + exception);
@@ -96,31 +90,26 @@ public class Client {
 
 
     public Profile getAccountInfo(){
-        String user = "";
-        String name = "";
-        String email = "";
-        String bedtime = "";
-        String waketime = "";
+        Profile curUser = null;
         try{
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
 
             params.addElement(username);
-            System.out.println(username);
 
             Vector returnValue = (Vector)server.execute("sample.getAccountInfo", params);
 
-            user = returnValue.get(0).toString();
-            name = returnValue.get(1).toString();
-            email = returnValue.get(2).toString();
-            bedtime = returnValue.get(3).toString();
-            waketime = returnValue.get(4).toString();
-            
+            String user = returnValue.get(0).toString();
+            String name = returnValue.get(1).toString();
+            String email = returnValue.get(2).toString();
+            String bedtime = returnValue.get(3).toString();
+            String waketime = returnValue.get(4).toString();
+
+            curUser = new Profile(user, name, email, bedtime, waketime);
+
         } catch (Exception e){
             System.err.println("ClientGetAccountInfo " + e);
         }
-
-        Profile curUser = new Profile(user, name, email, bedtime, waketime);
 
         return curUser;
     }
@@ -141,6 +130,8 @@ public class Client {
                 System.out.println(calList.get(iter.nextIndex()).toString());
                 iter.next();
             }
+            System.out.println();
+            
         } catch (Exception exception) {
             System.err.println("ClientDisplay " + exception);
         } 
@@ -197,7 +188,34 @@ public class Client {
                 return 1;
 
         } catch (Exception exception) {
-            System.err.println("ClientAddEvent: " + exception);
+            System.err.println("ClientAddAssignment: " + exception);
+        }
+
+        return 0;     
+    }
+    
+    public int addCalendarEvent(String name, String startDate, String startHour, String endDate, String endHour, String loc, String display){
+        try {
+            
+            String startTime = formatDate(startDate,startHour);
+            String endTime = formatDate(endDate,endHour);
+            
+            XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
+            Vector params = new Vector();
+            params.addElement(username);
+            params.addElement(name);
+            params.addElement(startTime);
+            params.addElement(endTime);
+            params.addElement(loc);
+            params.addElement(display);
+  
+            Vector returnValue = (Vector)server.execute("sample.addCalendarEvent", params);
+
+            if(Integer.parseInt(returnValue.get(0).toString()) == 1)
+                return 1;
+
+        } catch (Exception exception) {
+            System.err.println("ClientAddCalendarEvent: " + exception);
         }
 
         return 0;     
@@ -392,6 +410,7 @@ public class Client {
                 System.out.println(calList.get(calIter.nextIndex()).toStringEST());
                 calIter.next();
             }
+            System.out.println();
             
         } catch (Exception e){
             System.err.println("ClientSchedule: " + e);
@@ -566,7 +585,6 @@ public class Client {
         hour = Integer.toString(tempHour);
 
         String finalTime = hour + min;
-        System.out.println(finalTime);
 
         return finalTime;
     }
