@@ -1,7 +1,7 @@
 public class TestAccount{   
 public static void main(String[] args) {
 	
-        String username = args[0];	
+        /*String username = args[0];	
         String password = args[1];
         String email = args[2];
         String fullname = args[3];
@@ -16,7 +16,7 @@ public static void main(String[] args) {
         toScreen.setBedtime(bedtime);
         toScreen.setWaketime(waketime);
 
-        toScreen.printAccount();
+        toScreen.printAccount();*/
         
      }
 }
