@@ -1068,6 +1068,7 @@ public class Server {
                             newFreeTime = new FreeTime(startFree, endFree);
                             freeTimeList.add(newFreeTime);
                         }
+
                     }
                     
                     //runs to fill in free timeblocks on day long gaps between events
@@ -1143,6 +1144,7 @@ public class Server {
                 tempCal.set(Calendar.MINUTE, 0);
                 tempCal.set(Calendar.SECOND, 0);
                 dayOfWeek = tempCal.get(Calendar.DAY_OF_WEEK);
+                System.out.println("day of week: " + dayOfWeek);
                 
                 if(dayOfWeek == Calendar.SUNDAY){
                     tempCal.set(Calendar.HOUR_OF_DAY, 12);
