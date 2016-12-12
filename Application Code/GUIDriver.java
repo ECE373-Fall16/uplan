@@ -3,8 +3,8 @@ public class GUIDriver{
 	public static void main(String[] args){
 		LoginPage a = new LoginPage();
 		a.LoginUser();
-		
-		//s.DisplayHomePage();
+		//HomePage1 b = new HomePage1();
+		//b.DisplayHomePage();
 		//s.DisplayCalendarEvents();
 	}
 }
