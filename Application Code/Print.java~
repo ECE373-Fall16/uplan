@@ -113,13 +113,13 @@ public class Print {
         	 System.out.print(p.getBedtime());
         	 System.out.print(p.getWaketime());
     }
- /*       
+       
        public void printAddEvent() {
     	   r.createAccount(Username,Fullname,Email,Password,Bedtime,Waketime);
       	   r.login(Username,Password);
       	   System.out.print(r.addEvent(Event,Day,startDay,startHour,endDay,endHour,Location));
     }
-        
+    /*    
         public void printAddAssign() {
             System.out.print(name);
             System.out.print(classname);
