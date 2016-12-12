@@ -249,8 +249,7 @@ class LoginPage{
               String recievedBedtime = (String) JComboStarttime.getSelectedItem();
               String recievedWaketime = (String) JComboEndtime.getSelectedItem();
 
-              //int validate = c.createAccount(recievedUsername, recievedName, recievedEmail, recievedPassword, recievedBedtime);
-
+              int validate = c.createAccount(recievedUsername, recievedName, recievedEmail, recievedPassword, recievedBedtime, recievedWaketime);
               /*if(validate != 0){
                 frmCreate.setVisible(false);
                 a.DisplayHomePage();

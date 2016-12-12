@@ -82,8 +82,10 @@ public class Client {
   
             Vector returnValue = (Vector)server.execute("sample.createAccount", params);
 
-            if(Integer.parseInt(returnValue.get(0).toString()) == 1)
+            if(Integer.parseInt(returnValue.get(0).toString()) == 1){
+                username = user;
                 return 1;
+            }
         } 
         catch (Exception exception) {
             System.err.println("ClientCreateAccount " + exception);

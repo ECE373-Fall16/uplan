@@ -469,7 +469,7 @@ class HomePage1{
               String ww = c.formatBedTime(recievedbedtime);
               String ll = c.formatBedTime(recievedwaketime);
               c.updateProfile("BEDTIME",ww);
-              //c.updateProfile("WAKETIME",ll);
+              c.updateProfile("WAKETIME",ll);
               frmEditEvent.setVisible(false);
   		  			frmMain.setVisible(true);
   		  		}});
