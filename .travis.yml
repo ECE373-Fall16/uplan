@@ -1,0 +1,18 @@
+language: java
+
+os:
+- linux
+
+complier:
+- javac
+
+jdk:
+- oraclejdk8
+
+install: true 
+
+sudo:
+- required
+
+script:
+- cd Application\ Code && make && make testscript
