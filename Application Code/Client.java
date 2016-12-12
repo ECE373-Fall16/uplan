@@ -130,6 +130,8 @@ public class Client {
                 System.out.println(calList.get(iter.nextIndex()).toString());
                 iter.next();
             }
+            System.out.println();
+            
         } catch (Exception exception) {
             System.err.println("ClientDisplay " + exception);
         } 
@@ -186,7 +188,34 @@ public class Client {
                 return 1;
 
         } catch (Exception exception) {
-            System.err.println("ClientAddEvent: " + exception);
+            System.err.println("ClientAddAssignment: " + exception);
+        }
+
+        return 0;     
+    }
+    
+    public int addCalendarEvent(String name, String startDate, String startHour, String endDate, String endHour, String loc, String display){
+        try {
+            
+            String startTime = formatDate(startDate,startHour);
+            String endTime = formatDate(endDate,endHour);
+            
+            XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
+            Vector params = new Vector();
+            params.addElement(username);
+            params.addElement(name);
+            params.addElement(startTime);
+            params.addElement(endTime);
+            params.addElement(loc);
+            params.addElement(display);
+  
+            Vector returnValue = (Vector)server.execute("sample.addCalendarEvent", params);
+
+            if(Integer.parseInt(returnValue.get(0).toString()) == 1)
+                return 1;
+
+        } catch (Exception exception) {
+            System.err.println("ClientAddCalendarEvent: " + exception);
         }
 
         return 0;     
@@ -386,6 +415,7 @@ public class Client {
                 System.out.println(calList.get(calIter.nextIndex()).toStringEST());
                 calIter.next();
             }
+            System.out.println();
             
         } catch (Exception e){
             System.err.println("ClientSchedule: " + e);

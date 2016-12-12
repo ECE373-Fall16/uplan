@@ -10,6 +10,8 @@ public class DataBase{
     private ResultSet rs = null;
     private Connection c = null;
     private DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
+    private int assignId = 0;
+    private int calEventId = 0;
     
 
     public DataBase(){
@@ -190,6 +192,46 @@ public class DataBase{
         c.close();
         return valid;
 
+    }
+    //*
+    public int createCalendarEvent(String username, String name, String startTime, String endTime, String loc, String display, int id) throws SQLException {
+        int valid = 1;
+        try{
+            System.out.println("Adding Calendar Event...");
+            c = connect();
+
+            //String start = Integer.toString(startTime);
+            //String end = Integer.toString(endTime);
+            sql = "INSERT INTO " + username + "SCHEDULE VALUES(?,?,?,?,?,?)";
+            pstmt = c.prepareStatement(sql);
+            
+            pstmt.setInt(1,id);
+            pstmt.setString(2,name);
+            pstmt.setString(3,startTime);
+            pstmt.setString(4,endTime);
+            pstmt.setString(5,loc);
+            pstmt.setString(6,display);
+            pstmt.executeUpdate();
+            pstmt.close();
+            
+            System.out.println("Calendar Event created");
+        } catch ( Exception e ) {
+            System.err.println( "DatabaseCreateCalendarEvent:" + e.getClass().getName() + ": " + e.getMessage() );
+            valid = 0;
+        }
+
+        c.close();
+        return valid;
+
+    }//*/
+   
+    public int getAssignId(){
+        assignId++;
+        return assignId;
+    }
+    public int getCalEventId(){
+        calEventId++;
+        return calEventId;
     }
     
     

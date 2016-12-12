@@ -12,8 +12,8 @@ public class Server {
     private DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
     private TimeZone timezone = TimeZone.getTimeZone("EST");
     private static long hourInMS = 3600000;
-    private int calEveID = 0;
-    private int assignID = 0;
+    //private int calEveID = 0;
+    //private int assignID = 0;
 
 
     public Vector display(String user){
@@ -57,7 +57,8 @@ public class Server {
     public Vector addAssignment(String name, String username, String className, String date, String comp, String pri, String appPri){
         int valid = 1;
         try{
-            valid = data.createAssignment(name, username, className, date, comp, pri, appPri, assignID++);
+            int id = data.getAssignId();
+            valid = data.createAssignment(name, username, className, date, comp, pri, appPri, id);
 
         }catch( Exception e ){
             System.err.println( "ServerAddAssign: " + e.getClass().getName() + ": " + e.getMessage() );
@@ -76,6 +77,24 @@ public class Server {
         int valid = 1;
         try{
             valid = data.createEvent(name,username,days,startTime,endTime,loc);
+
+        }catch( Exception e ){
+            System.err.println( "ServerAddEvent:" + e.getClass().getName() + ": " + e.getMessage() );
+            valid = 0;
+        }
+ 
+        //return vector
+        Vector returnValue = new Vector();
+        returnValue.add(valid);
+
+        return returnValue;
+    }
+    
+    public Vector addCalendarEvent(String username, String name, String startTime, String endTime, String loc, String display){
+        int valid = 1;
+        try{
+            int id = data.getCalEventId();
+            valid = data.createCalendarEvent(username,name,startTime,endTime,loc,display,id);
 
         }catch( Exception e ){
             System.err.println( "ServerAddEvent:" + e.getClass().getName() + ": " + e.getMessage() );
@@ -311,7 +330,7 @@ public class Server {
             
             freeblocks = findFreeTime(calendarList, username);
             
-            //*
+            /*
             ListIterator<FreeTime> freeIter = freeblocks.listIterator();
             System.out.println("Free Time List:");
             while(freeIter.hasNext()){
@@ -662,7 +681,8 @@ public class Server {
         java.util.Date end = eve.getEnd();
         String loc = eve.getLocation();
         boolean display = true;                         //need to modify
-        CalendarEvent c = new CalendarEvent(name, start, end, loc, display, calEveID++);
+        int id = data.getCalEventId();
+        CalendarEvent c = new CalendarEvent(name, start, end, loc, display, id);
         
         return c; 
     }
@@ -674,7 +694,8 @@ public class Server {
             String name = assign.getAssignName();
             String loc = "ASSIGNMENT";
             boolean display = true;                     //need to modify
-            c = new CalendarEvent(name,startTime,endTime,loc, display, calEveID++);
+            int id = data.getCalEventId();
+            c = new CalendarEvent(name,startTime,endTime,loc, display, id);
 
         } catch (Exception e){
             System.err.println( "ServerAssignToCal:" + e.getClass().getName() + ": " + e.getMessage() );
