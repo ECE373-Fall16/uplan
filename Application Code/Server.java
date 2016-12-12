@@ -992,6 +992,7 @@ public class Server {
                     startSecondEvent.setTime(startOfSecond);
                     startSecondEvent.setTimeZone(timezone);
                     startSecondEvent.add(Calendar.DAY_OF_YEAR, 1);
+                    moreEvents = false;
                 }
     
                 dayOfYearFirstEvent = endFirstEvent.get(Calendar.DAY_OF_YEAR);
@@ -1054,7 +1055,7 @@ public class Server {
                     dayOfYearFirstEvent++;      //only runs next loop if gap in days
                     
                     //add free time before first event of next day
-                    if(dayOfYearFirstEvent == dayOfYearSecondEvent){
+                    if(dayOfYearFirstEvent == dayOfYearSecondEvent && moreEvents){
                         Calendar tempCal = Calendar.getInstance();
                         tempCal.setTime(startOfSecond);
                         tempCal.setTimeZone(timezone);
@@ -1067,6 +1068,7 @@ public class Server {
                         if(startFree.compareTo(endFree) != 0){
                             newFreeTime = new FreeTime(startFree, endFree);
                             freeTimeList.add(newFreeTime);
+                            System.out.println("FreeTime before first event of day: " + newFreeTime.toStringEST());
                         }
 
                     }
@@ -1122,29 +1124,26 @@ public class Server {
                     }
                     dayOfYearIter = dayOfYearSecondEvent - 1;
                 }
-                System.out.println("Day of year iter in loop: " + dayOfYearIter + " - " + dayOfYearStop + "\n" + dayOfWeek);
                 if(calListIter.hasNext()){
                     index = calListIter.nextIndex();
                     calListIter.next();
                 } else{
                     moreEvents = false;
                     dayOfYearIter++;        //increments once to start scheduling free time on next day
-                    System.out.println("Day of year iter going into method: " + dayOfYearIter + " - " + dayOfYearStop);
                 }       //calList exhausted
+                System.out.println(moreEvents);
                 
             }
             
             //if no more events, can schedule rest of time as free time
             //*
             if(!moreEvents){
-                System.out.println("Day of year iter in method: " + dayOfYearIter + " - " + dayOfYearStop);
                 Calendar tempCal = Calendar.getInstance();
                 tempCal.setTimeZone(timezone);
                 tempCal.set(Calendar.DAY_OF_YEAR, dayOfYearIter);
                 tempCal.set(Calendar.MINUTE, 0);
                 tempCal.set(Calendar.SECOND, 0);
                 dayOfWeek = tempCal.get(Calendar.DAY_OF_WEEK);
-                System.out.println("day of week: " + dayOfWeek);
                 
                 if(dayOfWeek == Calendar.SUNDAY){
                     tempCal.set(Calendar.HOUR_OF_DAY, 12);
