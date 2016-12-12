@@ -12,6 +12,7 @@ public class Client {
     //public:  104.154.192.22
 
     private DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
+    private TimeZone timezone = TimeZone.getTimeZone("EST");
     
     
     public Client(){
@@ -398,6 +399,55 @@ public class Client {
         return eventList;
     }
     
+    public String[] displayWeekTimes(int weekOfYear){
+        String[] weekTimes = new String[7];
+        int dayOfWeek;
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeZone(timezone);
+        cal.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+        while(dayOfWeek <= Calendar.SATURDAY){
+            cal.set(Calendar.DAY_OF_WEEK, dayOfWeek);
+            int month = cal.get(Calendar.MONTH);
+            weekTimes[dayOfWeek-1] = getDayOfWeek(dayOfWeek) + " " + getMonth(month) + " " + cal.get(Calendar.DAY_OF_MONTH);
+            
+            dayOfWeek++;
+        }
+        
+        return weekTimes;
+    }
+    
+    public String getDayOfWeek(int dayOfWeek){
+        switch (dayOfWeek){
+            case Calendar.SUNDAY:   return "Sunday";
+            case Calendar.MONDAY:   return "Monday";
+            case Calendar.TUESDAY:   return "Tuesday";
+            case Calendar.WEDNESDAY:   return "Wednesday";
+            case Calendar.THURSDAY:   return "Thursday";
+            case Calendar.FRIDAY:   return "Friday";
+            case Calendar.SATURDAY:   return "Saturday";
+            default:    return "Invalid Day";
+        }
+    }
+    
+    public String getMonth(int month){
+        switch (month){
+            case Calendar.JANUARY:  return "January";
+            case Calendar.FEBRUARY:  return "February";
+            case Calendar.MARCH:  return "March";
+            case Calendar.APRIL:  return "April";
+            case Calendar.MAY:  return "May";
+            case Calendar.JUNE:  return "June";
+            case Calendar.JULY:  return "July";
+            case Calendar.AUGUST:  return "August";
+            case Calendar.SEPTEMBER:  return "September";
+            case Calendar.OCTOBER:  return "October";
+            case Calendar.NOVEMBER:  return "November";
+            case Calendar.DECEMBER:  return "December";
+            default:    return "Invalid Month";
+        }
+    }
     
     public LinkedList<CalendarEvent> schedule(){         //Creates schedule and returns list
         LinkedList<CalendarEvent> calList = null;

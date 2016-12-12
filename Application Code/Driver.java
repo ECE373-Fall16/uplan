@@ -40,6 +40,15 @@ public class Driver{
         r.addCalendarEvent("newCalendarEvent","12/20/16","10:00am","12/20/16","12:00am","a place","true");
         r.addCalendarEvent("newCalendarEvent2","12/10/16","10:00am","12/20/16","12:00am","a place","true");
         
+        Calendar cal = Calendar.getInstance();
+        int week = cal.get(Calendar.WEEK_OF_YEAR);
+        System.out.println(week);
+        String[] days = r.displayWeekTimes(week);
+        for(int i = 0; i < Calendar.SATURDAY; i++){
+            System.out.println(days[i]);
+        }
+
+        
         r.display();
 
         System.out.println("Account \"" + r.getUserName()+ "\" made and initiated");
