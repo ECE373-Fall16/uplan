@@ -5,7 +5,9 @@ import org.apache.xmlrpc.*;
 public class Client {
     
     private String username;
-    private static String SERVER_ADDR = "http://localhost:8000/RPC2";
+
+    private static String SERVER_ADDR = "http://localhost:8001/RPC2";
+
     //local:  localhost
     //public:  104.154.192.22
 
@@ -62,9 +64,10 @@ public class Client {
     }
     
 
-    public int createAccount(String user, String name, String email, String password, String bedtime){
+    public int createAccount(String user, String name, String email, String password, String bedtime, String waketime){
 
         bedtime = formatBedTime(bedtime);
+        waketime = formatBedTime(waketime);
 
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
@@ -75,6 +78,7 @@ public class Client {
             params.addElement(email);
             params.addElement(password);
             params.addElement(bedtime);
+            params.addElement(waketime);
   
             Vector returnValue = (Vector)server.execute("sample.createAccount", params);
 
@@ -103,8 +107,9 @@ public class Client {
             String name = returnValue.get(1).toString();
             String email = returnValue.get(2).toString();
             String bedtime = returnValue.get(3).toString();
+            String waketime = returnValue.get(4).toString();
 
-            curUser = new Profile(user, name, email, bedtime);
+            curUser = new Profile(user, name, email, bedtime, waketime);
 
         } catch (Exception e){
             System.err.println("ClientGetAccountInfo " + e);
@@ -294,6 +299,8 @@ public class Client {
         
         if(type.equals("BEDTIME"))
             newName = formatBedTime(newName);
+        if(type.equals("WAKETIME"))
+            newName = formatBedTime(newName);
 
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
@@ -373,18 +380,14 @@ public class Client {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
             params.addElement(username);
-            
-            System.out.println("before server call");
-            
+
             Vector returnValue = (Vector)server.execute("sample.scheduleAlgo", params);
-            
-            System.out.println("after server call");
             
             calList = vectorToCalList(returnValue);
 
             ListIterator calIter = calList.listIterator();
             while(calIter.hasNext()){
-                System.out.println(calList.get(calIter.nextIndex()));
+                System.out.println(calList.get(calIter.nextIndex()).toStringEST());
                 calIter.next();
             }
             
@@ -568,6 +571,7 @@ public class Client {
 
     public String formatDate(String dueDay, String dueHour){
         Calendar temp = Calendar.getInstance();
+        temp.setTimeZone(TimeZone.getTimeZone("EST"));
             char[] dueChar = dueDay.toCharArray();
             char[] hourChar = dueHour.toCharArray();
             char[] tempChar = new char[2];

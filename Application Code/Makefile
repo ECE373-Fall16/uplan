@@ -4,13 +4,13 @@ all: Server.class UIDriver.class Driver.class
 
 start: update installJDK installJRE
 
-driver: cleandriver Driver.class rundriver
+driver: Driver.class Client.class rundriver
 
-gui: GUIDriver.class rungui
+gui: GUIDriver.class Client.class rungui
 
 uidriver: cleanui UIDriver.class runui
 
-server: cleanserver cleandb Server.class Client.class runserver
+server: Server.class runserver
 
 db: InitializeDB.class rundb
 

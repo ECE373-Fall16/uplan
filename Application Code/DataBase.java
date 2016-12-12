@@ -17,7 +17,7 @@ public class DataBase{
     }
     
     
-    public int createUser(String username, String name, String email, String password, String bedTime) throws SQLException {
+    public int createUser(String username, String name, String email, String password, String bedTime, String wakeTime) throws SQLException {
         int valid = 1;
         try {
             
@@ -35,7 +35,7 @@ public class DataBase{
 
         try{
             c = connect();
-            sql = "INSERT INTO PROFILE VALUES(?,?,?,?,?)";
+            sql = "INSERT INTO PROFILE VALUES(?,?,?,?,?,?)";
             
             pstmt = c.prepareStatement(sql);
             
@@ -44,6 +44,7 @@ public class DataBase{
             pstmt.setString(3,email);
             pstmt.setString(4,password);
             pstmt.setString(5,bedTime);
+            pstmt.setString(6,wakeTime);
             pstmt.executeUpdate();
             pstmt.close();
 
@@ -678,6 +679,7 @@ public class DataBase{
         String name = "";
         String email = "";
         String bedTime = "";
+        String wakeTime = "";
         boolean found = false;
 
         try{
@@ -692,11 +694,12 @@ public class DataBase{
                     name = rs.getString("PROFILENAME");
                     email = rs.getString("EMAIL");
                     bedTime = rs.getString("BEDTIME");
+                    wakeTime = rs.getString("WAKETIME");
                     found = true;
                 }
             }
 
-            curUser = new Profile(username, name, email, bedTime);
+            curUser = new Profile(username, name, email, bedTime, wakeTime);
             
             rs.close();
             stmt.close();
@@ -846,6 +849,50 @@ public class DataBase{
             int bed = Integer.parseInt(bedTime);
 
             times[intArrayIndex++] = bed;
+        }
+        
+        c.close();
+        return times;
+    }
+
+
+    public int[] getWakeTime(String user)throws SQLException{
+        String wakeTime = "";
+        int[] times = new int[2];
+        Boolean found = false;
+        try{
+            c = connect();
+            stmt= c.createStatement();
+
+            rs = stmt.executeQuery( "SELECT USERNAME,WAKETIME FROM PROFILE" );
+
+            while(rs.next() && !found){
+                if(rs.getString("USERNAME").equals(user)){
+                    wakeTime = rs.getString("WAKETIME");
+                    found = true;
+                }
+            }
+            
+            rs.close();
+            stmt.close();
+
+        } catch (Exception e){
+            System.err.println( "DatabaseGetWakeTime:" + e.getClass().getName() + ": " + e.getMessage() );
+        }
+
+        char[] wakeToChar = wakeTime.toCharArray();
+        char[] temp = new char[2];
+        int count = 0;
+        int intArrayIndex = 0;
+
+        while (count < 4){
+            temp[0] = wakeToChar[count++];
+            temp[1] = wakeToChar[count++];
+
+            wakeTime = new String(temp);
+            int wake = Integer.parseInt(wakeTime);
+
+            times[intArrayIndex++] = wake;
         }
         
         c.close();
