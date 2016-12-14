@@ -126,12 +126,12 @@ public class Client {
             Vector returnValue = (Vector)server.execute("sample.display", params);
             calList = vectorToCalList(returnValue);
 
-            ListIterator iter = calList.listIterator();
+            /*ListIterator iter = calList.listIterator();
             while(iter.hasNext()){
                 System.out.println(calList.get(iter.nextIndex()).toString());
                 iter.next();
             }
-            System.out.println();
+            System.out.println();*/
             
         } catch (Exception exception) {
             System.err.println("ClientDisplay " + exception);
@@ -358,12 +358,12 @@ public class Client {
             System.err.println("ClientGetAssignmentList: " + exception);
         }
 
-        ListIterator iter = assignList.listIterator();
+        /*ListIterator iter = assignList.listIterator();
         while(iter.hasNext()){
             System.out.println(assignList.get(iter.nextIndex()).toString());
             iter.next();
         }
-        System.out.println("");
+        System.out.println("");*/
 
         return assignList;
     }
@@ -384,12 +384,12 @@ public class Client {
             System.err.println("ClientGetEventList: " + exception);
         }
 
-        ListIterator iter = eventList.listIterator();
+        /*ListIterator iter = eventList.listIterator();
         while(iter.hasNext()){
             System.out.println(eventList.get(iter.nextIndex()).toString());
             iter.next();
         }
-        System.out.println("");
+        System.out.println("");*/
 
         return eventList;
     }
@@ -455,12 +455,12 @@ public class Client {
             
             calList = vectorToCalList(returnValue);
 
-            ListIterator calIter = calList.listIterator();
+            /*ListIterator calIter = calList.listIterator();
             while(calIter.hasNext()){
                 System.out.println(calList.get(calIter.nextIndex()).toStringEST());
                 calIter.next();
             }
-            System.out.println();
+            System.out.println();*/
             
         } catch (Exception e){
             System.err.println("ClientSchedule: " + e);

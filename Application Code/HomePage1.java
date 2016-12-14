@@ -447,7 +447,7 @@ class HomePage1{
             lblbeddd.setBounds(col+boxw*2,gap*7,boxw*4,boxh);
             lblwakedd.setBounds(col+boxw*2,gap*8,boxw*4,boxh);
 
-            
+
             lblusernamedd.setForeground(Color.WHITE);
             lblnamedd.setForeground(Color.WHITE);
             lblemaildd.setForeground(Color.WHITE);
@@ -788,12 +788,14 @@ class HomePage1{
  	    		  String recName = JTextName.getText();
             String recDays = JTextDays.getText();
             String location2 = JTextLocation.getText();
-            String recievedwaketime = (String)JComboStarttime.getSelectedItem();
-            String recievedbedtime = (String) JComboEndtime.getSelectedItem();
+            String startHour = (String)JComboStarttime.getSelectedItem();
+            String endHour = (String) JComboEndtime.getSelectedItem();
             String recstartDate = (String)JComboStartDate.getSelectedItem();
             String recendDate = (String)JComboEndDate.getSelectedItem();
 
-            c.addEvent(recName,recDays,recstartDate,recievedwaketime, recendDate,recievedbedtime,location2);
+            System.out.println(recName + " " + recDays + " " + location2 + " " + recievedwaketime + " " + recievedbedtime + " " + recstartDate + " " + recendDate);
+
+            c.addEvent(recName,recDays,recstartDate,startHour, recstartDate, endHour, location2);
  	    		  frmAddEvent.setVisible(false);
  	    		  frmMain.setVisible(true);
  	    	  }});
