@@ -10,18 +10,31 @@ public class UIHomepage {
         
 	}
 	
-	public void login(String userName){
-	    user = new Client(userName);
-	    user.login(userName);
+	public void login(){
+		boolean valid = false;
+		while(valid == false){
+			System.out.println("Enter Username:");
+			String userName = scan.nextLine();
+			System.out.println("Enter Password:");
+			String password = scan.nextLine();
+			valid = client.login(userName, password);
+			if(valid == false){
+				System.out.println("Invalid login, enter 1 to try again or enter 2 to create account.");
+				String input = scan.nextLine();
+				if(input.equals("2"))
+					createProfile();
+			}
+		}
 	}
 	
 	public void logout(){
-	    user.logout();
+	    client.logout();
+	    loginPage();
 	}
 	
 	public void displayHomePage(){
 	    //user.display();
-	    System.out.println("\nUser: " + user.getUserName());
+	    //System.out.println("\nUser: " + user.getUserName());
 		System.out.println("Select one option from below:");
 		System.out.println("1) Display Schedule");
 		System.out.println("2) Display Assignments");
@@ -42,17 +55,56 @@ public class UIHomepage {
 
 	public void displaySchedule(){
 		LinkedList<CalendarEvent> calList = client.display();
-		ListIterator iter = calList.listIterator();
-		int index = 0;
-		while(iter.hasNext()){
-			index = iter.nextIndex();
-			CalendarEvent tempCal = calList.get(index);
-			System.out.println(index + " " + tempCal.toString());
-			iter.next();
+		if(calList != null){
+			ListIterator iter = calList.listIterator();
+			Calendar pastCal = Calendar.getInstance();
+			Calendar curCal = Calendar.getInstance();
+			int index = 0;
+			String month = "";
+			String dayOfWeek = "";
+			String dayOfMonth = "";
+			int curDayOfYear = 0;
+			int pastDayOfYear = 0;
+		
+			while(iter.hasNext()){
+				index = iter.nextIndex();
+				CalendarEvent tempCal = calList.get(index);
+				if(index == 0){
+					curCal.setTime(tempCal.getEndTime());
+					month = client.getMonth(curCal.get(Calendar.MONTH));
+					dayOfWeek = client.getDayOfWeek(curCal.get(Calendar.DAY_OF_WEEK));
+					dayOfMonth = Integer.toString(curCal.get(Calendar.DAY_OF_MONTH));
+					System.out.println(dayOfWeek + ", " + month + " " + dayOfMonth);
+					System.out.println("-------------------------");
+					System.out.println(index + " " + tempCal.toString());
+					pastCal.setTime(tempCal.getEndTime());
+					pastDayOfYear = pastCal.get(Calendar.DAY_OF_YEAR);
+				}
+				else{
+					curCal.setTime(tempCal.getEndTime());
+					curDayOfYear = curCal.get(Calendar.DAY_OF_YEAR);
+					if(curDayOfYear == pastDayOfYear){
+						System.out.println(index + " " + tempCal.toString());
+					}
+					else{
+						System.out.println("");
+						month = client.getMonth(curCal.get(Calendar.MONTH));
+						dayOfWeek = client.getDayOfWeek(curCal.get(Calendar.DAY_OF_WEEK));
+						dayOfMonth = Integer.toString(curCal.get(Calendar.DAY_OF_MONTH));
+						System.out.println(dayOfWeek + ", " + month + " " + dayOfMonth);
+						System.out.println("-------------------------");
+						System.out.println(index + " " + tempCal.toString());
+					}
+					pastCal.setTime(tempCal.getEndTime());
+					pastDayOfYear = pastCal.get(Calendar.DAY_OF_YEAR);
+				}
+				iter.next();
+	   		}
 	   	}
+	   	scan.nextLine();
 	}
 
-	public void displayAssignment(){
+	public void displayAssignments(){
 		LinkedList<Assignment> assignList = client.getAssignmentList();
 		ListIterator iter = assignList.listIterator();
 		while(iter.hasNext()){
@@ -60,34 +112,46 @@ public class UIHomepage {
 			System.out.println(curAssign.toString());
 			iter.next();
 		}
+		System.out.println("");
+		scan.nextLine();
 	}
 
 	public void displayEvents(){
 		LinkedList<Event> eventList = client.getEventList();
 		ListIterator iter = eventList.listIterator();
 		while(iter.hasNext()){
-			Assignment curEvent = eventList.get(iter.nextIndex());
+			Event curEvent = eventList.get(iter.nextIndex());
 			System.out.println(curEvent.toString());
 			iter.next();
 		}
+		System.out.println("");
+		scan.nextLine();
 	}
 
-	public void addAssignment(){
+	public int addAssignment(){
 		System.out.println("Name of Assignment:");
 		String nameAssign = scan.nextLine();
 		System.out.println("Name of Class:");
 		String nameClass = scan.nextLine();
 		System.out.println("Due Date (MM/DD/YY):");
 		String dueDate = scan.nextLine();
-		System.out.println("Due Hour (HH:MM:am/pm):")
+		if(dueDate.length() != 8)
+			return 0;
+		System.out.println("Due Hour (HH:MM:am/pm):");
 		String dueHour = scan.nextLine();
+		if(dueHour.length() != 7)
+			return 0;
 		System.out.println("Estimates Time needed for Completion (Hours):");
 		String completionTime = scan.nextLine();
 		System.out.println("Priority of Assignment (1-3):");
 		String priority = scan.nextLine();
 
 		client.addAssignment(nameAssign, nameClass, dueDate, dueHour, completionTime, priority, "");
-		
+
+		System.out.println("");
+
+		return 1;
+				
 	}
 	
 
@@ -103,92 +167,120 @@ public class UIHomepage {
 
 		if(input.equals("1")){
 			type = "DUE";
-			System.out.println("Enter new due date (MM/DD/YY):")
+			System.out.println("Enter new due date (MM/DD/YY):");
 			String newDate = scan.nextLine();
-			System.out.println("Enter new due hour (HH:MMam/pm):")
-			String newData = scan.nextLine();
+			if(newDate.length() != 8)
+				return 0;
+			System.out.println("Enter new due hour (HH:MMam/pm):");
+			String newHour = scan.nextLine();
+			if(newHour.length() != 7)
+				return 0;
+			client.updateAssignmentDate(assignmentName, newDate, newHour);
 		}
 		else if(input.equals("2")){
 			type = "HOURSTOCOMPLETION";
 			System.out.println("Enter new completion time:");
 			String newCompTime = scan.nextLine();
+			client.updateAssignment(assignmentName, type, newCompTime);
 		}
 		else if(input.equals("3")){
 			type = "PRIORITY";
 			System.out.println("Enter new priority (1-3):");
 			String newPri = scan.nextLine();
+			client.updateAssignment(assignmentName, type, newPri);
 		}
 		else{
 			System.out.println("Invalid input");
+			System.out.println("");
 			return 0;
 		}
-		client.updateAssignment(assignmentName, type, newDate);
+		System.out.println("");
 		return 1;
 	}
 	
 
-	public void addEvent(){
+	public int addEvent(){
 		System.out.println("Name of Event:");
 		String nameEvent = scan.nextLine();
 		System.out.println("Enter Days of the Week (SuMoTuWeThFrSa):");
 		String days = scan.nextLine();
 		System.out.println("Start Date (MM/DD/YY):");
 		String startDate = scan.nextLine();
-		System.out.println("Start Hour (HH:MMam/pm): ")
+		if(startDate.length() != 8)
+			return 0;
+		System.out.println("Start Hour (HH:MMam/pm): ");
 		String startHour = scan.nextLine();
-		System.out.println("End Hour (HH:MMam/pm:")
+		System.out.println("End Hour (HH:MMam/pm:");
 		String endHour = scan.nextLine();
+		if(startHour.length() != 7 || endHour.length() != 7)
+			return 0;
 		System.out.println("Location:");
 		String location = scan.nextLine();
 		
 		client.addEvent(nameEvent, days, startDate, startHour, startDate, endHour, location);
+
+		System.out.println("");
+
+		return 1;
 		//create event object using values
 	}
 	
 
-	public void editEvent(){
+	public int editEvent(){
 		System.out.println("Enter Name of Event:");
-		String assignmentName = scan.nextLine();
+		String eventName = scan.nextLine();
 		System.out.println("Select number of item that needs to be updated: ");
 		System.out.println("1) Repeated Days");
-		System.out.println("2) Start Date");
-		System.out.println("3) Start Hour");
-		System.out.println("4) End Hour");
+		System.out.println("2) Start Date/times");
+		System.out.println("3) Location");
 		String input = scan.nextLine();
 		String type = "";
+		String newHour = "";
+		String newData = "";
 
 		if(input.equals("1")){
 			type = "DAYS";
-			System.out.println("Enter new repeated days (SuMoTuWeThFrSa):")
-			String newDate = scan.nextLine();
+			System.out.println("Enter new repeated days (SuMoTuWeThFrSa):");
+			newData = scan.nextLine();
+			client.updateEvent(eventName, type, newData);
 		}
 		else if(input.equals("2")){
-			type = "";
 			System.out.println("Enter new start date (MM/DD/YY):");
-			String newCompTime = scan.nextLine();
+			String newDate = scan.nextLine();
+
+			System.out.println("Enter new start time (HH:MMam/pm");
+			String newStartHour = scan.nextLine();
+
+			System.out.println("Enter new end time (HH:MMam/pm)");
+			String newEndHour = scan.nextLine();
+
+			if(newStartHour.length() != 7 || newEndHour.length() != 7)
+				return 0;
+
+			client.updateEventDate(eventName, "START_TIME", newDate, newStartHour);
+			client.updateEventDate(eventName, "END_TIME", newDate, newEndHour);
 		}
 		else if(input.equals("3")){
-			type = "";
-			System.out.println("Enter new start time (HH:MMam/pm");
-			String newPri = scan.nextLine();
-		}
-		else if(input.equals("4")){
-			type = "";
-			System.out.println("Enter new end time (HH:MMam/pm)");
-			String newDate = scan.nextLine();
+			type = "LOCATION";
+			System.out.println("Enter new location of event: ");
+			newData = scan.nextLine();
+			client.updateEvent(eventName, type, newData);
 		}
 		else{
 			System.out.println("Invalid input");
+			System.out.println("");
 			return 0;
 		}
-		client.updateAssignment(assignmentName, type, newDate);
+
+		System.out.println("");
+
 		return 1;
 	}
 	
 
 	public int editProfile(){
 		//get info for profile
-		System.out.println("Enter 1 to change bedtime or 2 to change waketime: ")
+		System.out.println("Enter 1 to change bedtime or 2 to change waketime: ");
 		String input = scan.nextLine();
 		String type = "";
 		if(input.equals("1"))
@@ -200,73 +292,148 @@ public class UIHomepage {
 			return 0;
 		}
 		System.out.println("Enter new time (HH:MMam/pm");
-		String nameDate = scan.nextLine();
+		String newDate = scan.nextLine();
+		if(newDate.length() != 7)
+			return 0;
 		client.updateProfile(type, newDate);
+		System.out.println("");
 		return 1;
 	}
 
-	public void deleteAssignment(){
-		System.out.println("Enter name of assignment you wish to delete:")
+	public int deleteAssignment(){
+		System.out.println("Enter name of assignment you wish to delete:");
 		String assignName = scan.nextLine();
 		client.deleteAssignment(assignName);
+		System.out.println("");
+
+		return 1;
 	}
 
-	public void deleteEvent(){
-		System.out.println("Enter name of event you wish to delete:")
+	public int deleteEvent(){
+		System.out.println("Enter name of event you wish to delete:");
 		String eventName = scan.nextLine();
-		client.deleteAssignment(eventName);
+		client.deleteEvent(eventName);
+		System.out.println("");
+
+		return 1;
 	}
 
-	public void deleteProfile(){
-		client.deleteProfile();
+	public int deleteProfile(){
+		System.out.println("Enter your username:");
+		String username = scan.nextLine();
+		client.deleteAccount(username);
+		System.out.println("");
+		loginPage();
+
+		return 1;
 	}
 	
 	public void refreshSchedule(){
-		LinkedList<CalendarList> calList = client.schedule();
-		ListIterator iter = calList.listIterator();
-		while(iter.hasNext()){
-			index = iter.nextIndex();
-			CalendarEvent tempCal = calList.get(index);
-			System.out.println(index + " " + tempCal.toString());
-			iter.next();
-		}
+		LinkedList<Event> eventList = client.getEventList();
+		if(eventList == null)
+			System.out.println("You need to schedule an event before refreshing schedule");
+		else{
+			LinkedList<CalendarEvent> calList = client.schedule();
+			ListIterator iter = calList.listIterator();
+			Calendar pastCal = Calendar.getInstance();
+			Calendar curCal = Calendar.getInstance();
+			int index = 0;
+			String month = "";
+			String dayOfWeek = "";
+			String dayOfMonth = "";
+			int curDayOfYear = 0;
+			int pastDayOfYear = 0;
+			while(iter.hasNext()){
+				index = iter.nextIndex();
+				CalendarEvent tempCal = calList.get(index);
+				if(index == 0){
+					curCal.setTime(tempCal.getEndTime());
+					month = client.getMonth(curCal.get(Calendar.MONTH));
+					dayOfWeek = client.getDayOfWeek(curCal.get(Calendar.DAY_OF_WEEK));
+					dayOfMonth = Integer.toString(curCal.get(Calendar.DAY_OF_MONTH));
+					System.out.println(dayOfWeek + ", " + month + " " + dayOfMonth);
+					System.out.println("-------------------------");
+					System.out.println(index + " " + tempCal.toString());
+					pastCal.setTime(tempCal.getEndTime());
+					pastDayOfYear = pastCal.get(Calendar.DAY_OF_YEAR);
+				}
+				else{
+					curCal.setTime(tempCal.getEndTime());
+					curDayOfYear = curCal.get(Calendar.DAY_OF_YEAR);
+					if(curDayOfYear == pastDayOfYear){
+						System.out.println(index + " " + tempCal.toString());
+					}
+					else{
+						System.out.println("");
+						month = client.getMonth(curCal.get(Calendar.MONTH));
+						dayOfWeek = client.getDayOfWeek(curCal.get(Calendar.DAY_OF_WEEK));
+						dayOfMonth = Integer.toString(curCal.get(Calendar.DAY_OF_MONTH));
+						System.out.println(dayOfWeek + ", " + month + " " + dayOfMonth);
+						System.out.println("-------------------------");
+						System.out.println(index + " " + tempCal.toString());
+					}
+					pastCal.setTime(tempCal.getEndTime());
+					pastDayOfYear = pastCal.get(Calendar.DAY_OF_YEAR);
+				}
+				iter.next();
+	   		}
+	   	}
+	   	System.out.println("");
+	   	scan.nextLine();
 	}
 	
 
-	public void createProfile(){
-	    System.out.println("Name: ");
-	    String name = scan.nextLine();
-	    System.out.println("Username: ");
-	    String username = scan.nextLine();
-	    System.out.println("Email: ");
-	    String email = scan.nextLine();
-	    System.out.println("Password: ");
-	    String password = scan.nextLine();
-	    System.out.println("Approximate Bedtime (HH:MMam/pm): ");
-	    String bedtime = scan.nextLine();
-	    System.out.println("Approximate Waketime (HH:MMam/pm):")
-	    String waketime = scan.nextLine();
+	public int createProfile(){
+		boolean valid = false;
+		String name = "";
+		String username = "";
+		String email = "";
+		String password = "";
+		String bedtime = "";
+		String waketime = "";
+		while(valid == false){
+	    	System.out.println("Name: ");
+	    	name = scan.nextLine();
+	    	System.out.println("Username: ");
+	    	username = scan.nextLine();
+	    	System.out.println("Email: ");
+	    	email = scan.nextLine();
+	    	System.out.println("Password: ");
+	    	password = scan.nextLine();
+	    	System.out.println("Approximate Bedtime (HH:MMam/pm): ");
+	    	bedtime = scan.nextLine();
+	    	System.out.println("Approximate Waketime (HH:MMam/pm):");
+	    	waketime = scan.nextLine();
+	    	if(bedtime.length() != 7 || waketime.length() != 7){
+	    		valid = false;
+	    		System.out.println("Invalid input please redo.");
+	    	}
+	    	else
+	    		valid = true;
+	    }
 	    client.createAccount(username, name, email, password, bedtime, waketime);
+
+	    System.out.println("");
+
+	    login();
+	    System.out.println("");
+
+	    return 1;
 	}
 	
 	
 	//Opening Screen
-	public boolean LoginPage(){
-	    System.out.println("Create an Account (0), Login (1) or Exit Program(2)");
+	public boolean loginPage(){
+	    System.out.println("Create an Account (0) or Login (1)");
 		String login = scan.nextLine();
 		if(login.equals("0")){
 		    createProfile();
 	    }
-	    if(login.equals("1")){
-	        return(true);          //exit program
+	    else if(login.equals("1")){
+	        login();          //exit program
 	    }
-		System.out.println("What are your credentials?\nUserName:");
-		String userName = scan.nextLine();
-		login(userName);
-		//System.out.println("Password:");
-		//String password = scan.nextLine();
-		
-		//check to see if they are valid
+	    else
+	    	System.out.println("Invalid input");
 		
 		return false;         //dont exit program
 	}

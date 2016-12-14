@@ -124,7 +124,12 @@ public class Client {
             params.addElement(username);
 
             Vector returnValue = (Vector)server.execute("sample.display", params);
-            calList = vectorToCalList(returnValue);
+            if (returnValue.get(0).toString().equals("0")){
+                System.out.println("You have nothing scheduled previously, please add assignments or events and choose refresh schedule.");
+                return calList;
+            }
+            else
+                calList = vectorToCalList(returnValue);
 
             /*ListIterator iter = calList.listIterator();
             while(iter.hasNext()){
@@ -262,12 +267,12 @@ public class Client {
     }
     
     
-    public int deleteAccount(){
+    public int deleteAccount(String user){
         int valid = 1;
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
-            params.addElement(username);
+            params.addElement(user);
   
             Vector returnValue = (Vector)server.execute("sample.deleteAccount", params);
 
@@ -298,6 +303,25 @@ public class Client {
             System.err.println("ClientUpdateAssignment: " + exception);
         }
     }
+
+
+    public void updateAssignmentDate(String assignmentName, String newDate, String newHour){
+
+        String finalDue = formatDate(newDate, newHour);
+
+        try {
+            XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
+            Vector params = new Vector();
+            params.addElement(assignmentName);
+            params.addElement("DUE");
+            params.addElement(finalDue);
+            params.addElement(username);
+
+            Vector returnValue = (Vector)server.execute("sample.updateAssignment", params);
+        } catch (Exception exception) {
+            System.err.println("ClientUpdateAssignment: " + exception);
+        }
+    }
     
     
     public int updateEvent(String eventName, String type, String newName){
@@ -307,6 +331,29 @@ public class Client {
             params.addElement(eventName);
             params.addElement(type);
             params.addElement(newName);
+            params.addElement(username);
+            
+            Vector returnValue = (Vector)server.execute("sample.updateEvent", params);
+
+            if(Integer.parseInt(returnValue.get(0).toString()) == 1)
+                return 1;
+        } catch (Exception exception) {
+            System.err.println("ClientUpdateEvent: " + exception);
+        }
+
+        return 0;
+    }
+
+
+    public int updateEventDate(String eventName, String type, String newDate, String newHour){
+
+        String finalDate = formatDate(newDate, newHour);
+        try {
+            XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
+            Vector params = new Vector();
+            params.addElement(eventName);
+            params.addElement(type);
+            params.addElement(finalDate);
             params.addElement(username);
             
             Vector returnValue = (Vector)server.execute("sample.updateEvent", params);

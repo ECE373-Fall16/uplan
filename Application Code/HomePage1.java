@@ -792,9 +792,7 @@ class HomePage1{
             String endHour = (String) JComboEndtime.getSelectedItem();
             String recstartDate = (String)JComboStartDate.getSelectedItem();
             String recendDate = (String)JComboEndDate.getSelectedItem();
-
-            System.out.println(recName + " " + recDays + " " + location2 + " " + recievedwaketime + " " + recievedbedtime + " " + recstartDate + " " + recendDate);
-
+            
             c.addEvent(recName,recDays,recstartDate,startHour, recstartDate, endHour, location2);
  	    		  frmAddEvent.setVisible(false);
  	    		  frmMain.setVisible(true);

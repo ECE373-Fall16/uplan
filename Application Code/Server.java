@@ -22,13 +22,19 @@ public class Server {
             LinkedList<CalendarEvent> calendarList = data.getSchedule(user, "display");
             
             Vector values = new Vector();
-            for(int k = 0; k < calendarList.size(); k++){
-                values.add(calendarList.get(k).getName());
-                values.add(df.format(calendarList.get(k).getStartTime()));
-                values.add(df.format(calendarList.get(k).getEndTime()));
-                values.add(calendarList.get(k).getLocation());
-                values.add(String.valueOf(calendarList.get(k).getDisplay()));
-                values.add(Integer.toString(calendarList.get(k).getID()));
+            int size = calendarList.size();
+            if(size == 0){
+                values.add(0);
+            }
+            else{
+                for(int k = 0; k < calendarList.size(); k++){
+                    values.add(calendarList.get(k).getName());
+                    values.add(df.format(calendarList.get(k).getStartTime()));
+                    values.add(df.format(calendarList.get(k).getEndTime()));
+                    values.add(calendarList.get(k).getLocation());
+                    values.add(String.valueOf(calendarList.get(k).getDisplay()));
+                    values.add(Integer.toString(calendarList.get(k).getID()));
+                }
             }
             return values;
 
