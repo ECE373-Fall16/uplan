@@ -3,12 +3,11 @@ import java.util.*;
 public class UIDriver {
     
 	public static void main(String[] args){
-	    /*HomePage home = new HomePage();
+	    UIHomepage home = new UIHomepage();
         Scanner scan = new Scanner(System.in);
         
         boolean exiting = home.openingScreen();
         home.displaySchedule();
-		//HomePage home = new HomePage();
 		while(!exiting){
 			home.displayHomePage();
 			int action = scan.nextInt();
@@ -37,7 +36,7 @@ public class UIDriver {
 			    default: System.out.println("Invalid input, please select one of the listed options.");
 				    break;
 			}
-		}*/
+		}
 		
 	}
 }

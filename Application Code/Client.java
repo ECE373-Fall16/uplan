@@ -262,12 +262,12 @@ public class Client {
     }
     
     
-    public int deleteAccount(String user){
+    public int deleteAccount(){
         int valid = 1;
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
-            params.addElement(user);
+            params.addElement(username);
   
             Vector returnValue = (Vector)server.execute("sample.deleteAccount", params);
 
