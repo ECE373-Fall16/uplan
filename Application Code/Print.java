@@ -19,8 +19,9 @@ public class Print {
     String Hours;
     String Priority;
     String aPriority;
+    String Type;
+    String newName;
     Client r = new Client();
-
        
         public void setUsername(String value) {
 		Username = value;
@@ -102,6 +103,14 @@ public class Print {
             aPriority = value;
     }
         
+        public void setType(String value) {
+            Type = value;
+    }
+        
+        public void setnewName(String value) {
+            newName = value;
+    }
+        
         public void printLogin() {
         	r.createAccount(Username,Fullname,Email,Password,Bedtime,Waketime);	
        	    System.out.print(r.login(Username,Password));
@@ -130,6 +139,43 @@ public class Print {
        	    r.login(Username,Password);
        	    System.out.print(r.addAssignment(Assignment,classname,dueDate,dueTime,Hours,Priority,aPriority));
     }
-          
+        
+       public void printUpdateAssign(){
+    	   r.createAccount(Username,Fullname,Email,Password,Bedtime,Waketime);
+      	   r.login(Username,Password);
+      	   System.out.print(r.updateAssignment(Assignment,Type,newName));
+    }
+       
+       public void printUpdateEvent(){
+    	   r.createAccount(Username,Fullname,Email,Password,Bedtime,Waketime);
+      	   r.login(Username,Password);
+      	   System.out.print(r.updateEvent(Event,Type,newName));
+    }
+       
+       public void printUpdatePro(){
+    	   r.createAccount(Username,Fullname,Email,Password,Bedtime,Waketime);
+      	   r.login(Username,Password);
+      	   System.out.print(r.updateProfile(Type,newName));
+    }
+       
+       public void printDeleteevent(){
+    	   r.createAccount(Username,Fullname,Email,Password,Bedtime,Waketime);
+      	   r.login(Username,Password);
+      	   System.out.print(r.deleteEvent(Event));
+    }
+       
+       public void printDeleteassign(){
+    	   r.createAccount(Username,Fullname,Email,Password,Bedtime,Waketime);
+      	   r.login(Username,Password);
+      	   System.out.print(r.deleteAssignment(Assignment));
+    }
+       
+       public void printDeletepro(){
+    	   r.createAccount(Username,Fullname,Email,Password,Bedtime,Waketime);
+      	   r.login(Username,Password);
+      	   System.out.print(r.deleteAccount(Username));
+    }
+              
+       
 }
 
