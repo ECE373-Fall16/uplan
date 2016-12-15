@@ -150,7 +150,6 @@ public class Client {
 
             String startTime = formatDate(startDay, startHour);
             String endTime = formatDate(endDay, endHour);
-            System.out.println(startTime+"    "+endTime);
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
             params.addElement(name); 
