@@ -15,4 +15,4 @@ sudo:
 - required
 
 script:
-- cd Application\ Code && make && make testscript
+- cd v1.0/ code && make && make testscript
