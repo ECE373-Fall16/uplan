@@ -173,7 +173,7 @@ public class Print {
        public void printDeletepro(){
     	   r.createAccount(Username,Fullname,Email,Password,Bedtime,Waketime);
       	   r.login(Username,Password);
-      	   System.out.print(r.deleteProfile(Username));
+      	   System.out.print(r.deleteAccount(Username));
     }
               
        
