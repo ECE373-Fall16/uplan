@@ -302,6 +302,8 @@ public class Client {
         } catch (Exception exception) {
             System.err.println("ClientUpdateAssignment: " + exception);
         }
+        
+        return 1;
     }
 
 
