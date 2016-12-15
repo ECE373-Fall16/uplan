@@ -289,7 +289,7 @@ public class Client {
     }
     
     
-    public void updateAssignment(String assignmentName, String type, String newName){
+    public int updateAssignment(String assignmentName, String type, String newName){
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
