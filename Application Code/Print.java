@@ -130,6 +130,40 @@ public class Print {
        	    r.login(Username,Password);
        	    System.out.print(r.addAssignment(Assignment,classname,dueDate,dueTime,Hours,Priority,aPriority));
     }
-          
+      public void printUpdateAssign(){
+    	   r.createAccount(Username,Fullname,Email,Password,Bedtime,Waketime);
+      	   r.login(Username,Password);
+      	   System.out.print(r.updateAssignment(Assignment,Type,newName));
+    }
+       
+       public void printUpdateEvent(){
+    	   r.createAccount(Username,Fullname,Email,Password,Bedtime,Waketime);
+      	   r.login(Username,Password);
+      	   System.out.print(r.updateEvent(Event,Type,newName));
+    }
+       
+       public void printUpdatePro(){
+    	   r.createAccount(Username,Fullname,Email,Password,Bedtime,Waketime);
+      	   r.login(Username,Password);
+      	   System.out.print(r.updateProfile(Type,newName));
+    }
+       
+       public void printDeleteevent(){
+    	   r.createAccount(Username,Fullname,Email,Password,Bedtime,Waketime);
+      	   r.login(Username,Password);
+      	   System.out.print(r.deleteEvent(Event));
+    }
+       
+       public void printDeleteassign(){
+    	   r.createAccount(Username,Fullname,Email,Password,Bedtime,Waketime);
+      	   r.login(Username,Password);
+      	   System.out.print(r.deleteAssignment(Assignment));
+    }
+       
+       public void printDeletepro(){
+    	   r.createAccount(Username,Fullname,Email,Password,Bedtime,Waketime);
+      	   r.login(Username,Password);
+      	   System.out.print(r.deleteProfile(Username));
+    }     
 }
 
