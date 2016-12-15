@@ -39,6 +39,10 @@ public class CalendarEvent{
         return name + " | " + getDayOfWeek() + " " + startDate + " " + startTime + " | " + endDate + " " + endTime + " | " + location; 
     }
     
+    public String dateToDisplay(){
+        return getDayOfWeek() + " " + getMonth() + " " + getDayOfMonth();
+    }
+    
 
     public String getName(){
         return name;
@@ -116,6 +120,37 @@ public class CalendarEvent{
             case Calendar.SATURDAY:   return "Saturday";
             default:    return "Invalid Day";
         }
+    }
+    
+    public String getMonth(){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(starttime);
+        cal.setTimeZone(timezone);
+        
+        int month = cal.get(Calendar.MONTH);
+        
+        switch (month){
+            case Calendar.JANUARY:  return "January";
+            case Calendar.FEBRUARY:  return "February";
+            case Calendar.MARCH:  return "March";
+            case Calendar.APRIL:  return "April";
+            case Calendar.MAY:  return "May";
+            case Calendar.JUNE:  return "June";
+            case Calendar.JULY:  return "July";
+            case Calendar.AUGUST:  return "August";
+            case Calendar.SEPTEMBER:  return "September";
+            case Calendar.OCTOBER:  return "October";
+            case Calendar.NOVEMBER:  return "November";
+            case Calendar.DECEMBER:  return "December";
+            default:    return "Invalid Month";
+        }
+    }
+    
+    private int getDayOfMonth(){
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(starttime);
+        cal.setTimeZone(timezone);
+        return cal.get(Calendar.DAY_OF_MONTH);
     }
 
 }

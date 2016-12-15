@@ -63,7 +63,7 @@ cleanserver:
 	rm Server.class
 
 cleanui:
-	rm UIDriver.class UIHomepage.class
+	rm UIDriver.class HomePage.class
 
 cleandb:
 	rm DataBase.class

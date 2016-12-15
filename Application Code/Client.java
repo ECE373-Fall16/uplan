@@ -9,9 +9,10 @@ public class Client {
     private static String SERVER_ADDR = "http://localhost:8001/RPC2";
 
     //local:  localhost
-    //public:  104.154.192.22
+    //public:  104.198.66.25
 
     private DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
+    private TimeZone timezone = TimeZone.getTimeZone("EST");
     
     
     public Client(){
@@ -21,10 +22,6 @@ public class Client {
     
     public Client(String user){
         username = user;
-    }
-
-    public void print(String toPrint){
-        System.out.println(toPrint);
     }
     
     
@@ -82,10 +79,8 @@ public class Client {
   
             Vector returnValue = (Vector)server.execute("sample.createAccount", params);
 
-            if(Integer.parseInt(returnValue.get(0).toString()) == 1){
-                username = user;
+            if(Integer.parseInt(returnValue.get(0).toString()) == 1)
                 return 1;
-            }
         } 
         catch (Exception exception) {
             System.err.println("ClientCreateAccount " + exception);
@@ -96,31 +91,26 @@ public class Client {
 
 
     public Profile getAccountInfo(){
-        String user = "";
-        String name = "";
-        String email = "";
-        String bedtime = "";
-        String waketime = "";
+        Profile curUser = null;
         try{
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
 
             params.addElement(username);
-            System.out.println(username);
 
             Vector returnValue = (Vector)server.execute("sample.getAccountInfo", params);
 
-            user = returnValue.get(0).toString();
-            name = returnValue.get(1).toString();
-            email = returnValue.get(2).toString();
-            bedtime = returnValue.get(3).toString();
-            waketime = returnValue.get(4).toString();
-            
+            String user = returnValue.get(0).toString();
+            String name = returnValue.get(1).toString();
+            String email = returnValue.get(2).toString();
+            String bedtime = returnValue.get(3).toString();
+            String waketime = returnValue.get(4).toString();
+
+            curUser = new Profile(user, name, email, bedtime, waketime);
+
         } catch (Exception e){
             System.err.println("ClientGetAccountInfo " + e);
         }
-
-        Profile curUser = new Profile(user, name, email, bedtime, waketime);
 
         return curUser;
     }
@@ -134,13 +124,20 @@ public class Client {
             params.addElement(username);
 
             Vector returnValue = (Vector)server.execute("sample.display", params);
-            calList = vectorToCalList(returnValue);
+            if (returnValue.get(0).toString().equals("0")){
+                System.out.println("You have nothing scheduled previously, please add assignments or events and choose refresh schedule.");
+                return calList;
+            }
+            else
+                calList = vectorToCalList(returnValue);
 
-            ListIterator iter = calList.listIterator();
+            /*ListIterator iter = calList.listIterator();
             while(iter.hasNext()){
                 System.out.println(calList.get(iter.nextIndex()).toString());
                 iter.next();
             }
+            System.out.println();*/
+            
         } catch (Exception exception) {
             System.err.println("ClientDisplay " + exception);
         } 
@@ -153,7 +150,6 @@ public class Client {
 
             String startTime = formatDate(startDay, startHour);
             String endTime = formatDate(endDay, endHour);
-
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
             params.addElement(name); 
@@ -197,7 +193,34 @@ public class Client {
                 return 1;
 
         } catch (Exception exception) {
-            System.err.println("ClientAddEvent: " + exception);
+            System.err.println("ClientAddAssignment: " + exception);
+        }
+
+        return 0;     
+    }
+    
+    public int addCalendarEvent(String name, String startDate, String startHour, String endDate, String endHour, String loc, String display){
+        try {
+            
+            String startTime = formatDate(startDate,startHour);
+            String endTime = formatDate(endDate,endHour);
+            
+            XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
+            Vector params = new Vector();
+            params.addElement(username);
+            params.addElement(name);
+            params.addElement(startTime);
+            params.addElement(endTime);
+            params.addElement(loc);
+            params.addElement(display);
+  
+            Vector returnValue = (Vector)server.execute("sample.addCalendarEvent", params);
+
+            if(Integer.parseInt(returnValue.get(0).toString()) == 1)
+                return 1;
+
+        } catch (Exception exception) {
+            System.err.println("ClientAddCalendarEvent: " + exception);
         }
 
         return 0;     
@@ -265,13 +288,34 @@ public class Client {
     }
     
     
-    public void updateAssignment(String assignmentName, String type, String newName){
+    public int updateAssignment(String assignmentName, String type, String newName){
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
             Vector params = new Vector();
             params.addElement(assignmentName);
             params.addElement(type);
             params.addElement(newName);
+            params.addElement(username);
+
+            Vector returnValue = (Vector)server.execute("sample.updateAssignment", params);
+        } catch (Exception exception) {
+            System.err.println("ClientUpdateAssignment: " + exception);
+        }
+        
+        return 1;
+    }
+
+
+    public void updateAssignmentDate(String assignmentName, String newDate, String newHour){
+
+        String finalDue = formatDate(newDate, newHour);
+
+        try {
+            XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
+            Vector params = new Vector();
+            params.addElement(assignmentName);
+            params.addElement("DUE");
+            params.addElement(finalDue);
             params.addElement(username);
 
             Vector returnValue = (Vector)server.execute("sample.updateAssignment", params);
@@ -300,14 +344,32 @@ public class Client {
 
         return 0;
     }
+
+
+    public int updateEventDate(String eventName, String type, String newDate, String newHour){
+
+        String finalDate = formatDate(newDate, newHour);
+        try {
+            XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
+            Vector params = new Vector();
+            params.addElement(eventName);
+            params.addElement(type);
+            params.addElement(finalDate);
+            params.addElement(username);
+            
+            Vector returnValue = (Vector)server.execute("sample.updateEvent", params);
+
+            if(Integer.parseInt(returnValue.get(0).toString()) == 1)
+                return 1;
+        } catch (Exception exception) {
+            System.err.println("ClientUpdateEvent: " + exception);
+        }
+
+        return 0;
+    }
     
     
     public int updateProfile(String type, String newName){
-        
-        if(type.equals("BEDTIME"))
-            newName = formatBedTime(newName);
-        if(type.equals("WAKETIME"))
-            newName = formatBedTime(newName);
 
         try {
             XmlRpcClient server = new XmlRpcClient(SERVER_ADDR); 
@@ -344,12 +406,12 @@ public class Client {
             System.err.println("ClientGetAssignmentList: " + exception);
         }
 
-        ListIterator iter = assignList.listIterator();
+        /*ListIterator iter = assignList.listIterator();
         while(iter.hasNext()){
             System.out.println(assignList.get(iter.nextIndex()).toString());
             iter.next();
         }
-        System.out.println("");
+        System.out.println("");*/
 
         return assignList;
     }
@@ -370,16 +432,65 @@ public class Client {
             System.err.println("ClientGetEventList: " + exception);
         }
 
-        ListIterator iter = eventList.listIterator();
+        /*ListIterator iter = eventList.listIterator();
         while(iter.hasNext()){
             System.out.println(eventList.get(iter.nextIndex()).toString());
             iter.next();
         }
-        System.out.println("");
+        System.out.println("");*/
 
         return eventList;
     }
     
+    public String[] displayWeekTimes(int weekOfYear){
+        String[] weekTimes = new String[7];
+        int dayOfWeek;
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeZone(timezone);
+        cal.set(Calendar.WEEK_OF_YEAR, weekOfYear);
+        cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
+        while(dayOfWeek <= Calendar.SATURDAY){
+            cal.set(Calendar.DAY_OF_WEEK, dayOfWeek);
+            int month = cal.get(Calendar.MONTH);
+            weekTimes[dayOfWeek-1] = getDayOfWeek(dayOfWeek) + " " + getMonth(month) + " " + cal.get(Calendar.DAY_OF_MONTH);
+            
+            dayOfWeek++;
+        }
+        
+        return weekTimes;
+    }
+    
+    public String getDayOfWeek(int dayOfWeek){
+        switch (dayOfWeek){
+            case Calendar.SUNDAY:   return "Sunday";
+            case Calendar.MONDAY:   return "Monday";
+            case Calendar.TUESDAY:   return "Tuesday";
+            case Calendar.WEDNESDAY:   return "Wednesday";
+            case Calendar.THURSDAY:   return "Thursday";
+            case Calendar.FRIDAY:   return "Friday";
+            case Calendar.SATURDAY:   return "Saturday";
+            default:    return "Invalid Day";
+        }
+    }
+    
+    public String getMonth(int month){
+        switch (month){
+            case Calendar.JANUARY:  return "January";
+            case Calendar.FEBRUARY:  return "February";
+            case Calendar.MARCH:  return "March";
+            case Calendar.APRIL:  return "April";
+            case Calendar.MAY:  return "May";
+            case Calendar.JUNE:  return "June";
+            case Calendar.JULY:  return "July";
+            case Calendar.AUGUST:  return "August";
+            case Calendar.SEPTEMBER:  return "September";
+            case Calendar.OCTOBER:  return "October";
+            case Calendar.NOVEMBER:  return "November";
+            case Calendar.DECEMBER:  return "December";
+            default:    return "Invalid Month";
+        }
+    }
     
     public LinkedList<CalendarEvent> schedule(){         //Creates schedule and returns list
         LinkedList<CalendarEvent> calList = null;
@@ -392,11 +503,12 @@ public class Client {
             
             calList = vectorToCalList(returnValue);
 
-            ListIterator calIter = calList.listIterator();
+            /*ListIterator calIter = calList.listIterator();
             while(calIter.hasNext()){
                 System.out.println(calList.get(calIter.nextIndex()).toStringEST());
                 calIter.next();
             }
+            System.out.println();*/
             
         } catch (Exception e){
             System.err.println("ClientSchedule: " + e);
@@ -523,8 +635,6 @@ public class Client {
         String min = "";
         String offset = "";
 
-        System.out.println(time + " " + size);
-
         while(index < size){
             if(size == 7){
                 if(index == 0){
@@ -565,8 +675,6 @@ public class Client {
 
         }
 
-        System.out.println(hour);
-
         int tempHour = Integer.parseInt(hour);
 
         if(offset.equals("pm"))
@@ -575,7 +683,6 @@ public class Client {
         hour = Integer.toString(tempHour);
 
         String finalTime = hour + min;
-        System.out.println(finalTime);
 
         return finalTime;
     }

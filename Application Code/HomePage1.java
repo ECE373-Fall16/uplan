@@ -42,14 +42,22 @@ class HomePage1{
     private Client c;
     static JTextField JTextName,JTextClass, JTextLocation,JTextDays;
     static JComboBox JComboDueDate, JComboTimetoComplete, JComboPriority, JComboPickAssignment, JComboStarttime, JComboEndtime, JComboPickEvent, JComboStartDate, JComboEndDate, JComboDueHour;
-    static String[] times,dates,Assignments2,Events2;
-    static Integer[] timeneeded,priority;
+    static String[] times,dates,Assignments2,Events2,timeneeded,priority;
     static boolean wait;
     static BufferedImage img = null;
+    private Calendar curCal;
+    private int panelOffset;
+    static Color back = new Color(125,10,10);
+    private JButton list1[];
+    int size33;
+    private LinkedList<CalendarEvent> calendarList;
 
     
     public HomePage1(){
     	btnAssignments = new LinkedList<JButton>();
+      curCal.getInstance();
+      panelOffset = 0;
+      calendarList = new LinkedList<CalendarEvent>();
     	
     }
     
@@ -77,12 +85,10 @@ class HomePage1{
       createComboBoxes();
         
       JComboBox<String>JComboDueDate = new JComboBox<>(dates);
-      JComboBox<Integer>JComboTimetoComplete = new JComboBox<>(timeneeded);
-      JComboBox<Integer>JComboPriority = new JComboBox<>(priority);
-      JComboBox<String>JComboPickAssignment = new JComboBox<>(Assignments2);
+      JComboBox<String>JComboTimetoComplete = new JComboBox<>(timeneeded);
+      JComboBox<String>JComboPriority = new JComboBox<>(priority);
       JComboBox<String>JComboStarttime = new JComboBox<>(times);
       JComboBox<String>JComboEndtime = new JComboBox<>(times);
-      JComboBox<String>JComboPickEvent = new JComboBox<>(Events2);
       JComboBox<String>JComboStartDate= new JComboBox<>(dates);
       JComboBox<String>JComboEndDate = new JComboBox<>(dates);
       JComboBox<String>JComboDueHour = new JComboBox<>(times);
@@ -116,12 +122,11 @@ class HomePage1{
       pnlCalendar = new JLayeredPane();
       pnlButtons = new JLayeredPane();
       pnlTime = new JLayeredPane();
-      wait = false;
             
   
       //COLOR CREATION FOR ELEMENTS
       Color BabyBlue =  new Color(157,205,255);
-      Color back = new Color(125,10,10);
+     
         
       //ADD ELEMENTS TO PANELS
       pane.add(pnlCalendar);
@@ -224,6 +229,9 @@ class HomePage1{
         
       tblTime.setRowHeight(timeheight/17);
       timeTable.setRowCount(17);
+
+      createHeaders();
+
         
       //CODING WEEKDAY FOR MONTH OF DECEMBER
         
@@ -295,42 +303,7 @@ class HomePage1{
        	 
        	 
        	 
-       	//FILLING OF HEADER ARRAY FOR CALENDAR
-       	 
-       	String[] headers = new String[7]; //All headers
-       	int jj = daysofDecember[dayofthemonth];
-       	int counter2 =jj;
-       	String[] week = {"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
-       	String month = "December";
-       	int dayclone = dayofthemonth;
-       	int counter3 = dayclone;
-       	while(0<=jj){
-       		headers[jj] = week[jj] + " "+month+" " + dayclone ;
-       		dayclone--;
-       		if(dayclone==0){
-       			dayclone= 30;
-       			month = "November";
-       		}
-       		jj--;
-       	}
-       	dayclone = dayofthemonth;
-       	jj = dayofthemonth%7;
-       	counter2++;
-       	dayclone++;
-        
-        while(counter2<7){
-        	headers[counter2] = theday[dayclone] + " December " + dayclone ;
-        	dayclone++;
-        	if(dayclone==31){
-        		jj = 1;
-        	}
-        	counter2++;
-        }
-        for (int i = 0; i<7; i++){
-        	mtblCalendar.addColumn(headers[i]);
-          
-        }
-        
+       	
         
         
         //CREATION OF TIMES FOR TIME COLUMN
@@ -379,14 +352,36 @@ class HomePage1{
     
     //FIND COORDINATES FOR ASSIGNMENTS/EVENTS
    
-    
+        calendarList = c.display();
+        LinkedList<CalendarEvent> calWeek = splitCalendar(calendarList);
+        DisplayCalendarEvents(calWeek);
     
     
     
     //BUTTON ACITON METHODS
   //ACTION LISTENERS FOR BUTTONS
-    btnPrevWeek.addActionListener(new ActionListener(){public void actionPerformed(ActionEvent e){}});
-    btnNextWeek.addActionListener(new ActionListener(){public void actionPerformed(ActionEvent e){}});
+    btnPrevWeek.addActionListener(new ActionListener(){
+      public void actionPerformed(ActionEvent e){
+          if(panelOffset != -1){
+            panelOffset--;
+            clearCalendar();  
+            LinkedList<CalendarEvent> hold = splitCalendar(calendarList);
+            DisplayCalendarEvents(hold);
+            removeHeaders();
+            createHeaders();
+          }
+      }});
+    btnNextWeek.addActionListener(new ActionListener(){
+      public void actionPerformed(ActionEvent e){
+          if(panelOffset != 1){
+            panelOffset++;
+            clearCalendar();
+            LinkedList<CalendarEvent> hold = splitCalendar(calendarList);
+            DisplayCalendarEvents(hold);
+            removeHeaders();
+            createHeaders();
+          }
+      }});
     btnAccount.addActionListener(new ActionListener(){
     	public void actionPerformed(ActionEvent e){
     		  frmAccount = new JFrame ("Account Information"); //Create frame
@@ -410,11 +405,14 @@ class HomePage1{
           JLabel lblnamedd = new JLabel(dd.getName());
           JLabel lblemaildd = new JLabel(dd.getEmail());
           JLabel lblbeddd = new JLabel(dd.getBedtime());
+          JLabel lblwakedd = new JLabel(dd.getWaketime());
+          lblusernamedd.setFont(new Font("Arial", Font.PLAIN, 10));
+          lblnamedd.setFont(new Font("Arial", Font.PLAIN, 10));
+          lblemaildd.setFont(new Font("Arial", Font.PLAIN, 10));
+          lblbeddd.setFont(new Font("Arial", Font.PLAIN, 10));
+          lblwakedd.setFont(new Font("Arial", Font.PLAIN, 10));
+
           String h = "hellow";
-          /*JLabel lblusernamedd = new JLabel(h);
-          JLabel lblnamedd = new JLabel(h);
-          JLabel lblemaildd = new JLabel(h);
-          JLabel lblbeddd = new JLabel(h);*/
           pane1.add(lblusernamedd);
           pane1.add(lblnamedd);
           pane1.add(lblemaildd);
@@ -431,6 +429,7 @@ class HomePage1{
   		  	pane1.add(lblChangeWakup);
   		  	pane1.add(JComboStarttime);
   		  	pane1.add(JComboEndtime);
+          pane1.add(lblwakedd);
   		  	int col = (int)(frmwidth/7);
   		  	int boxw = (int)(width/13.6);
   		  	int gap = (int) (height/18.425);
@@ -442,15 +441,18 @@ class HomePage1{
      	    lblCurrentWakeuptime.setBounds(col,gap*8,boxw*4,boxh);
      	    lblChangeBedtime.setBounds(col,gap*9,boxw*2,boxh);
      	    lblChangeWakup.setBounds(col,gap*10,boxw*2,boxh);
-            lblusernamedd.setBounds(col*3,gap*4,boxw*4,boxh);
-            lblnamedd.setBounds(col*3,gap*6,boxw*4,boxh);
-            lblemaildd.setBounds(col*3,gap*5,boxw*4,boxh);
-            lblbeddd.setBounds(col*3,gap*7,boxw*4,boxh);
+            lblusernamedd.setBounds(col+boxw*2,gap*4,boxw*4,boxh);
+            lblnamedd.setBounds(col+boxw*2,gap*6,boxw*4,boxh);
+            lblemaildd.setBounds(col+boxw*2,gap*5,boxw*4,boxh);
+            lblbeddd.setBounds(col+boxw*2,gap*7,boxw*4,boxh);
+            lblwakedd.setBounds(col+boxw*2,gap*8,boxw*4,boxh);
+
+
             lblusernamedd.setForeground(Color.WHITE);
             lblnamedd.setForeground(Color.WHITE);
             lblemaildd.setForeground(Color.WHITE);
             lblbeddd.setForeground(Color.WHITE);
-           
+           lblwakedd.setForeground(Color.WHITE);
 
      	    btnChange.setBounds(col,frmheight-(int)(gap*2.5),(int)(width/11.38), (int)(height/24.6));
      	    btnCancel.setBounds((int)(4*col),frmheight-(int)(gap*2.5),(int)(width/11.38), (int)(height/24.6));
@@ -458,13 +460,13 @@ class HomePage1{
      	    JComboStarttime.setBounds(col+boxw*2, gap*9, boxw, boxh);
      	    JComboEndtime.setBounds(col+boxw*2, gap*10, boxw,boxh);
 
-     	    lblUsername.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-     	    lblEmail.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-     	    lblNameofUser.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-     	    lblCurrentBedtime.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-     	    lblCurrentWakeuptime.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-          lblChangeBedtime.setFont(new Font("Times New Roman", Font.PLAIN, 12));
-     	    lblChangeWakup.setFont(new Font("Times New Roman", Font.PLAIN, 12));
+     	    lblUsername.setFont(new Font("Arial", Font.PLAIN, 10));
+     	    lblEmail.setFont(new Font("Arial", Font.PLAIN, 10));
+     	    lblNameofUser.setFont(new Font("Arial", Font.PLAIN, 10));
+     	    lblCurrentBedtime.setFont(new Font("Arial", Font.PLAIN, 10));
+     	    lblCurrentWakeuptime.setFont(new Font("Arial", Font.PLAIN, 10));
+          lblChangeBedtime.setFont(new Font("Arial", Font.PLAIN, 10));
+     	    lblChangeWakup.setFont(new Font("Arial", Font.PLAIN, 10));
      		
      	    lblLogo.setBounds(frmwidth/8,frmheight/30,imgwidth,imgheight);
   		  	
@@ -475,8 +477,9 @@ class HomePage1{
               String recievedwaketime = (String) JComboStarttime.getSelectedItem();
               String ww = c.formatBedTime(recievedbedtime);
               String ll = c.formatBedTime(recievedwaketime);
+              System.out.println("waketime " +ll);
               c.updateProfile("BEDTIME",ww);
-              c.updateProfile("WAKETIME",ll);
+              //c.updateProfile("WAKETIME",ll);
               frmEditEvent.setVisible(false);
   		  			frmMain.setVisible(true);
   		  		}});
@@ -489,7 +492,15 @@ class HomePage1{
   
 
   //edit event
-    btnRefresh.addActionListener(new ActionListener(){public void actionPerformed(ActionEvent e){DisplayCalendarEvents();}});
+    btnRefresh.addActionListener(new ActionListener(){
+      public void actionPerformed(ActionEvent e){
+        
+        clearCalendar();
+        calendarList = c.schedule();
+        LinkedList<CalendarEvent> calWeek = splitCalendar(calendarList);
+        DisplayCalendarEvents(calWeek);
+      
+    }});
     btnEditEvent.addActionListener(new ActionListener(){
     	public void actionPerformed(ActionEvent e){
     	  frmEditEvent = new JFrame ("Edit Event"); //Create frame
@@ -497,6 +508,9 @@ class HomePage1{
    		  int frmheight = (int)(height/2);
    		  frmEditEvent.setSize(frmwidth,frmheight);//Set screen to full
    		  frmEditEvent.setLocation((width/4)+(width/10), height/8);
+        createComboBoxes();
+      JComboBox<String>JComboPickEvent = new JComboBox<>(Events2);
+
    		  pane1 = frmEditEvent.getContentPane(); //Get content pane
    		  pane1.setLayout(null); //Apply null layout
    		  frmEditEvent.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -598,7 +612,6 @@ class HomePage1{
     		  pane1.add(JComboDueDate);
     		  pane1.add(JComboTimetoComplete);
     		  pane1.add(JComboPriority);
-    		  pane1.add(JComboPickAssignment);
     		  pane1.add(JComboDueHour);
     		  //pane1.add(lblPickAssignment);
     		  int col = (int)(frmwidth/7);
@@ -621,8 +634,6 @@ class HomePage1{
     	      
     	      frmAddAssignment.setVisible(true);
     		  pane1.setBackground(Color.gray);
-    		  wait = false;
-    		  //while(wait == false){
     	      btnCreate.addActionListener(new ActionListener() { 
     	    	  public void actionPerformed(ActionEvent e) { 
     	    		  String name1 = JTextName.getText();
@@ -631,8 +642,6 @@ class HomePage1{
                 String recDuedate = (String) JComboDueDate.getSelectedItem();
     	    	    String priority1 = (String) JComboPriority.getSelectedItem();
     	    	    String timeto =  (String) JComboTimetoComplete.getSelectedItem();
-    	    		  //System.out.println(name1+" "+classname+" "+ Duedate + " "+priority1+" "+timeto); 
-                 //USE DUEHOUR+DUEDATE = DUETIME
                 c.addAssignment(name1,classname,recDuedate,recDueHour,timeto, priority1,"");
 
     	    		  frmAddAssignment.setVisible(false);
@@ -654,6 +663,9 @@ class HomePage1{
     	    		  frmEditAssignment.setLocation((width/4)+(width/10), height/8);
     	    		  pane1 = frmEditAssignment.getContentPane(); //Get content pane
     	    		  pane1.setLayout(null); //Apply null layout
+                createComboBoxes();
+      JComboBox<String>JComboPickAssignment = new JComboBox<>(Assignments2);
+
     	    		  frmEditAssignment.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     	    		  pane1.add(lblClass);
     	    		  pane1.add(lblPriority);
@@ -769,18 +781,19 @@ class HomePage1{
  	      JComboStartDate.setBounds(5*col,gap*3,boxw,boxh);
   	      JComboEndDate.setBounds(5*col,gap*4,boxw,boxh);
   	      
- 	      frmAddEvent.setVisible(true);
- 		  pane1.setBackground(Color.gray);
- 		  wait = false;
- 		  //while(wait == false){
- 	      btnCreate.addActionListener(new ActionListener() { 
+ 	        frmAddEvent.setVisible(true);
+ 		      pane1.setBackground(Color.gray);
+ 	        btnCreate.addActionListener(new ActionListener() { 
  	    	  public void actionPerformed(ActionEvent e) { 
  	    		  String recName = JTextName.getText();
             String recDays = JTextDays.getText();
             String location2 = JTextLocation.getText();
-            String recievedwaketime = (String)JComboStarttime.getSelectedItem();
-            String recievedbedtime = (String) JComboEndtime.getSelectedItem();
-
+            String startHour = (String)JComboStarttime.getSelectedItem();
+            String endHour = (String) JComboEndtime.getSelectedItem();
+            String recstartDate = (String)JComboStartDate.getSelectedItem();
+            String recendDate = (String)JComboEndDate.getSelectedItem();
+            
+            c.addEvent(recName,recDays,recstartDate,startHour, recstartDate, endHour, location2);
  	    		  frmAddEvent.setVisible(false);
  	    		  frmMain.setVisible(true);
  	    	  }});
@@ -794,37 +807,40 @@ class HomePage1{
     btnAssignmentList.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e){
         frmAssignmentList = new JFrame ("Assignments"); //Create frame
-        int frmwidth = width/((int)(width/400));
+        int frmwidth = (int)(width/1.2);
         int frmheight = (int)(height/2);
         frmAssignmentList.setSize(frmwidth,frmheight);//Set screen to full
-        frmAssignmentList.setLocation((width/4)+(width/10), height/8);
+        frmAssignmentList.setLocation((int)((width/frmwidth)/2), height/8);
         pane1 = frmAssignmentList.getContentPane(); //Get content pane
         pane1.setLayout(null); //Apply null layout
         pane1.add(btnClose);
         frmAssignmentList.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        LinkedList<Assignment> assignList = c.getAssignmentList();
-        int size = assignList.size();
-        JLabel[] lblAssignments = new JLabel[size];
-        int intercept = frmwidth/10;
-        int gap2 = frmwidth/15;
         btnClose.setBounds(frmwidth/2-(int)(width/22.76),frmheight-((int)(frmheight/6)),(int)(width/11.38), (int)(height/24.6));
         String name3, classname3, timeto3,priority3;
         Date dueDate3;
-        pane1.setBackground(Color.gray);
 
-        /*for(int mm = 0; mm<size;mm++){
-            Assignment h = assignList.get(mm);
-            name3 = h.getAssignName();
-            classname3 = h.getClassName();
-            dueDate3 = h.getDueDate();
-            timeto3 = h.getCompletionTime();
-            priority3 = h.getPriority();
-            lblAssignments[mm] = new JLabel("Name: "+ name3+"Classname: "+classname3+"Due Date: "+dueDate3+"Time to Complete:  "+timeto3+"Priority:  "+priority3);
-            pane1.add(lblAssignments[mm]);
-            lblAssignments[mm].setBounds((int)(frmwidth/5),intercept+(int)(gap2*mm),(int)(width/11.38), (int)(height/24.6));
-        }*/frmAssignmentList.setVisible(true);
+        LinkedList<Assignment> assignList = null;
+            try{
+            assignList = c.getAssignmentList();
+            int size2 = assignList.size();
+            JLabel[] lblAssignments= new JLabel[size2];
+            for(int ii = 0; ii<size2;ii++){
+                  //lblAssignments[ii] = new JLabel(assignList.get(ii).toString());
+                  Assignment b = assignList.get(ii);
+                  lblAssignments[ii] = new JLabel(b.getAssignName()+" , Class:"+b.getClassName()+" , Due:"+ b.getDueDate()+ " , Hours Left:"+ b.getCompletionTime()+" , Priority:"+b.getPriority());
+                  pane1.add(lblAssignments[ii]);
+                  lblAssignments[ii].setBounds(frmwidth/12,(int)((ii+1)*frmheight/12),(int)(frmwidth), (int)(frmheight/12));
+                  lblAssignments[ii].setFont(new Font("Arial",Font.PLAIN,12));
+                  lblAssignments[ii].setForeground(Color.WHITE);
+                }
+            }
+            catch (Exception e1){}
+        
+        pane1.setBackground(Color.black);
 
-        btnChange.addActionListener(new ActionListener(){
+        frmAssignmentList.setVisible(true);
+
+        btnClose.addActionListener(new ActionListener(){
               public void actionPerformed(ActionEvent e){
                 frmAssignmentList.setVisible(false);
                 frmMain.setVisible(true);
@@ -835,15 +851,16 @@ class HomePage1{
     btnEventList.addActionListener(new ActionListener(){
     	public void actionPerformed(ActionEvent e){
     		    frmEventList = new JFrame ("Events"); //Create frame
-            int frmwidth = width/((int)(width/400));
+            int frmwidth = (int)(width/1.2);
             int frmheight = (int)(height/2);
             frmEventList.setSize(frmwidth,frmheight);//Set screen to full
-            frmEventList.setLocation((width/4)+(width/10), height/8);
+            frmEventList.setLocation((int)((width/frmwidth)/2), height/8);
+            
             pane1 = frmEventList.getContentPane(); //Get content pane
             pane1.setLayout(null); //Apply null layout
             pane1.add(btnClose);
             frmEventList.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            pane1.setBackground(Color.gray);
+            pane1.setBackground(Color.BLACK);
             int intercept = frmwidth/10;
             int gap2 = frmwidth/15;
             String name3, days3, timeto3,location3;
@@ -856,9 +873,14 @@ class HomePage1{
             int size2 = eventList.size();
             JLabel[] lblEvents = new JLabel[size2];
             for(int ii = 0; ii<size2;ii++){
-                  lblEvents[ii] = new JLabel(eventList.get(ii).toString());
+                  //lblEvents[ii] = new JLabel(eventList.get(ii).toString());
+                  Event a = eventList.get(ii);
+                  lblEvents[ii] = new JLabel(a.getEventName()+" , Repeated Days:"+a.getDays()+" , Starttime:"+a.getStart()+ " , Endtime:"+a.getEnd()+" , Location:"+a.getLocation());
                   pane1.add(lblEvents[ii]);
-                  lblEvents[ii].setBounds(frmwidth/6,(int)((ii+1)*frmheight/12),(int)(frmwidth/3), (int)(frmheight/12));
+                  lblEvents[ii].setBounds(frmwidth/12,(int)((ii+1)*frmheight/12),(int)(frmwidth), (int)(frmheight/12));
+                  lblEvents[ii].setForeground(Color.WHITE);
+                  lblEvents[ii].setFont(new Font("Arial",Font.PLAIN,12));
+
               }
             }
             catch (Exception e1){}
@@ -888,12 +910,6 @@ class HomePage1{
     }
   //LABEL DECLARATION
     public void declareLabels(){
-/*
-      Profile curUser = c.getAccountInfo();
-      String disUsername = "Username: " + c.getUsername();
-      String disName = "Name: " + curUser.getName();
-      String disEmail = "User Email: " + curUser.getEmail();
-      String disBed = "Current BedTime: " + curUser.getBedtime(); */
 
         lblLogo = new JLabel("Label");
         lblName = new JLabel("Name");
@@ -912,7 +928,7 @@ class HomePage1{
         lblEmail = new JLabel("Email");
         lblNameofUser = new JLabel("Name");
         lblCurrentBedtime = new JLabel("BedTime");
-        lblCurrentWakeuptime = new JLabel("Current Wake Up Time:");
+        lblCurrentWakeuptime = new JLabel("Wake Up Time:");
         lblChangeBedtime = new JLabel("Change Bedtime:");
         lblChangeWakup = new JLabel("Change Wake Up Time:");
 
@@ -1030,66 +1046,117 @@ class HomePage1{
         times = new String[34];
 	      int hh = 7;
 	      for(int aa = 0;aa<34;aa++){
-	    	  if(aa%2 == 0){
-	    			if(aa<10){
-	    				times[aa] = hh+":00am";
-	    			}
-	    			else if(aa == 10){
-	    				times[aa] = hh+":00pm";
-	    			}
-	    			else{
-	    				times[aa] = hh-12+":00pm";
-	    			}
-	    	  }
-	    	  else{
-	    		  if(aa<10){
-	    				times[aa] = hh+":30am";
-	    			}
-	    		  else if(aa == 11){
-	    			  times[aa] = hh+":30pm";
-	    		  }
-	    			else{
-	    				times[aa] = hh-12+":30pm";
-	    			}
-	    		  hh++;
-	    	  }	    	  
+          if(aa%2 == 0){
+            if(aa<10){
+              if(aa<6){
+                times[aa] = "0"+hh+":00am";
+              }
+              else{
+                times[aa] = hh+":00am";
+              }
+            }
+            else if(aa == 10){
+              times[aa] = hh+":00pm";
+            }
+            else{
+              if(hh-12<10){
+                times[aa] = "0"+(hh-12)+":00pm";
+              }
+              else{
+                times[aa] = ""+(hh-12)+":00pm";
+              }
+            }
+          }
+          else{
+            if(aa<10){
+              if(aa<6){
+                times[aa] = "0"+hh+":30am";
+              }
+              else{
+                times[aa] = hh+":30am";
+              }
+            }
+            else if(aa == 11){
+              times[aa] = hh+":30pm";
+            }
+            else{
+              if(hh-12<10){
+                times[aa] = "0"+(hh-12)+":30pm";
+              }
+              else{
+                times[aa] = ""+(hh-12)+":30pm";
+              };
+            }
+            hh++;
+          }       
 	      }
 	      
 	     dates = new String[31];
 	     for(int bb = 1; bb<32;bb++){
 	    	  dates[bb-1] = "12/"+bb+"/16";
 	     }
-        timeneeded = new Integer[20];
+        timeneeded = new String[20];
         for(int cc = 1;cc<21;cc++){
-        	timeneeded[cc-1] = cc;
+        	timeneeded[cc-1] = Integer.toString(cc);
         }
-        priority = new Integer[3];
+        priority = new String[3];
         for(int dd = 1;dd<4;dd++){
-        	priority[dd-1] = dd;
+        	priority[dd-1] = Integer.toString(dd);
         }
-        Assignments2 = new String[4];
+        
+        LinkedList<Assignment> temp1 = c.getAssignmentList();
+        Assignments2 = new String[temp1.size()];
+        for(int yy = 0; yy<temp1.size();yy++){
+          Assignments2[yy] = temp1.get(yy).getAssignName();
+          System.out.println(Assignments2[yy]);
+        }
         //NEED ASSIGNMENT LIST
-        for(int ee = 0;ee<4;ee++){
-        	Assignments2[ee] = "HW"+(ee+1);
-        }
+        
         //NEED EVENTS
-        Events2 = new String[4];
-        for(int ee = 0;ee<4;ee++){
-        	Events2[ee] = "Event "+(ee+1);
+        LinkedList<Event> temp2 = c.getEventList();
+        Events2 = new String[temp2.size()];
+        for(int yy = 0; yy<temp2.size();yy++){
+          Events2[yy] = temp2.get(yy).getEventName();
+          System.out.println(Events2[yy]);
         }
+        
     }
 
-	
+  public LinkedList<CalendarEvent> splitCalendar(LinkedList<CalendarEvent> calList){
+      Calendar curCal2 = Calendar.getInstance();
+      int curWeek = curCal2.get(Calendar.WEEK_OF_YEAR);
+      Calendar newCal = Calendar.getInstance();
+      newCal.set(Calendar.WEEK_OF_YEAR, curWeek + panelOffset);
+      int newWeek = newCal.get(Calendar.WEEK_OF_YEAR);
+
+      LinkedList<CalendarEvent> tempCal = new LinkedList<CalendarEvent>();
+      ListIterator iter = calList.listIterator();
+
+      while(iter.hasNext()){
+        CalendarEvent tempeve = calList.get(iter.nextIndex());
+        Calendar temp = dateToCalendar(tempeve.getStartTime());
+        int tempweek = temp.get(Calendar.WEEK_OF_YEAR);
+        if(tempweek == newWeek){
+          tempCal.add(tempeve);
+          System.out.println(tempeve.toString());
+        }
+        iter.next();
+
+      }
+
+
+      return tempCal;
+
+  }
+
     //DISPLAY ASSIGNMENTS ON CALENDAR	
 	@SuppressWarnings("deprecation")
-	public void DisplayCalendarEvents(){
-        LinkedList<CalendarEvent> calList = null;
+	public void DisplayCalendarEvents(LinkedList<CalendarEvent> calList){
 		try {
-			calList = c.display();
-      int size = calList.size();
-      JButton[] list1 = new JButton[size];
+      size33 = calList.size();
+      list1 = new JButton[size33];
       int date1,dayof,starthour,endhour,startmin,endmin, spot,place1,place2;
-        for(int ii = 0; ii<size;ii++){
+        for(int ii = 0; ii<size33;ii++){
           CalendarEvent a = calList.get(ii);
           String name = a.getName();
           Date starttime = a.getStartTime();
@@ -1103,9 +1170,27 @@ class HomePage1{
             dayof = starttime.getDay();
             starthour = starttime.getHours();
             endhour = endtime.getHours(); 
+            int starthour2 = starthour%12;
+            int endhour2 = endhour%12;
+            if(starthour2== 0){
+              starthour2 = 12;
+            }
+            if(endhour2 == 0){
+              endhour2 = 12;
+            }
+
             startmin = starttime.getMinutes();
             endmin = endtime.getMinutes();
-            list1[ii] = new JButton(name+"   "+starthour%12+":"+startmin+"0-"+endhour%12+":"+endmin);
+            list1[ii] = new JButton(name+"   "+starthour2+":"+startmin+"0-"+endhour2+":"+endmin+"0");
+            list1[ii].setFont(new Font("Arial",Font.PLAIN,10));
+            if(a.getLocation().equals("ASSIGNEMNT")){
+              list1[ii].setForeground(Color.BLACK);
+              list1[ii].setBackground(back);
+            }
+            else{
+              list1[ii].setForeground(Color.BLACK);
+              list1[ii].setBackground(Color.gray);
+            }
             pnlCalendar.add(list1[ii],new Integer(2));
             spot = findHorizontialPosition(dayof);
             place1 = findVerticalStart(starthour-6, startmin);
@@ -1119,6 +1204,11 @@ class HomePage1{
 			e.printStackTrace();
 		}
   }
+  public void clearCalendar(){
+    for(int ff = 0;ff<size33;ff++){
+      list1[ff].setVisible(false);
+    }
+  }
   private Calendar dateToCalendar(Date date){
     Calendar cal = Calendar.getInstance();
     cal.setTime(date);
@@ -1128,5 +1218,23 @@ class HomePage1{
     cal = df.getCalendar();
     return cal;
   }    
+  public void createHeaders(){//FILLING OF HEADER ARRAY FOR CALENDAR
+          //All headers
+        Calendar calCal = Calendar.getInstance();
+        int weekOfYear = calCal.get(Calendar.WEEK_OF_YEAR) + panelOffset;
+        String[] days = c.displayWeekTimes(weekOfYear);
+        
+        for (int i = 0; i<7; i++){
+          mtblCalendar.addColumn(days[i]);
+          
+        }
+    }
+
+    public void removeHeaders(){//FILLING OF HEADER ARRAY FOR CALENDAR
+          //All headers
+          mtblCalendar.setColumnCount(0);
+          
+        
+    }
 }
 

@@ -12,8 +12,8 @@ public class Server {
     private DateFormat df = DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL);
     private TimeZone timezone = TimeZone.getTimeZone("EST");
     private static long hourInMS = 3600000;
-    private int calEveID = 0;
-    private int assignID = 0;
+    //private int calEveID = 0;
+    //private int assignID = 0;
 
 
     public Vector display(String user){
@@ -22,13 +22,19 @@ public class Server {
             LinkedList<CalendarEvent> calendarList = data.getSchedule(user, "display");
             
             Vector values = new Vector();
-            for(int k = 0; k < calendarList.size(); k++){
-                values.add(calendarList.get(k).getName());
-                values.add(df.format(calendarList.get(k).getStartTime()));
-                values.add(df.format(calendarList.get(k).getEndTime()));
-                values.add(calendarList.get(k).getLocation());
-                values.add(String.valueOf(calendarList.get(k).getDisplay()));
-                values.add(Integer.toString(calendarList.get(k).getID()));
+            int size = calendarList.size();
+            if(size == 0){
+                values.add(0);
+            }
+            else{
+                for(int k = 0; k < calendarList.size(); k++){
+                    values.add(calendarList.get(k).getName());
+                    values.add(df.format(calendarList.get(k).getStartTime()));
+                    values.add(df.format(calendarList.get(k).getEndTime()));
+                    values.add(calendarList.get(k).getLocation());
+                    values.add(String.valueOf(calendarList.get(k).getDisplay()));
+                    values.add(Integer.toString(calendarList.get(k).getID()));
+                }
             }
             return values;
 
@@ -57,7 +63,8 @@ public class Server {
     public Vector addAssignment(String name, String username, String className, String date, String comp, String pri, String appPri){
         int valid = 1;
         try{
-            valid = data.createAssignment(name, username, className, date, comp, pri, appPri, assignID++);
+            int id = data.getAssignId();
+            valid = data.createAssignment(name, username, className, date, comp, pri, appPri, id);
 
         }catch( Exception e ){
             System.err.println( "ServerAddAssign: " + e.getClass().getName() + ": " + e.getMessage() );
@@ -76,6 +83,24 @@ public class Server {
         int valid = 1;
         try{
             valid = data.createEvent(name,username,days,startTime,endTime,loc);
+
+        }catch( Exception e ){
+            System.err.println( "ServerAddEvent:" + e.getClass().getName() + ": " + e.getMessage() );
+            valid = 0;
+        }
+ 
+        //return vector
+        Vector returnValue = new Vector();
+        returnValue.add(valid);
+
+        return returnValue;
+    }
+    
+    public Vector addCalendarEvent(String username, String name, String startTime, String endTime, String loc, String display){
+        int valid = 1;
+        try{
+            int id = data.getCalEventId();
+            valid = data.createCalendarEvent(username,name,startTime,endTime,loc,display,id);
 
         }catch( Exception e ){
             System.err.println( "ServerAddEvent:" + e.getClass().getName() + ": " + e.getMessage() );
@@ -218,7 +243,6 @@ public class Server {
         }
 
         Vector returnValue = new Vector();
-        System.out.println(curUser.getUsername() + curUser.getName() + curUser.getEmail() + curUser.getBedtime() + curUser.getWaketime());
         returnValue.add(curUser.getUsername());
         returnValue.add(curUser.getName());
         returnValue.add(curUser.getEmail());
@@ -283,7 +307,12 @@ public class Server {
         Vector returnValues = new Vector();
         
         try{
+
             LinkedList<CalendarEvent> calendarList = data.getSchedule(username, "schedule");
+            if(calendarList == null){
+                calendarList = new LinkedList<CalendarEvent>();
+            }
+
 
             LinkedList<FreeTime> freeblocks = new LinkedList<FreeTime>();
             LinkedList<Assignment> assignList = data.getAssignmentList(username);
@@ -312,7 +341,7 @@ public class Server {
             
             freeblocks = findFreeTime(calendarList, username);
             
-            //*
+            /*
             ListIterator<FreeTime> freeIter = freeblocks.listIterator();
             System.out.println("Free Time List:");
             while(freeIter.hasNext()){
@@ -663,7 +692,8 @@ public class Server {
         java.util.Date end = eve.getEnd();
         String loc = eve.getLocation();
         boolean display = true;                         //need to modify
-        CalendarEvent c = new CalendarEvent(name, start, end, loc, display, calEveID++);
+        int id = data.getCalEventId();
+        CalendarEvent c = new CalendarEvent(name, start, end, loc, display, id);
         
         return c; 
     }
@@ -675,7 +705,8 @@ public class Server {
             String name = assign.getAssignName();
             String loc = "ASSIGNMENT";
             boolean display = true;                     //need to modify
-            c = new CalendarEvent(name,startTime,endTime,loc, display, calEveID++);
+            int id = data.getCalEventId();
+            c = new CalendarEvent(name,startTime,endTime,loc, display, id);
 
         } catch (Exception e){
             System.err.println( "ServerAssignToCal:" + e.getClass().getName() + ": " + e.getMessage() );
@@ -1069,7 +1100,6 @@ public class Server {
                         if(startFree.compareTo(endFree) != 0){
                             newFreeTime = new FreeTime(startFree, endFree);
                             freeTimeList.add(newFreeTime);
-                            System.out.println("FreeTime before first event of day: " + newFreeTime.toStringEST());
                         }
 
                     }
@@ -1132,7 +1162,6 @@ public class Server {
                     moreEvents = false;
                     dayOfYearIter++;        //increments once to start scheduling free time on next day
                 }       //calList exhausted
-                System.out.println(moreEvents);
                 
             }
             
@@ -1185,129 +1214,6 @@ public class Server {
             dayOfYearIter++;
         }
         
-        return freeTimeList;
-    }//*/
-
-    /*
-    public LinkedList<FreeTime> findFreeTime(LinkedList<CalendarEvent> calList, String user) throws SQLException{
-        LinkedList<FreeTime> freeTimeList = new LinkedList<FreeTime>();
-        int[] bedTime = data.getBedTime(user);
-        Calendar currentTime = Calendar.getInstance();
-        Calendar endTime = Calendar.getInstance();
-        Calendar priorEndTime = Calendar.getInstance();
-        Calendar startTime = Calendar.getInstance();
-        ListIterator<CalendarEvent> calListIter = calList.listIterator();
-
-        int dayOfWeek;
-        int dayOfYear;
-        int priorDayOfWeek = 0;
-        int priorDayOfYear = -1;
-        int calListIndex;
-        boolean justStarted = true;
-        boolean passedCurrentTime = false;
-        java.util.Date startOfEvent;
-        java.util.Date endOfEvent;
-        java.util.Date startOfFree;
-        java.util.Date endOfFree;
-        FreeTime newFreeTime;
-
-        while(calListIter.hasNext()){           //runs through calendar list for end of each event
-            
-            //finds end time of current event
-            calListIndex = calListIter.nextIndex();
-            
-            startOfEvent = calList.get(calListIndex).getStartTime();
-            startTime.setTime(startOfEvent);
-            startTime.setTimeZone(timezone);
-            
-            endOfEvent = calList.get(calListIndex).getEndTime();    //get date
-            endTime.setTime(endOfEvent);                   //translate to EST calendar
-            endTime.setTimeZone(timezone);
-            
-            if(endTime.compareTo(currentTime) >= 0){                //passed current time
-                passedCurrentTime = true;
-            }
-            
-            if(justStarted){
-                priorDayOfWeek = currentTime.get(Calendar.DAY_OF_WEEK);         //initialize prior day of week in loop
-                priorDayOfYear = currentTime.get(Calendar.DAY_OF_YEAR);
-            }
-            
-            if(passedCurrentTime){                      
-                
-                dayOfWeek = endTime.get(Calendar.DAY_OF_WEEK);    //used to know when switching days
-                dayOfYear = endTime.get(Calendar.DAY_OF_YEAR);
-            
-
-                if(dayOfYear >= priorDayOfYear && !justStarted){            //just passed last event of the day
-                
-                    //adds 30 minute buffer to start time
-                    priorEndTime.add(Calendar.MINUTE, 30);
-                    startOfFree = priorEndTime.getTime();
-                    
-                    priorEndTime.set(Calendar.HOUR_OF_DAY, bedTime[0]);      //Bedtime always in PM
-                    priorEndTime.set(Calendar.MINUTE, bedTime[1]);
-                
-                
-                    endOfFree = priorEndTime.getTime();
-                    newFreeTime = new FreeTime(startOfFree, endOfFree);
-                    freeTimeList.add(newFreeTime);
-                
-                    if(priorDayOfWeek == Calendar.SATURDAY){
-                        priorDayOfWeek = Calendar.SUNDAY;
-                        priorDayOfYear++;
-                    } 
-                    else{
-                        priorDayOfWeek++;
-                        priorDayOfYear++;
-                    }
-                }
-            
-                while(dayOfYear > priorDayOfYear || (dayOfYear == priorDayOfYear && !justStarted)){                 //no events that day
-                    startTime.set(Calendar.DAY_OF_WEEK, priorDayOfWeek);        //keeps incrementing
-                    endTime.set(Calendar.DAY_OF_WEEK, priorDayOfWeek);        //keeps incrementing
-                    startTime.set(Calendar.HOUR_OF_DAY, 12);
-                    startTime.set(Calendar.MINUTE, 0);
-                    endTime.set(Calendar.MINUTE, 0);
-                    if(priorDayOfWeek == Calendar.SATURDAY){                    //Earlier end on Saturday
-                        endTime.set(Calendar.HOUR_OF_DAY, 17);
-                    }
-                    else if(priorDayOfWeek == Calendar.SUNDAY){               //Early bedtime on sunday
-                        endTime.set(Calendar.HOUR_OF_DAY, 21);
-                    }
-                    else if(priorDayOfWeek == Calendar.FRIDAY){
-                        endTime.set(Calendar.HOUR_OF_DAY, 19);
-                    }
-                    else{
-                        endTime.set(Calendar.HOUR_OF_DAY, bedTime[0]);
-                        endTime.set(Calendar.MINUTE, bedTime[1]);
-                    }
-                
-                    startOfFree = startTime.getTime();
-                    endOfFree = endTime.getTime();
-                    newFreeTime = new FreeTime(startOfFree, endOfFree);
-                    freeTimeList.add(newFreeTime);
-                
-                    if(priorDayOfWeek == Calendar.SATURDAY){
-                        priorDayOfWeek = Calendar.SUNDAY;
-                        priorDayOfYear++;
-                    } 
-                    else{
-                        priorDayOfWeek++;
-                        priorDayOfYear++;
-                    }
-                }   
-                if(justStarted){
-                    justStarted = false;
-                }
-            
-                priorEndTime.setTime(endTime.getTime());           //used as end of day if last event
-                priorEndTime.setTimeZone(timezone);
-            }
-
-            calListIter.next();
-
-        }
         return freeTimeList;
     }//*/
 
