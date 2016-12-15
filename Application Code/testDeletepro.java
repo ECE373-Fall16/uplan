@@ -1,4 +1,4 @@
-public class testDeleteevent{
+public class testDeletepro{
 	public static void main(String[] args){
 		
 		 	String username = args[0];	
